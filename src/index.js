@@ -1,7 +1,9 @@
 import dotenv from "dotenv"
 import dbConnect from "./db/dbConnect.js";
 import { app } from "./app.js";
+import CreateToken from "./jwt/token.js";
 const port = process.env.PORT || 5000;
+
 dotenv.config({
     path: './.env'
 })
@@ -20,3 +22,5 @@ dbConnect()
 .catch(() => {
     console.log("Database Connection Failed!");
 })
+
+CreateToken()

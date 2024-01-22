@@ -5,6 +5,7 @@ import allPostRoutes from "./routes/allPostRoutes.js";
 import allGetRoutes from "./routes/allGetRoutes.js";
 import allDeleteRoutes from "./routes/allDeleteRoutes.js";
 
+
 const app = express();
 app.use(cors());
 app.use(express.json());
