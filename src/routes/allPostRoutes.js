@@ -11,7 +11,7 @@ const allPostRoutes = () => {
             const newUser = req.body;
         const existingUser = await users.findOne({email: newUser.email})
         if(existingUser){
-            return
+            return res.send("users already exist!")
         }
         const usersModel = new users(newUser)
         const result = await usersModel.save();

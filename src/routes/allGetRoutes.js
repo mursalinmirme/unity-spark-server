@@ -50,6 +50,19 @@ const allGetRoutes = () => {
     })
 
 
+    // get user role when he/she will login our website
+    app.get("/user-role", async(req, res) => {
+        const userEmail = req.query.email;
+        const getUserRole = await users.findOne({email: userEmail}, {role: 1, _id: 0})
+        console.log(getUserRole);
+        res.send(getUserRole);
+    })
+
+
+
+
+
+    
 
 } //ending all get routes brackets
 
