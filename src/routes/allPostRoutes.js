@@ -35,6 +35,7 @@ const allPostRoutes = () => {
 
     // post a feedback from employee
     app.post('/feedbacks', async (req, res) => {
+        // post a feedback
         try {
             const newFeedback = req.body;
             const feedbackModel = new feedback(newFeedback);
