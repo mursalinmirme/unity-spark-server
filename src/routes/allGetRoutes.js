@@ -16,6 +16,16 @@ const allGetRoutes = () => {
         }
     })
 
+    // get get featured jobs for home section
+    app.get("/featured-jobs", async(req, res) => {
+        try {
+            const result = await await jobAds.find().sort({_id: -1}).skip(0).limit(3);
+            res.send(result);
+        } catch (error) {
+            res.status(500).send("Something went wrong.");
+        }
+    })
+
     // get all job ads list
     app.get("/total-job-ads", async(req, res) => {
         try {
@@ -25,6 +35,8 @@ const allGetRoutes = () => {
             res.status(500).send("Something went wrong.");
         }
     })
+
+    // searching and sorting available jobs pates api routes
     app.get("/job-ads", async(req, res) => {
         try {
             const skip = req.query.skip;
@@ -37,7 +49,6 @@ const allGetRoutes = () => {
             console.log('Sort date is', typeof(sortDate));
             if(searching !== 'null'){
                 const result = await jobAds.find({job_title: searching}).sort({_id: -1});
-                console.log('There has a search value', searching);
                 res.send(result);
                 return
             }
@@ -45,19 +56,16 @@ const allGetRoutes = () => {
                 const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
                 const isoFormattedStartDate = startDate.toISOString();
                 const result = await jobAds.find({createdAt: { $gte: isoFormattedStartDate } }).sort({_id: -1}).skip(skip).limit(5);
-                console.log('There has a sorted date', isoFormattedStartDate);
                 res.send(result);
                 return
             }
             if(jobtypes !== 'null'){
                 const result = await jobAds.find({job_category1: jobtypes}).sort({_id: -1}).skip(skip).limit(5);
-                console.log('Does the jobtypes get it', jobtypes);
                 res.send(result);
                 return
             }
             if(worktype !== 'null'){
                 const result = await jobAds.find({job_category2: worktype}).sort({_id: -1}).skip(skip).limit(5);
-                console.log('Does the jobtypes get it', jobtypes);
                 res.send(result);
                 return
             }
@@ -65,10 +73,11 @@ const allGetRoutes = () => {
             res.send(result);
 
         } catch (error) {
-            res.status(400).send("Something went wrong.");
+            res.status(500).send("Something went wrong.");
         }
     })
 
+    
 
     // get specific a job ads details
     app.get("/job-ads/:id", async(req, res) => {
