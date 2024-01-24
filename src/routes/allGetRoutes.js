@@ -54,7 +54,7 @@ const allGetRoutes = () => {
     app.get("/user-role", async(req, res) => {
         const userEmail = req.query.email;
         const getUserRole = await users.findOne({email: userEmail}, {role: 1, _id: 0})
-        console.log(getUserRole);
+        console.log(getUserRole, 'from line 57');
         res.send(getUserRole);
     })
 
