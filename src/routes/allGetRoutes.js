@@ -12,15 +12,58 @@ const allGetRoutes = () => {
             const result = await users.findOne({_id: user_id});
             res.send(result);
         } catch (error) {
-            res.status(400).send("Something went wrong.")
+            res.status(500).send("Something went wrong.")
         }
     })
 
     // get all job ads list
+    app.get("/total-job-ads", async(req, res) => {
+        try {
+            const result = await await jobAds.find();
+            res.send(result);
+        } catch (error) {
+            res.status(500).send("Something went wrong.");
+        }
+    })
     app.get("/job-ads", async(req, res) => {
         try {
-            const result = await jobAds.find().sort({_id: -1});
+            const skip = req.query.skip;
+            const searching = req.query.searching;
+            const getSortDate = req.query.sortdate;
+            const sortDate = parseInt(getSortDate);
+            const jobtypes = req.query.jobtypes;
+            const worktype = req.query.worktype;
+            console.log("the job types is", typeof(jobtypes));
+            console.log('Sort date is', typeof(sortDate));
+            if(searching !== 'null'){
+                const result = await jobAds.find({job_title: searching}).sort({_id: -1});
+                console.log('There has a search value', searching);
+                res.send(result);
+                return
+            }
+            if(sortDate > 0){
+                const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
+                const isoFormattedStartDate = startDate.toISOString();
+                const result = await jobAds.find({createdAt: { $gte: isoFormattedStartDate } }).sort({_id: -1}).skip(skip).limit(5);
+                console.log('There has a sorted date', isoFormattedStartDate);
+                res.send(result);
+                return
+            }
+            if(jobtypes !== 'null'){
+                const result = await jobAds.find({job_category1: jobtypes}).sort({_id: -1}).skip(skip).limit(5);
+                console.log('Does the jobtypes get it', jobtypes);
+                res.send(result);
+                return
+            }
+            if(worktype !== 'null'){
+                const result = await jobAds.find({job_category2: worktype}).sort({_id: -1}).skip(skip).limit(5);
+                console.log('Does the jobtypes get it', jobtypes);
+                res.send(result);
+                return
+            }
+            const result = await jobAds.find().sort({_id: -1}).skip(skip).limit(5);
             res.send(result);
+
         } catch (error) {
             res.status(400).send("Something went wrong.");
         }
@@ -34,7 +77,19 @@ const allGetRoutes = () => {
             const result = await jobAds.findOne({_id: jobAdsId});
             res.send(result);
         } catch (error) {
-            res.status(400).send("Something went wrong.");
+            res.status(500).send("Something went wrong.");
+        }
+    })
+
+    // get similar jobs based on job details page job type
+    app.get("/similar_jobs", async(req, res) => {
+        try {
+            const similarJobs = req.query.jobtype;
+            console.log('similar jobs wanted by', similarJobs);
+            const result = await jobAds.find({job_category1: similarJobs}).skip(0).limit(3);
+            res.send(result);
+        } catch (error) {
+            res.status(500).send("Something went wrong.");
         }
     })
 
@@ -45,7 +100,7 @@ const allGetRoutes = () => {
             const result = await feedback.find().sort({_id: -1});
             res.send(result);
         } catch (error) {
-            res.status(400).send("Something went wrong.");
+            res.status(500).send("Something went wrong.");
         }
     })
 
