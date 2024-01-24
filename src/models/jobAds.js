@@ -7,7 +7,6 @@ const jobAdsSchema = mongoose.Schema({
         minlength: [3 , "minimum length of the feedback title should be 3"],
         maxlength: [100, "maximum length of the feedback title should be 10"],
         trim: true,
-        unique: true,
     },
     jobType: {
         type: String,
@@ -22,7 +21,7 @@ const jobAdsSchema = mongoose.Schema({
         maxlength: [100, "maximum length of the feedback title should be 10"],
     },
     salary: {
-        type: Number,
+        type: String,
         require: true,
         min: [3, "minimum salary of the employee  should be 3k"],
         max: [200, "maximum salary of the employee  should be 200k"]
