@@ -26,10 +26,20 @@ const allGetRoutes = () => {
         }
     })
 
+    // get all job ads list number
+    app.get("/total-job-ads-numbers", async (req, res) => {
+        try {
+          const result = await jobAds.countDocuments();
+          res.send({total: result});
+        } catch (error) {
+          res.status(500).send("Something went wrong.");
+        }
+      });
     // get all job ads list
     app.get("/total-job-ads", async(req, res) => {
         try {
-            const result = await await jobAds.find();
+            const skip = req.query.skip;
+            const result = await await jobAds.find().sort({_id: -1}).skip(skip).limit(5);
             res.send(result);
         } catch (error) {
             res.status(500).send("Something went wrong.");
