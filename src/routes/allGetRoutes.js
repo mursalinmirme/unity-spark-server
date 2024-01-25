@@ -29,7 +29,7 @@ const allGetRoutes = () => {
     }
   });
 
-  // get all job ads list number
+  // get all job documents numbers ads list number for manage adds
   app.get("/total-job-ads-numbers", async (req, res) => {
     try {
       const result = await jobAds.countDocuments();
@@ -38,6 +38,63 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
+
+  // get all jobs documents number for available page
+  app.get("/available-total-jobs-numbers", async (req, res) => {
+    try {
+      // const skip = req.query.skip;
+      // const searching = req.query.searching;
+      // const getSortDate = req.query.sortdate;
+      // const sortDate = parseInt(getSortDate);
+      // const jobtypes = req.query.jobtypes;
+      // const worktype = req.query.worktype;
+      // console.log("the job types is", typeof jobtypes);
+      // console.log("Sort date is", typeof sortDate);
+      // if (searching !== "null") {
+      //   const result = await jobAds
+      //     .find({ job_title: searching })
+      //     .sort({ _id: -1 });
+      //   res.send(result);
+      //   return;
+      // }
+      // if (sortDate > 0) {
+      //   const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
+      //   const isoFormattedStartDate = startDate.toISOString();
+      //   const result = await jobAds
+      //     .find({ createdAt: { $gte: isoFormattedStartDate } })
+      //     .sort({ _id: -1 })
+      //     .skip(skip)
+      //     .limit(5);
+      //   res.send(result);
+      //   return;
+      // }
+      // if (jobtypes !== "null") {
+      //   const result = await jobAds
+      //     .find({ job_category1: jobtypes })
+      //     .sort({ _id: -1 })
+      //     .skip(skip)
+      //     .limit(5);
+      //   res.send(result);
+      //   return;
+      // }
+      // if (worktype !== "null") {
+      //   const result = await jobAds
+      //     .find({ job_category2: worktype })
+      //     .sort({ _id: -1 })
+      //     .skip(skip)
+      //     .limit(5);
+      //   res.send(result);
+      //   return;
+      // }
+      const result = await jobAds.find().countDocuments();
+      res.send({total: result});
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
+
+
+
   // get all job ads list
   app.get("/total-job-ads", async (req, res) => {
     try {
@@ -62,8 +119,8 @@ const allGetRoutes = () => {
       const sortDate = parseInt(getSortDate);
       const jobtypes = req.query.jobtypes;
       const worktype = req.query.worktype;
-      console.log("the job types is", typeof jobtypes);
-      console.log("Sort date is", typeof sortDate);
+      // console.log("the job types is", typeof jobtypes);
+      // console.log("Sort date is", typeof sortDate);
       if (searching !== "null") {
         const result = await jobAds
           .find({ job_title: searching })
