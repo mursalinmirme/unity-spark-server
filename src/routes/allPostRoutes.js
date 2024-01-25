@@ -20,7 +20,7 @@ const allPostRoutes = () => {
             res.send("Something went wrong.")
         }                
     })
-    a
+    
 
     // job ads post
     app.post('/job-ads', async (req, res) => {
