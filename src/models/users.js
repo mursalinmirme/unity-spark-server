@@ -25,20 +25,44 @@ const usersSchema = mongoose.Schema({
                     throw new Error('Invalid image type. Supported types: png, jpg, jpeg, gif');
                 }
 
-                // Validate image size (3 megabytes)
-                const maxSizeBytes = 3 * 1024 * 1024; // 3 megabytes
-                if (Buffer.from(value, 'base64').length > maxSizeBytes) {
-                    throw new Error('Image size must be smaller than 3 megabytes');
-                }
-
                 return true; // Validation passed
             },
             message: 'Image data is invalid or missing',
         },
     },
+    phone: {
+        type: Number,
+    },
+    age: {
+        type: Number,
+    },
+    gender: {
+        type: String,
+    },
+    current_address: {
+        type: String,
+    },
+    permanent_address: {
+        type: String,
+    },
+    job_preference: {
+        type: String,
+    },
+    time_preference: {
+        type: String,
+    },
+    skills: {
+        type: Array,
+    },
+    image: {
+        type: String,
+    },
     role: {
         type: String,
         default: 'user'
+    },
+    resume_link: {
+        type: String,
     },
     createdAt: {
         type: Date,

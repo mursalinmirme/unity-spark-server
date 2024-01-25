@@ -5,6 +5,7 @@ import allPostRoutes from "./routes/allPostRoutes.js";
 import allGetRoutes from "./routes/allGetRoutes.js";
 import allDeleteRoutes from "./routes/allDeleteRoutes.js";
 import cookieParser from "cookie-parser";
+import CreateToken from "./jwt/token.js";
 
 const app = express();
 app.use(cors({
@@ -18,6 +19,8 @@ app.use(cookieParser())
 app.get("/", (req, res) => {
     res.send("The Unity spark server is running.....");
 })
+// call jwt token create and remove function
+CreateToken()
 
 // call all get request
 allGetRoutes();
