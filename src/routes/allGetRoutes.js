@@ -150,7 +150,6 @@ const allGetRoutes = () => {
       { email: userEmail },
       { role: 1, _id: 0 }
     );
-    console.log(getUserRole, "from line 57");
     res.send(getUserRole);
   });
 }; //ending all get routes brackets
