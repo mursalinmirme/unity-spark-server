@@ -42,50 +42,38 @@ const allGetRoutes = () => {
   // get all jobs documents number for available page
   app.get("/available-total-jobs-numbers", async (req, res) => {
     try {
-      // const skip = req.query.skip;
-      // const searching = req.query.searching;
-      // const getSortDate = req.query.sortdate;
-      // const sortDate = parseInt(getSortDate);
-      // const jobtypes = req.query.jobtypes;
-      // const worktype = req.query.worktype;
-      // console.log("the job types is", typeof jobtypes);
-      // console.log("Sort date is", typeof sortDate);
-      // if (searching !== "null") {
-      //   const result = await jobAds
-      //     .find({ job_title: searching })
-      //     .sort({ _id: -1 });
-      //   res.send(result);
-      //   return;
-      // }
-      // if (sortDate > 0) {
-      //   const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
-      //   const isoFormattedStartDate = startDate.toISOString();
-      //   const result = await jobAds
-      //     .find({ createdAt: { $gte: isoFormattedStartDate } })
-      //     .sort({ _id: -1 })
-      //     .skip(skip)
-      //     .limit(5);
-      //   res.send(result);
-      //   return;
-      // }
-      // if (jobtypes !== "null") {
-      //   const result = await jobAds
-      //     .find({ job_category1: jobtypes })
-      //     .sort({ _id: -1 })
-      //     .skip(skip)
-      //     .limit(5);
-      //   res.send(result);
-      //   return;
-      // }
-      // if (worktype !== "null") {
-      //   const result = await jobAds
-      //     .find({ job_category2: worktype })
-      //     .sort({ _id: -1 })
-      //     .skip(skip)
-      //     .limit(5);
-      //   res.send(result);
-      //   return;
-      // }
+      const skip = req.query.skip;
+      const searching = req.query.searching;
+      const getSortDate = req.query.sortdate;
+      const sortDate = parseInt(getSortDate);
+      const jobtypes = req.query.jobtypes;
+      const worktype = req.query.worktype;
+      if (searching !== "null") {
+        const result = await jobAds
+          .find({ job_title: searching }).countDocuments();
+        res.send({total: result});
+        return;
+      }
+      if (sortDate > 0) {
+        const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
+        const isoFormattedStartDate = startDate.toISOString();
+        const result = await jobAds
+          .find({ createdAt: { $gte: isoFormattedStartDate } }).countDocuments();
+        res.send({total: result});
+        return;
+      }
+      if (jobtypes !== "null") {
+        const result = await jobAds
+          .find({ job_category1: jobtypes }).countDocuments();
+        res.send({total: result});
+        return;
+      }
+      if (worktype !== "null") {
+        const result = await jobAds
+          .find({ job_category2: worktype }).countDocuments();
+        res.send({total: result});
+        return;
+      }
       const result = await jobAds.find().countDocuments();
       res.send({total: result});
     } catch (error) {
@@ -119,8 +107,7 @@ const allGetRoutes = () => {
       const sortDate = parseInt(getSortDate);
       const jobtypes = req.query.jobtypes;
       const worktype = req.query.worktype;
-      // console.log("the job types is", typeof jobtypes);
-      // console.log("Sort date is", typeof sortDate);
+      console.log("The Sorted date is", getSortDate);
       if (searching !== "null") {
         const result = await jobAds
           .find({ job_title: searching })
@@ -128,17 +115,12 @@ const allGetRoutes = () => {
         res.send(result);
         return;
       }
-      if (sortDate > 0) {
-        const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
-        const isoFormattedStartDate = startDate.toISOString();
-        const result = await jobAds
-          .find({ createdAt: { $gte: isoFormattedStartDate } })
-          .sort({ _id: -1 })
-          .skip(skip)
-          .limit(5);
-        res.send(result);
-        return;
-      }
+      // if (getSortDate !== "null") {
+      //   const result = await jobAds
+      //     .find({ createdAt: toString('2024-01-13T15:45:00.000Z')});
+      //   res.send(result);
+      //   return;
+      // }
       if (jobtypes !== "null") {
         const result = await jobAds
           .find({ job_category1: jobtypes })
