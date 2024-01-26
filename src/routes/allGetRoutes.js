@@ -139,7 +139,7 @@ const allGetRoutes = () => {
         res.send(result);
         return;
       }
-      const result = await jobAds.find().sort({ _id: -1 }).skip(skip).limit(5);
+      const result = await jobAds.find().sort({ createdAt: -1 }).skip(skip).limit(5);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
