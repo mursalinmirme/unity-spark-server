@@ -19,8 +19,8 @@ const allGetRoutes = () => {
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
-        .find()
-        .sort({ _id: -1 })
+        .find({})
+        .sort({ createdAt: -1 })
         .skip(0)
         .limit(3);
       res.send(result);
