@@ -49,11 +49,15 @@ const allPostRoutes = () => {
     })
     // posting job applications data
     app.post("/job-application"), async (req , res) => {
-        const application_data = req.body;
+        try {
+            const application_data = req.body;
         console.log(application_data)
-    // const job_application_model = new jobapplications(application_data)
-    // const result = await job_application_model.save()
-    // res.send(result)
+    const job_application_model = new jobapplications(application_data)
+    const result = await job_application_model.save()
+    res.send(result)
+        } catch (error) {
+           console.log(error.message) 
+        }
     }
 
 
