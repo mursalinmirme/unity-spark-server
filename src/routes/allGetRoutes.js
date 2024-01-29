@@ -1,7 +1,9 @@
+import { get } from "mongoose";
 import { app } from "../app.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
 import users from "../models/users.js";
+import jobapplications from "../models/jobapplications.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -191,6 +193,13 @@ const allGetRoutes = () => {
     );
     res.send(getUserRole);
   });
+  // getting job applications all data
+
+  app.get("/job_applications" , async (req , res) => {
+   const result = await jobapplications.find()
+   res.send(result)
+
+  })
 }; //ending all get routes brackets
 
 export default allGetRoutes;

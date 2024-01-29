@@ -67,9 +67,15 @@ const jobApplicationsSchema = mongoose.Schema({
             message: 'Image data is invalid or missing',
         },
     },
-
-
-    
-
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 
 })
+
+// job applications model making
+
+const jobapplications = mongoose.model("job_applications", jobApplicationsSchema)
+
+export default jobapplications
