@@ -1,6 +1,7 @@
 import { app } from "../app.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
+import jobapplications from "../models/jobapplications.js";
 import users from "../models/users.js";
 
 // All Post Requests
@@ -17,7 +18,7 @@ const allPostRoutes = () => {
         const result = await usersModel.save();
         res.send(result); 
         } catch (error) {
-            res.send("Something went wrong.")
+            res.send(error.message)
         }                
     })
     
@@ -30,7 +31,7 @@ const allPostRoutes = () => {
             const result = await jobAdsModel.save();
             res.send(result);
         } catch (error) {
-            console.log("Something went wrong.");
+            console.log(error.message);
         }
     })
 
@@ -43,7 +44,20 @@ const allPostRoutes = () => {
             const result = await feedbackModel.save();
             res.send(result);
         } catch (error) {
-            console.log("Something went wrong.");
+            console.log(error.message);
+        }
+    })
+
+    // posting job applications data
+    app.post('/job_applications', async (req , res) => {
+    try {
+        const application_data = req.body;
+        console.log(application_data)
+        const job_application_model = new jobapplications(application_data)
+        const result = await job_application_model.save()
+        res.send(result)
+        } catch (error) {
+           console.log(error.message) 
         }
     })
 
@@ -53,7 +67,7 @@ const allPostRoutes = () => {
 
     
 
-}
+}//end all post function brackets
 
 
 export default allPostRoutes
