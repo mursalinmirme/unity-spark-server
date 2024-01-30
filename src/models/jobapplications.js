@@ -5,6 +5,10 @@ const jobApplicationsSchema = mongoose.Schema({
     require: true,
     trim: true,
   },
+  applied_job_id: {
+    type: String,
+    require: true,
+  },
   email: {
     type: String,
     require: true,
@@ -13,7 +17,7 @@ const jobApplicationsSchema = mongoose.Schema({
     type: Number,
     require: true,
   },
-  skils: {
+  skills: {
     type: Array,
     require: true,
   },
