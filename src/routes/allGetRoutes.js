@@ -4,11 +4,13 @@ import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
 import users from "../models/users.js";
 import jobapplications from "../models/jobapplications.js";
+import verifyToken from "../jwt/middleware/auth.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
-  app.get("/users/:email", async (req, res) => {
+  app.get("/users/:email", verifyToken, async (req, res) => {
     try {
+      console.log('The token user is', req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
