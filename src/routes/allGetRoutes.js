@@ -10,7 +10,7 @@ const allGetRoutes = () => {
   // get specific user data by _id
   app.get("/users/:email", verifyToken, async (req, res) => {
     try {
-      console.log('The token user is', req.user);
+      // console.log('The token user is', req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
