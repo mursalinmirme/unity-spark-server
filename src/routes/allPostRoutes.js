@@ -49,7 +49,7 @@ const allPostRoutes = () => {
     })
 
     // posting job applications data
-    app.post('/job-application', async (req , res) => {
+    app.post('/job_applications', async (req , res) => {
     try {
         const application_data = req.body;
         console.log(application_data)
