@@ -195,8 +195,13 @@ const allGetRoutes = () => {
     );
     res.send(getUserRole);
   });
+  // getting job applications data based on id
+  app.get("/job_applications/:id" , async (req , res) => {
+    const id = req.params.id
+    const result = await jobapplications.findOne({_id : id})
+    res.send(result)
+  })
   // getting job applications all data
-
   app.get("/job_applications" , async (req , res) => {
    const result = await jobapplications.find()
    res.send(result)
