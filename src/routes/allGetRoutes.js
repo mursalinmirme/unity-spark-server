@@ -8,9 +8,9 @@ import verifyToken from "../jwt/middleware/auth.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
-  app.get("/users/:email", verifyToken, async (req, res) => {
+  app.get("/users/:email", async (req, res) => {
     try {
-      console.log('The token user is', req.user);
+      // console.log("The token user is", req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
@@ -54,38 +54,40 @@ const allGetRoutes = () => {
       const worktype = req.query.worktype;
       if (searching !== "null") {
         const result = await jobAds
-          .find({ job_title: searching }).countDocuments();
-        res.send({total: result});
+          .find({ job_title: searching })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       if (sortDate > 0) {
         const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
         const isoFormattedStartDate = startDate.toISOString();
         const result = await jobAds
-          .find({ createdAt: { $gte: isoFormattedStartDate } }).countDocuments();
-        res.send({total: result});
+          .find({ createdAt: { $gte: isoFormattedStartDate } })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       if (jobtypes !== "null") {
         const result = await jobAds
-          .find({ job_category1: jobtypes }).countDocuments();
-        res.send({total: result});
+          .find({ job_category1: jobtypes })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       if (worktype !== "null") {
         const result = await jobAds
-          .find({ job_category2: worktype }).countDocuments();
-        res.send({total: result});
+          .find({ job_category2: worktype })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       const result = await jobAds.find().countDocuments();
-      res.send({total: result});
+      res.send({ total: result });
     } catch (error) {
       res.status(500).send("Something went wrong.");
     }
   });
-
-
 
   // get all job ads list
   app.get("/total-job-ads", async (req, res) => {
@@ -143,7 +145,11 @@ const allGetRoutes = () => {
         res.send(result);
         return;
       }
-      const result = await jobAds.find().sort({ createdAt: -1 }).skip(skip).limit(5);
+      const result = await jobAds
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(5);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -196,17 +202,16 @@ const allGetRoutes = () => {
     res.send(getUserRole);
   });
   // getting job applications data based on id
-  app.get("/job_applications/:id" , async (req , res) => {
-    const id = req.params.id
-    const result = await jobapplications.findOne({_id : id})
-    res.send(result)
-  })
+  app.get("/job_applications/:id", async (req, res) => {
+    const id = req.params.id;
+    const result = await jobapplications.findOne({ _id: id });
+    res.send(result);
+  });
   // getting job applications all data
-  app.get("/job_applications" , async (req , res) => {
-   const result = await jobapplications.find()
-   res.send(result)
-
-  })
+  app.get("/job_applications", async (req, res) => {
+    const result = await jobapplications.find();
+    res.send(result);
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
