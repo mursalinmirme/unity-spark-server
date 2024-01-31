@@ -17,7 +17,6 @@ const CreateToken = async () => {
   });
 
   app.post("/logout", async (req, res) => {
-    console.log("Some one want to clear the cookies");
     res.clearCookie("token", { maxAge: 0 }).send({ success: false });
   });
 };
