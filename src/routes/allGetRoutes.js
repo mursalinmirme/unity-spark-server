@@ -5,6 +5,7 @@ import jobAds from "../models/jobAds.js";
 import users from "../models/users.js";
 import jobapplications from "../models/jobapplications.js";
 import verifyToken from "../jwt/middleware/auth.js";
+import presentations from "../models/presentations.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -229,6 +230,22 @@ const allGetRoutes = () => {
     const result = await jobapplications.find();
     res.send(result);
   });
+
+  // check employees presentation 
+  app.get('/presentation/:email', async (req, res) => {
+    const presenterEmail = req.params.email;
+    const result = await presentations.find({email: presenterEmail}, {name: 0, email: 0}).sort({presentedAt: -1}).skip(0).limit(1);
+    res.send(result[0]);
+  })
+ // check employees total presentation
+ app.get('/presentation', async (req, res) => {
+  const email = req.query.email;
+  const result = await presentations.find({email: email}).countDocuments();
+  res.send({total: result});
+})
+
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;

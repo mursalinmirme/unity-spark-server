@@ -69,6 +69,10 @@ const usersSchema = mongoose.Schema({
     type: String,
     default: "user",
   },
+  position: {
+    type: String,
+    default: "guest",
+  },
   resume_link: {
     type: String,
   },
