@@ -19,6 +19,15 @@ const allGetRoutes = () => {
     }
   });
 
+  app.get("/users", async (req, res) => {
+    try {
+      const result = await users.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // get get featured jobs for home section
   app.get("/featured-jobs", async (req, res) => {
     try {
