@@ -1,5 +1,4 @@
 import { app } from "../app.js";
-import applyJob from "../models/applyjobs.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
