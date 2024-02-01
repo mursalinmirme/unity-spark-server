@@ -9,7 +9,7 @@ const jobApplicationsSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  applied_job_title: {
+  title: {
     type: String,
     require: true,
   },
