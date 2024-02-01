@@ -9,6 +9,10 @@ const jobApplicationsSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  applied_job_title: {
+    type: String,
+    require: true,
+  },
   email: {
     type: String,
     require: true,
