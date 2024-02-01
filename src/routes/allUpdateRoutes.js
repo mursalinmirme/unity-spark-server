@@ -25,7 +25,7 @@ const allUpdateRoutes = () => {
       const updateEmail = req.query.email;
       const result = await users.updateOne(
         { email: updateEmail },
-        { $set: {role : "employee"} },
+        { $set: { role: "employee" } },
         { upsert: true }
       );
       res.send(result);
@@ -33,6 +33,23 @@ const allUpdateRoutes = () => {
       res.status(400).send(error.message);
     }
   });
+
+  app.put("/user-role/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const body = req.body;
+
+      const result = await users.updateOne(
+        { _id: id },
+        { $set: body },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
+  });
+
   // job applications update
   app.put("/job_applications/:id", async (req, res) => {
     try {
