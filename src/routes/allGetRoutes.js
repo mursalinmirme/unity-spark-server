@@ -6,6 +6,7 @@ import users from "../models/users.js";
 import jobapplications from "../models/jobapplications.js";
 import verifyToken from "../jwt/middleware/auth.js";
 import presentations from "../models/presentations.js";
+import { json } from "express";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -19,7 +20,8 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
-
+  
+ 
   app.get("/users", async (req, res) => {
     try {
       const result = await users.find();

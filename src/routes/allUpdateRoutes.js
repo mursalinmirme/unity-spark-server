@@ -19,6 +19,20 @@ const allUpdateRoutes = () => {
       res.status(400).send("Something went wrong.");
     }
   });
+
+  app.put("/users", async (req, res) => {
+    try {
+      const updateEmail = req.query.email;
+      const result = await users.updateOne(
+        { email: updateEmail },
+        { $set: {role : "employee"} },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
+  });
   // job applications update
   app.put("/job_applications/:id", async (req, res) => {
     try {
