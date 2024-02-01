@@ -2,62 +2,81 @@ import { app } from "../app.js";
 import applyJob from "../models/applyjobs.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
+import jobapplications from "../models/jobapplications.js";
+import presentations from "../models/presentations.js";
 import users from "../models/users.js";
 
 // All Post Requests
 const allPostRoutes = () => {
-  // user sign up route
-  app.post("/users", async (req, res) => {
-    try {
-      const newUser = req.body;
-      const existingUser = await users.findOne({ email: newUser.email });
-      if (existingUser) {
-        return res.send("users already exist!");
-      }
-      const usersModel = new users(newUser);
-      const result = await usersModel.save();
-      res.send(result);
-    } catch (error) {
-      res.send("Something went wrong.");
-    }
-  });
+    // user sign up route
+    app.post('/users', async(req, res) => {
+        try {
+            const newUser = req.body;
+        const existingUser = await users.findOne({email: newUser.email})
+        if(existingUser){
+            return res.send("users already exist!")
+        }
+        const usersModel = new users(newUser)
+        const result = await usersModel.save();
+        res.send(result); 
+        } catch (error) {
+            res.send(error.message)
+        }                
+    })
+    
 
-  // job ads post
-  app.post("/job-ads", async (req, res) => {
-    try {
-      const newJobAds = req.body;
-      const jobAdsModel = new jobAds(newJobAds);
-      const result = await jobAdsModel.save();
-      res.send(result);
-    } catch (error) {
-      console.log("Something went wrong.");
-    }
-  });
+    // job ads post
+    app.post('/job-ads', async (req, res) => {
+        try {
+            const newJobAds = req.body;
+            const jobAdsModel = new jobAds(newJobAds);
+            const result = await jobAdsModel.save();
+            res.send(result);
+        } catch (error) {
+            console.log(error.message);
+        }
+    })
 
-  // post a feedback from employee
-  app.post("/feedbacks", async (req, res) => {
-    // post a feedback
-    try {
-      const newFeedback = req.body;
-      console.log(newFeedback);
-      const feedbackModel = new feedback(newFeedback);
-      const result = await feedbackModel.save();
-      res.send(result);
-    } catch (error) {
-      console.log("Something went wrong.");
-    }
-  });
+    // post a feedback from employee
+    app.post('/feedbacks', async (req, res) => {
+        // post a feedback
+        try {
+            const newFeedback = req.body;
+            const feedbackModel = new feedback(newFeedback);
+            const result = await feedbackModel.save();
+            res.send(result);
+        } catch (error) {
+            console.log(error.message);
+        }
+    })
 
-  app.post("/job_applications", async (req, res) => {
+    // posting job applications data
+    app.post('/job_applications', async (req , res) => {
     try {
-      const newApplyJob = req.body;
-      const applyJobModel = new applyJob(newApplyJob);
-      const result = await applyJobModel.save();
-      res.send(result);
-    } catch (error) {
-        console.log("Something went wrong.");
-    }
-  });
-};
+        const application_data = req.body;
+        console.log(application_data)
+        const job_application_model = new jobapplications(application_data)
+        const result = await job_application_model.save()
+        res.send(result)
+        } catch (error) {
+           console.log(error.message) 
+        }
+    })
 
-export default allPostRoutes;
+    // employee presentation post
+    app.post('/presentation', async (req, res) => {
+        const presentUser = req.body;
+        const newPresentation = new presentations(presentUser);
+        const result = await newPresentation.save();
+        res.send(result);
+    })
+
+
+
+    
+
+}//end all post function brackets
+
+
+export default allPostRoutes
+
