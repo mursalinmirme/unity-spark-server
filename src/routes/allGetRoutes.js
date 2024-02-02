@@ -5,17 +5,39 @@ import jobAds from "../models/jobAds.js";
 import users from "../models/users.js";
 import jobapplications from "../models/jobapplications.js";
 import verifyToken from "../jwt/middleware/auth.js";
+import presentations from "../models/presentations.js";
+import { json } from "express";
 
 const allGetRoutes = () => {
   // get specific user data by _id
-  app.get("/users/:email", verifyToken, async (req, res) => {
+  app.get("/users/:email", async (req, res) => {
     try {
-      // console.log('The token user is', req.user);
+      // console.log("The token user is", req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
+    }
+  });
+  
+//  get all users
+  app.get("/users", async (req, res) => {
+    try {
+      const result = await users.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  //  get all employee
+  app.get("/employees", async (req, res) => {
+    try {
+      const result = await users.find({role:"employee"});
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
     }
   });
 
@@ -43,20 +65,20 @@ const allGetRoutes = () => {
     }
   });
 
-    // get all job ads list
-    app.get("/total-job-ads", async (req, res) => {
-      try {
-        const skip = req.query.skip;
-        const result = await await jobAds
-          .find()
-          .sort({ _id: -1 })
-          .skip(skip)
-          .limit(5);
-        res.send(result);
-      } catch (error) {
-        res.status(500).send("Something went wrong.");
-      }
-    });
+  // get all job ads list
+  app.get("/total-job-ads", async (req, res) => {
+    try {
+      const skip = req.query.skip;
+      const result = await await jobAds
+        .find()
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(5);
+      res.send(result);
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
 
   // get all jobs documents number for available page
   app.get("/available-total-jobs-numbers", async (req, res) => {
@@ -69,38 +91,40 @@ const allGetRoutes = () => {
       const worktype = req.query.worktype;
       if (searching !== "null") {
         const result = await jobAds
-          .find({ job_title: searching }).countDocuments();
-        res.send({total: result});
+          .find({ job_title: searching })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       if (getSortDate !== "null") {
         const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
         const isoFormattedStartDate = startDate.toISOString();
         const result = await jobAds
-          .find({ createdAt: { $gte: isoFormattedStartDate } }).countDocuments();
-        res.send({total: result});
+          .find({ createdAt: { $gte: isoFormattedStartDate } })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       if (jobtypes !== "null") {
         const result = await jobAds
-          .find({ job_category1: jobtypes }).countDocuments();
-        res.send({total: result});
+          .find({ job_category1: jobtypes })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       if (worktype !== "null") {
         const result = await jobAds
-          .find({ job_category2: worktype }).countDocuments();
-        res.send({total: result});
+          .find({ job_category2: worktype })
+          .countDocuments();
+        res.send({ total: result });
         return;
       }
       const result = await jobAds.find().countDocuments();
-      res.send({total: result});
+      res.send({ total: result });
     } catch (error) {
       res.status(500).send("Something went wrong.");
     }
   });
-
-
 
   // searching and sorting available jobs pates api routes
   app.get("/job-ads", async (req, res) => {
@@ -115,15 +139,21 @@ const allGetRoutes = () => {
       if (searching !== "null") {
         const result = await jobAds
           .find({ job_title: searching })
-          .sort({ _id: -1 }).sort({ createdAt: -1 }).skip(skip).limit(5);
+          .sort({ _id: -1 })
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(6);
         res.send(result);
         return;
       }
-      if(getSortDate !== "null"){
+      if (getSortDate !== "null") {
         const startDate = new Date(new Date() - sortDate * 24 * 60 * 60 * 1000);
         const isoFormattedStartDate = startDate.toISOString();
         const result = await jobAds
-          .find({ createdAt: { $gte: isoFormattedStartDate } }).sort({ createdAt: -1 }).skip(skip).limit(5);
+          .find({ createdAt: { $gte: isoFormattedStartDate } })
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(6);
         res.send(result);
         return;
       }
@@ -132,7 +162,7 @@ const allGetRoutes = () => {
           .find({ job_category1: jobtypes })
           .sort({ createdAt: -1 })
           .skip(skip)
-          .limit(5);
+          .limit(6);
         res.send(result);
         return;
       }
@@ -141,11 +171,15 @@ const allGetRoutes = () => {
           .find({ job_category2: worktype })
           .sort({ createdAt: -1 })
           .skip(skip)
-          .limit(5);
+          .limit(6);
         res.send(result);
         return;
       }
-      const result = await jobAds.find().sort({ createdAt: -1 }).skip(skip).limit(5);
+      const result = await jobAds
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(6);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -198,17 +232,39 @@ const allGetRoutes = () => {
     res.send(getUserRole);
   });
   // getting job applications data based on id
-  app.get("/job_applications/:id" , async (req , res) => {
-    const id = req.params.id
-    const result = await jobapplications.findOne({_id : id})
-    res.send(result)
-  })
+  app.get("/job_applications/:id", async (req, res) => {
+    const id = req.params.id;
+    const result = await jobapplications.findOne({ _id: id });
+    res.send(result);
+  });
   // getting job applications all data
-  app.get("/job_applications" , async (req , res) => {
-   const result = await jobapplications.find()
-   res.send(result)
+  app.get("/job_applications_nums", async (req, res) => {
+    const result = await jobapplications.find().countDocuments();
+    res.send({total: result});
+  });
+  // getting job applications all data
+  app.get("/job_applications", async (req, res) => {
+    const skipFrom = req.query.skip;
+    console.log("skip from", skipFrom);
+    const result = await jobapplications.find().skip(skipFrom).limit(5);
+    res.send(result);
+  });
 
+  // check employees presentation 
+  app.get('/presentation/:email', async (req, res) => {
+    const presenterEmail = req.params.email;
+    const result = await presentations.find({email: presenterEmail}, {name: 0, email: 0}).sort({presentedAt: -1}).skip(0).limit(1);
+    res.send(result[0]);
   })
+ // check employees total presentation
+ app.get('/presentation', async (req, res) => {
+  const email = req.query.email;
+  const result = await presentations.find({email: email}).countDocuments();
+  res.send({total: result});
+})
+
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;

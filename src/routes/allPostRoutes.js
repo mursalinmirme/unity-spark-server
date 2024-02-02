@@ -2,6 +2,7 @@ import { app } from "../app.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
+import presentations from "../models/presentations.js";
 import users from "../models/users.js";
 
 // All Post Requests
@@ -61,7 +62,13 @@ const allPostRoutes = () => {
         }
     })
 
-
+    // employee presentation post
+    app.post('/presentation', async (req, res) => {
+        const presentUser = req.body;
+        const newPresentation = new presentations(presentUser);
+        const result = await newPresentation.save();
+        res.send(result);
+    })
 
 
 
