@@ -21,10 +21,20 @@ const allGetRoutes = () => {
     }
   });
   
- 
+//  get all users
   app.get("/users", async (req, res) => {
     try {
       const result = await users.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  //  get all employee
+  app.get("/employees", async (req, res) => {
+    try {
+      const result = await users.find({role:"employee"});
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -132,7 +142,7 @@ const allGetRoutes = () => {
           .sort({ _id: -1 })
           .sort({ createdAt: -1 })
           .skip(skip)
-          .limit(5);
+          .limit(6);
         res.send(result);
         return;
       }
@@ -143,7 +153,7 @@ const allGetRoutes = () => {
           .find({ createdAt: { $gte: isoFormattedStartDate } })
           .sort({ createdAt: -1 })
           .skip(skip)
-          .limit(5);
+          .limit(6);
         res.send(result);
         return;
       }
@@ -152,7 +162,7 @@ const allGetRoutes = () => {
           .find({ job_category1: jobtypes })
           .sort({ createdAt: -1 })
           .skip(skip)
-          .limit(5);
+          .limit(6);
         res.send(result);
         return;
       }
@@ -161,7 +171,7 @@ const allGetRoutes = () => {
           .find({ job_category2: worktype })
           .sort({ createdAt: -1 })
           .skip(skip)
-          .limit(5);
+          .limit(6);
         res.send(result);
         return;
       }
@@ -169,7 +179,7 @@ const allGetRoutes = () => {
         .find()
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(5);
+        .limit(6);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -228,8 +238,15 @@ const allGetRoutes = () => {
     res.send(result);
   });
   // getting job applications all data
+  app.get("/job_applications_nums", async (req, res) => {
+    const result = await jobapplications.find().countDocuments();
+    res.send({total: result});
+  });
+  // getting job applications all data
   app.get("/job_applications", async (req, res) => {
-    const result = await jobapplications.find();
+    const skipFrom = req.query.skip;
+    console.log("skip from", skipFrom);
+    const result = await jobapplications.find().skip(skipFrom).limit(5);
     res.send(result);
   });
 
