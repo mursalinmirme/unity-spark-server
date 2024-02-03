@@ -58,6 +58,11 @@ const allGetRoutes = () => {
   // get all job documents numbers ads list number for manage adds
   app.get("/total-job-ads-numbers", async (req, res) => {
     try {
+      const searchVal = req.query.searchVal;
+      if(searchVal !== 'null'){
+        const result = await jobAds.find({job_title: searchVal}).countDocuments();
+        return res.send({ total: result });
+      }
       const result = await jobAds.countDocuments();
       res.send({ total: result });
     } catch (error) {
@@ -69,11 +74,21 @@ const allGetRoutes = () => {
   app.get("/total-job-ads", async (req, res) => {
     try {
       const skip = req.query.skip;
+      const searchVal = req.query.searchVal;
+      console.log("job ads search value is", searchVal);
+      if(searchVal !== 'null'){
+        const result = await await jobAds
+        .find({job_title: searchVal})
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(6);
+       return res.send(result);
+      }
       const result = await await jobAds
         .find()
         .sort({ _id: -1 })
         .skip(skip)
-        .limit(5);
+        .limit(6);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -212,10 +227,21 @@ const allGetRoutes = () => {
     }
   });
 
+  // get all feedbacks numbers from numbers
+  app.get("/feedbacks-nums", async (req, res) => {
+    try {
+      const result = await feedback.countDocuments();
+      res.send({ total: result });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // get all feedback list from employers
   app.get("/feedbacks", async (req, res) => {
     try {
-      const result = await feedback.find().sort({ _id: -1 });
+      const skiped = req.query.skip;
+      const result = await feedback.find().sort({ _id: -1 }).skip(skiped).limit(8);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -246,7 +272,7 @@ const allGetRoutes = () => {
   app.get("/job_applications", async (req, res) => {
     const skipFrom = req.query.skip;
     console.log("skip from", skipFrom);
-    const result = await jobapplications.find().skip(skipFrom).limit(5);
+    const result = await jobapplications.find().skip(skipFrom).limit(6);
     res.send(result);
   });
 
