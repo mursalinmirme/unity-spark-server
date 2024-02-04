@@ -10,9 +10,13 @@ import { json } from "express";
 
 const allGetRoutes = () => {
   // get specific user data by _id
-  app.get("/users/:email", async (req, res) => {
+  app.get("/users/:email", verifyToken, async (req, res) => {
     try {
-      // console.log("The token user is", req.user);
+      if(req.params.email !== req.user.email){
+        res.status(403).send({message: "Unauthorized..."})
+        return
+      }
+      console.log("The token user is", req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
@@ -22,8 +26,17 @@ const allGetRoutes = () => {
   });
   
 //  get all users
-  app.get("/users", async (req, res) => {
+  app.get("/users", verifyToken, async (req, res) => {
     try {
+      const userEmail = req.user.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
+      if(getUserRole.role !== "admin"){
+        res.status(403).send({massege: "Unauthorized..."})
+        return
+      }
       const result = await users.find();
       res.send(result);
     } catch (error) {
@@ -32,8 +45,17 @@ const allGetRoutes = () => {
   });
 
   //  get all employee
-  app.get("/employees", async (req, res) => {
+  app.get("/employees", verifyToken, async (req, res) => {
     try {
+      const userEmail = req.user.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
+      if(getUserRole.role !== "admin"){
+        res.status(403).send({massege: "Unauthorized..."})
+        return
+      }
       const result = await users.find({role:"employee"});
       res.send(result);
     } catch (error) {
@@ -249,13 +271,17 @@ const allGetRoutes = () => {
   });
 
   // get user role when he/she will login our website
-  app.get("/user-role", async (req, res) => {
-    const userEmail = req.query.email;
-    const getUserRole = await users.findOne(
+  app.get("/user-role", verifyToken, async (req, res) => {
+    try {
+      const userEmail = req.query.email;
+      const getUserRole = await users.findOne(
       { email: userEmail },
       { role: 1, _id: 0 }
     );
     res.send(getUserRole);
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
   });
   // getting job applications data based on id
   app.get("/job_applications/:id", async (req, res) => {
