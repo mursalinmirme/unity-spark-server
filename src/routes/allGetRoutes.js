@@ -271,7 +271,7 @@ const allGetRoutes = () => {
   });
 
   // get user role when he/she will login our website
-  app.get("/user-role", verifyToken, async (req, res) => {
+  app.get("/user-role", async (req, res) => {
     try {
       const userEmail = req.query.email;
       const getUserRole = await users.findOne(

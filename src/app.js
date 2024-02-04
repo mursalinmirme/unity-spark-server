@@ -16,6 +16,7 @@ app.use(
       "http://localhost:5175",
       "http://localhost:5176",
       "https://unity-spark-22122.web.app",
+      "https://api.imgbb.com/1/upload?key=5633fa8b7fb7bf3c2d44694187c33411"
     ],
     credentials: true,
   })
