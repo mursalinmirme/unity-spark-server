@@ -7,6 +7,7 @@ import jobapplications from "../models/jobapplications.js";
 import verifyToken from "../jwt/middleware/auth.js";
 import presentations from "../models/presentations.js";
 import { json } from "express";
+import events from "../models/events.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -20,8 +21,8 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
-  
-//  get all users
+
+  //  get all users
   app.get("/users", async (req, res) => {
     try {
       const result = await users.find();
@@ -34,7 +35,7 @@ const allGetRoutes = () => {
   //  get all employee
   app.get("/employees", async (req, res) => {
     try {
-      const result = await users.find({role:"employee"});
+      const result = await users.find({ role: "employee" });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -240,7 +241,7 @@ const allGetRoutes = () => {
   // getting job applications all data
   app.get("/job_applications_nums", async (req, res) => {
     const result = await jobapplications.find().countDocuments();
-    res.send({total: result});
+    res.send({ total: result });
   });
   // getting job applications all data
   app.get("/job_applications", async (req, res) => {
@@ -250,21 +251,31 @@ const allGetRoutes = () => {
     res.send(result);
   });
 
-  // check employees presentation 
-  app.get('/presentation/:email', async (req, res) => {
+  // check employees presentation
+  app.get("/presentation/:email", async (req, res) => {
     const presenterEmail = req.params.email;
-    const result = await presentations.find({email: presenterEmail}, {name: 0, email: 0}).sort({presentedAt: -1}).skip(0).limit(1);
+    const result = await presentations
+      .find({ email: presenterEmail }, { name: 0, email: 0 })
+      .sort({ presentedAt: -1 })
+      .skip(0)
+      .limit(1);
     res.send(result[0]);
-  })
- // check employees total presentation
- app.get('/presentation', async (req, res) => {
-  const email = req.query.email;
-  const result = await presentations.find({email: email}).countDocuments();
-  res.send({total: result});
-})
+  });
+  // check employees total presentation
+  app.get("/presentation", async (req, res) => {
+    const email = req.query.email;
+    const result = await presentations.find({ email: email }).countDocuments();
+    res.send({ total: result });
+  });
 
-
-
+  app.get("/events", async (req, res) => {
+    try {
+      const result = await events.find();
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;

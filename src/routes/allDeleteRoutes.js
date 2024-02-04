@@ -1,4 +1,5 @@
 import { app } from "../app.js";
+import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 
@@ -19,6 +20,17 @@ const allDeleteRoutes = () => {
       res.send(result);
     } catch (error) {
       console.log(error);
+    }
+  });
+
+  // Event delete
+  app.delete("/events/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await events.deleteOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
     }
   });
 };
