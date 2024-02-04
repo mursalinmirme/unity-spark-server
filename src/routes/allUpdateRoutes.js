@@ -1,4 +1,5 @@
 import { app } from "../app.js";
+import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 import users from "../models/users.js";
@@ -80,6 +81,22 @@ const allUpdateRoutes = () => {
       res.send(result);
     } catch (error) {
       console.log(error);
+    }
+  });
+
+  // Event update
+  app.put("/events/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const updatedEvent = req.body;
+      const result = await events.updateOne(
+        { _id: id },
+        { $set: updatedEvent },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
     }
   });
 };
