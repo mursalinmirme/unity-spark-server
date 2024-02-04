@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const eventSchema = mongoose.Schema({
-  title: {
+  eventName: {
     type: String,
     require: true,
   },
@@ -21,7 +21,7 @@ const eventSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  host: {
+  hostName: {
     type: String,
     required: true,
   },
