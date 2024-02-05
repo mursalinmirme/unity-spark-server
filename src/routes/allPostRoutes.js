@@ -3,6 +3,7 @@ import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
+import leaves from "../models/leaves.js";
 import presentations from "../models/presentations.js";
 import users from "../models/users.js";
 
@@ -81,6 +82,24 @@ const allPostRoutes = () => {
       console.log(error.message);
     }
   });
+
+  // post leave request
+  app.post("/leaves", async(req, res) => {
+    try {
+      const leaveData = req.body;
+      const newLeaveRequest = new leaves(leaveData);
+      const result = await newLeaveRequest.save();
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  })
+
+
+
+
+
+
 }; //end all post function brackets
 
 export default allPostRoutes;

@@ -8,6 +8,7 @@ import verifyToken from "../jwt/middleware/auth.js";
 import presentations from "../models/presentations.js";
 import { json } from "express";
 import events from "../models/events.js";
+import leaves from "../models/leaves.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -306,6 +307,7 @@ const allGetRoutes = () => {
     const skipFrom = req.query.skip;
     console.log("skip from", skipFrom);
     const result = await jobapplications.find().skip(skipFrom).limit(6);
+    // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
 
@@ -325,7 +327,7 @@ const allGetRoutes = () => {
     const result = await presentations.find({ email: email }).countDocuments();
     res.send({ total: result });
   });
-
+  // get all events
   app.get("/events", async (req, res) => {
     try {
       const result = await events.find();
@@ -334,6 +336,24 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+
+
+  // get all leave request
+  app.get("/leaves", async(req, res) => {
+     try {
+      const result = await leaves.find().populate("user");
+      res.send(result);
+     } catch (error) {
+       console.log(error.message);
+     }
+  })
+
+  // get a specific leave request
+
+
+
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;
