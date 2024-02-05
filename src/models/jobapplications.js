@@ -63,10 +63,10 @@ const jobApplicationsSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
-  },
+  // user: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "users",
+  // },
   createdAt: {
     type: Date,
     default: Date.now,
