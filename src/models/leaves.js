@@ -29,6 +29,10 @@ const leavesSchema = mongoose.Schema({
         type: String,
         default: "Pending"
     },
+    feedback: {
+        type: String,
+        default: ""
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users"
