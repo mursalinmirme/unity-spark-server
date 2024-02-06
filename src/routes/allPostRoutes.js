@@ -115,8 +115,9 @@ const allPostRoutes = () => {
   // post Save Job Info
   app.post("/saveJobInfo", async (req, res) => {
     try {
+      const savedEmail = req.query.email;
       const jobData = req.body;
-      const existSaveData = await saveJobInfo.findOne({ title: jobData.title });
+      const existSaveData = await saveJobInfo.findOne({ email: savedEmail, applicationId: jobData?.applicationId });
       if (existSaveData) {
         return res.send("All Ready Data Saved");
       }
@@ -124,7 +125,7 @@ const allPostRoutes = () => {
       const result = await saveData.save();
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
     }
   });
 }; //end all post function brackets

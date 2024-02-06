@@ -1,5 +1,6 @@
 import { app } from "../app.js";
 import verifyToken from "../jwt/middleware/auth.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
@@ -414,7 +415,27 @@ const allGetRoutes = () => {
     try {
       const email = req.query.email;
       const result = await jobapplications.find({email: email}).sort({createdAt: -1});
-      console.log(result);
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+  // get all saved applications under a user
+  app.get("/getSaveInfo/:email", async(req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const result = await saveJobInfo.find({email: userEmail});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+
+  // get indivisual user all application
+  app.get("/my-applications", async(req, res) => {
+    try {
+      const email = req.query.email;
+      const result = await jobapplications.find({email: email}).sort({createdAt: -1});
       res.send(result)
     } catch (error) {
       res.status(500).send(error.message)
