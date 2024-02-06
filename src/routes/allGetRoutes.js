@@ -7,12 +7,19 @@ import jobapplications from "../models/jobapplications.js";
 import verifyToken from "../jwt/middleware/auth.js";
 import presentations from "../models/presentations.js";
 import { json } from "express";
+import events from "../models/events.js";
+import leaves from "../models/leaves.js";
+import tasks from "../models/tasks.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
-  app.get("/users/:email", async (req, res) => {
+  app.get("/users/:email", verifyToken, async (req, res) => {
     try {
-      // console.log("The token user is", req.user);
+      if (req.params.email !== req.user.email) {
+        res.status(403).send({ message: "Unauthorized..." });
+        return;
+      }
+      console.log("The token user is", req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
@@ -20,10 +27,19 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
-  
-//  get all users
-  app.get("/users", async (req, res) => {
+
+  //  get all users
+  app.get("/users", verifyToken, async (req, res) => {
     try {
+      const userEmail = req.user.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
+      if (getUserRole.role !== "admin") {
+        res.status(403).send({ massege: "Unauthorized..." });
+        return;
+      }
       const result = await users.find();
       res.send(result);
     } catch (error) {
@@ -32,9 +48,18 @@ const allGetRoutes = () => {
   });
 
   //  get all employee
-  app.get("/employees", async (req, res) => {
+  app.get("/employees", verifyToken, async (req, res) => {
     try {
-      const result = await users.find({role:"employee"});
+      const userEmail = req.user.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
+      if (getUserRole.role !== "admin") {
+        res.status(403).send({ message: "Unauthorized..." });
+        return;
+      }
+      const result = await users.find({ role: "employee" });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -58,6 +83,13 @@ const allGetRoutes = () => {
   // get all job documents numbers ads list number for manage adds
   app.get("/total-job-ads-numbers", async (req, res) => {
     try {
+      const searchVal = req.query.searchVal;
+      if (searchVal !== "null") {
+        const result = await jobAds
+          .find({ job_title: searchVal })
+          .countDocuments();
+        return res.send({ total: result });
+      }
       const result = await jobAds.countDocuments();
       res.send({ total: result });
     } catch (error) {
@@ -69,11 +101,21 @@ const allGetRoutes = () => {
   app.get("/total-job-ads", async (req, res) => {
     try {
       const skip = req.query.skip;
+      const searchVal = req.query.searchVal;
+      console.log("job ads search value is", searchVal);
+      if (searchVal !== "null") {
+        const result = await await jobAds
+          .find({ job_title: searchVal })
+          .sort({ _id: -1 })
+          .skip(skip)
+          .limit(6);
+        return res.send(result);
+      }
       const result = await await jobAds
         .find()
         .sort({ _id: -1 })
         .skip(skip)
-        .limit(5);
+        .limit(6);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -212,10 +254,25 @@ const allGetRoutes = () => {
     }
   });
 
+  // get all feedbacks numbers from numbers
+  app.get("/feedbacks-nums", async (req, res) => {
+    try {
+      const result = await feedback.countDocuments();
+      res.send({ total: result });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // get all feedback list from employers
   app.get("/feedbacks", async (req, res) => {
     try {
-      const result = await feedback.find().sort({ _id: -1 });
+      const skiped = req.query.skip;
+      const result = await feedback
+        .find()
+        .sort({ _id: -1 })
+        .skip(skiped)
+        .limit(8);
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -224,12 +281,16 @@ const allGetRoutes = () => {
 
   // get user role when he/she will login our website
   app.get("/user-role", async (req, res) => {
-    const userEmail = req.query.email;
-    const getUserRole = await users.findOne(
-      { email: userEmail },
-      { role: 1, _id: 0 }
-    );
-    res.send(getUserRole);
+    try {
+      const userEmail = req.query.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
+      res.send(getUserRole);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
   });
   // getting job applications data based on id
   app.get("/job_applications/:id", async (req, res) => {
@@ -240,31 +301,118 @@ const allGetRoutes = () => {
   // getting job applications all data
   app.get("/job_applications_nums", async (req, res) => {
     const result = await jobapplications.find().countDocuments();
-    res.send({total: result});
+    res.send({ total: result });
   });
   // getting job applications all data
   app.get("/job_applications", async (req, res) => {
     const skipFrom = req.query.skip;
     console.log("skip from", skipFrom);
-    const result = await jobapplications.find().skip(skipFrom).limit(5);
+    const result = await jobapplications.find().skip(skipFrom).limit(6);
+    // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
 
-  // check employees presentation 
-  app.get('/presentation/:email', async (req, res) => {
+  // check employees presentation
+  app.get("/presentation/:email", async (req, res) => {
     const presenterEmail = req.params.email;
-    const result = await presentations.find({email: presenterEmail}, {name: 0, email: 0}).sort({presentedAt: -1}).skip(0).limit(1);
+    const result = await presentations
+      .find({ email: presenterEmail }, { name: 0, email: 0 })
+      .sort({ presentedAt: -1 })
+      .skip(0)
+      .limit(1);
     res.send(result[0]);
+  });
+  // check employees total presentation
+  app.get("/presentation", async (req, res) => {
+    const email = req.query.email;
+    const result = await presentations.find({ email: email }).countDocuments();
+    res.send({ total: result });
+  });
+  // get all events
+  app.get("/events", async (req, res) => {
+    try {
+      const result = await events.find();
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+  app.get("/events/:id", async (req, res) => {
+    try {
+      const id = req.params.id
+      const result = await events.findOne({_id: id});
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get all leave request
+  app.get("/leaves", async (req, res) => {
+    try {
+      const result = await leaves.find({ status: "Pending" }).populate("user");
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+  // get all confiremed leave request
+  app.get("/leaves-confirmed", async (req, res) => {
+    try {
+      const result = await leaves
+        .find({ status: "Confirmed" })
+        .populate("user");
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+  // get all rejected leave request
+  app.get("/leaves-rejected", async (req, res) => {
+    try {
+      const result = await leaves.find({ status: "Rejected" }).populate("user");
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get a total Leaves Rest Days
+
+  app.get("/total-rest/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await leaves.find({ email: email, status: "Confirmed" });
+      console.log("Songtt", result);
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get a specific leave request
+
+  // get all task
+  app.get('/tasks', async(req,res)=>{
+    try {
+      const result = await tasks.find()
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
   })
- // check employees total presentation
- app.get('/presentation', async (req, res) => {
-  const email = req.query.email;
-  const result = await presentations.find({email: email}).countDocuments();
-  res.send({total: result});
-})
 
+  // get Employee all Attendance
 
-
+  app.get("/total-attendance/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await presentations.find({ email: email });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
