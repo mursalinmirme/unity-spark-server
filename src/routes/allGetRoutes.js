@@ -9,6 +9,7 @@ import presentations from "../models/presentations.js";
 import { json } from "express";
 import events from "../models/events.js";
 import leaves from "../models/leaves.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
 import tasks from "../models/tasks.js";
 
 const allGetRoutes = () => {
@@ -339,8 +340,8 @@ const allGetRoutes = () => {
   });
   app.get("/events/:id", async (req, res) => {
     try {
-      const id = req.params.id
-      const result = await events.findOne({_id: id});
+      const id = req.params.id;
+      const result = await events.findOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);
@@ -393,14 +394,14 @@ const allGetRoutes = () => {
   // get a specific leave request
 
   // get all task
-  app.get('/tasks', async(req,res)=>{
+  app.get("/tasks", async (req, res) => {
     try {
-      const result = await tasks.find()
+      const result = await tasks.find();
       res.send(result);
     } catch (error) {
       console.log(error);
     }
-  })
+  });
 
   // get Employee all Attendance
 
@@ -408,6 +409,18 @@ const allGetRoutes = () => {
     try {
       const email = req.params.email;
       const result = await presentations.find({ email: email });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get specific data Save Data Get
+
+  app.get("/getSaveInfo/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await saveJobInfo.find({ email: email });
       res.send(result);
     } catch (error) {
       console.log(error.message);

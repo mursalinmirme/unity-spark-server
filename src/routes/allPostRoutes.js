@@ -1,4 +1,5 @@
 import { app } from "../app.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
@@ -66,10 +67,10 @@ const allPostRoutes = () => {
   // employee presentation post
   app.post("/presentation", async (req, res) => {
     try {
-    const presentUser = req.body;
-    const newPresentation = new presentations(presentUser);
-    const result = await newPresentation.save();
-    res.send(result);
+      const presentUser = req.body;
+      const newPresentation = new presentations(presentUser);
+      const result = await newPresentation.save();
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -88,7 +89,7 @@ const allPostRoutes = () => {
   });
 
   // post leave request
-  app.post("/leaves", async(req, res) => {
+  app.post("/leaves", async (req, res) => {
     try {
       const leaveData = req.body;
       const newLeaveRequest = new leaves(leaveData);
@@ -97,23 +98,35 @@ const allPostRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
-// post task
-app.post('/add-task', async(req,res)=>{
-  try {
-    const taskData = req.body;
-    const newTask = new tasks(taskData);
-    const result = await newTask.save();
-    res.send(result);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-})
+  // post task
+  app.post("/add-task", async (req, res) => {
+    try {
+      const taskData = req.body;
+      const newTask = new tasks(taskData);
+      const result = await newTask.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
-
-
-
+  // post Save Job Info
+  app.post("/saveJobInfo", async (req, res) => {
+    try {
+      const jobData = req.body;
+      const existSaveData = await saveJobInfo.findOne({ title: jobData.title });
+      if (existSaveData) {
+        return res.send("All Ready Data Saved");
+      }
+      const saveData = new saveJobInfo(jobData);
+      const result = await saveData.save();
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //end all post function brackets
 
 export default allPostRoutes;
