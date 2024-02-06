@@ -8,19 +8,28 @@ import cookieParser from "cookie-parser";
 import CreateToken from "./jwt/token.js";
 
 const app = express();
-app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
-    credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "http://localhost:5176",
+      "https://unity-spark-22122.web.app",
+      "https://api.imgbb.com/1/upload?key=5633fa8b7fb7bf3c2d44694187c33411"
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
-// Iniatial route 
+// Iniatial route
 app.get("/", (req, res) => {
-    res.send("The Unity spark server is running.....");
-})
+  res.send("The Unity spark server is running.....");
+});
 // call jwt token create and remove function
-CreateToken()
+CreateToken();
 
 // call all get request
 allGetRoutes();
@@ -31,11 +40,7 @@ allPostRoutes();
 // call all update routes
 allUpdateRoutes();
 
-// call all delete routes 
+// call all delete routes
 allDeleteRoutes();
 
-
-
-
-
-export {app}
+export { app };
