@@ -1,4 +1,5 @@
 import { app } from "../app.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
@@ -84,7 +85,7 @@ const allPostRoutes = () => {
   });
 
   // post leave request
-  app.post("/leaves", async(req, res) => {
+  app.post("/leaves", async (req, res) => {
     try {
       const leaveData = req.body;
       const newLeaveRequest = new leaves(leaveData);
@@ -93,13 +94,23 @@ const allPostRoutes = () => {
     } catch (error) {
       console.log(error.message);
     }
-  })
+  });
 
-
-
-
-
-
+  // post Save Job Info
+  app.post("/saveJobInfo", async (req, res) => {
+    try {
+      const jobData = req.body;
+      const existSaveData = await saveJobInfo.findOne({ title: jobData.title });
+      if (existSaveData) {
+        return res.send("All Ready Data Saved");
+      }
+      const saveData = new saveJobInfo(jobData);
+      const result = await saveData.save();
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //end all post function brackets
 
 export default allPostRoutes;

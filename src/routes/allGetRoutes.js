@@ -9,6 +9,7 @@ import presentations from "../models/presentations.js";
 import { json } from "express";
 import events from "../models/events.js";
 import leaves from "../models/leaves.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -388,6 +389,18 @@ const allGetRoutes = () => {
     try {
       const email = req.params.email;
       const result = await presentations.find({ email: email });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get specific data Save Data Get
+
+  app.get("/getSaveInfo/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await saveJobInfo.find({ email: email });
       res.send(result);
     } catch (error) {
       console.log(error.message);
