@@ -22,7 +22,7 @@ const allPostRoutes = () => {
       const result = await usersModel.save();
       res.send(result);
     } catch (error) {
-      res.send(error.message);
+      res.status(500).send(error.message);
     }
   });
 
@@ -34,7 +34,7 @@ const allPostRoutes = () => {
       const result = await jobAdsModel.save();
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
     }
   });
 
@@ -47,7 +47,7 @@ const allPostRoutes = () => {
       const result = await feedbackModel.save();
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
     }
   });
 
@@ -55,21 +55,24 @@ const allPostRoutes = () => {
   app.post("/job_applications", async (req, res) => {
     try {
       const application_data = req.body;
-      console.log(application_data);
       const job_application_model = new jobapplications(application_data);
       const result = await job_application_model.save();
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
     }
   });
 
   // employee presentation post
   app.post("/presentation", async (req, res) => {
+    try {
     const presentUser = req.body;
     const newPresentation = new presentations(presentUser);
     const result = await newPresentation.save();
     res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
   });
 
   // events post
@@ -80,7 +83,7 @@ const allPostRoutes = () => {
       const result = await newEvent.save();
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
     }
   });
 
@@ -92,7 +95,7 @@ const allPostRoutes = () => {
       const result = await newLeaveRequest.save();
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
     }
   })
 
@@ -103,9 +106,8 @@ app.post('/add-task', async(req,res)=>{
     const newTask = new tasks(taskData);
     const result = await newTask.save();
     res.send(result);
-    console.log(newTask);
   } catch (error) {
-    console.log(error);
+    res.status(500).send(error.message);
   }
 })
 
