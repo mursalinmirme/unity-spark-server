@@ -1,6 +1,8 @@
 import { app } from "../app.js";
+import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
+import leaves from "../models/leaves.js";
 import users from "../models/users.js";
 
 const allUpdateRoutes = () => {
@@ -82,6 +84,53 @@ const allUpdateRoutes = () => {
       console.log(error);
     }
   });
-};
+
+  // Event update
+  app.put("/events/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const updatedEvent = req.body;
+      const result = await events.updateOne(
+        { _id: id },
+        { $set: updatedEvent },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  app.put("/leaves-confirm/:id", async (req, res) => {
+    try {
+      const leaveId = req.params.id;
+      const updateBody = req.body;
+      const result = await leaves.updateOne(
+        { _id: leaveId },
+        { $set: updateBody },
+        { upsert: true }
+      );
+      console.log(result);
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  app.put("/application-status/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const update = req.body;
+      const result = await jobapplications.updateOne(
+        { _id: id },
+        { $set: update },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+}; //end bracket of all update routes runction
 
 export default allUpdateRoutes;
