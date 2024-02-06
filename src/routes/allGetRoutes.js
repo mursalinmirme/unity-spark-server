@@ -9,6 +9,7 @@ import presentations from "../models/presentations.js";
 import { json } from "express";
 import events from "../models/events.js";
 import leaves from "../models/leaves.js";
+import tasks from "../models/tasks.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -381,6 +382,16 @@ const allGetRoutes = () => {
   });
 
   // get a specific leave request
+
+  // get all task
+  app.get('/tasks', async(req,res)=>{
+    try {
+      const result = await tasks.find()
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  })
 
   // get Employee all Attendance
 
