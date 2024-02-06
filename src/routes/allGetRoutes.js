@@ -19,7 +19,6 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
-      console.log("The token user is", req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
@@ -76,7 +75,7 @@ const allGetRoutes = () => {
         .limit(3);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -93,7 +92,7 @@ const allGetRoutes = () => {
       const result = await jobAds.countDocuments();
       res.send({ total: result });
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -102,7 +101,6 @@ const allGetRoutes = () => {
     try {
       const skip = req.query.skip;
       const searchVal = req.query.searchVal;
-      console.log("job ads search value is", searchVal);
       if (searchVal !== "null") {
         const result = await await jobAds
           .find({ job_title: searchVal })
@@ -118,7 +116,7 @@ const allGetRoutes = () => {
         .limit(6);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -164,7 +162,7 @@ const allGetRoutes = () => {
       const result = await jobAds.find().countDocuments();
       res.send({ total: result });
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -224,7 +222,7 @@ const allGetRoutes = () => {
         .limit(6);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -235,7 +233,7 @@ const allGetRoutes = () => {
       const result = await jobAds.findOne({ _id: jobAdsId });
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -243,14 +241,13 @@ const allGetRoutes = () => {
   app.get("/similar_jobs", async (req, res) => {
     try {
       const similarJobs = req.query.jobtype;
-      console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
         .find({ job_category1: similarJobs })
         .skip(0)
         .limit(3);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error?.message);
     }
   });
 
@@ -275,7 +272,7 @@ const allGetRoutes = () => {
         .limit(8);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -413,6 +410,21 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+
+  // get indivisual user all application
+  app.get("/my-applications", async(req, res) => {
+    try {
+      const email = req.query.email;
+      const result = await jobapplications.find({email: email}).sort({createdAt: -1});
+      console.log(result);
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;
