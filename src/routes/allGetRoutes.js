@@ -337,6 +337,15 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+  app.get("/events/:id", async (req, res) => {
+    try {
+      const id = req.params.id
+      const result = await events.findOne({_id: id});
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
   // get all leave request
   app.get("/leaves", async (req, res) => {
