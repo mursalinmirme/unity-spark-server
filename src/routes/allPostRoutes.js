@@ -5,6 +5,7 @@ import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 import leaves from "../models/leaves.js";
 import presentations from "../models/presentations.js";
+import tasks from "../models/tasks.js";
 import users from "../models/users.js";
 
 // All Post Requests
@@ -95,7 +96,18 @@ const allPostRoutes = () => {
     }
   })
 
-
+// post task
+app.post('/add-task', async(req,res)=>{
+  try {
+    const taskData = req.body;
+    const newTask = new tasks(taskData);
+    const result = await newTask.save();
+    res.send(result);
+    console.log(newTask);
+  } catch (error) {
+    console.log(error);
+  }
+})
 
 
 
