@@ -337,23 +337,42 @@ const allGetRoutes = () => {
     }
   });
 
-
   // get all leave request
-  app.get("/leaves", async(req, res) => {
-     try {
+  app.get("/leaves", async (req, res) => {
+    try {
       const result = await leaves.find().populate("user");
       res.send(result);
-     } catch (error) {
-       console.log(error.message);
-     }
-  })
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get a total Leaves Rest Days
+
+  app.get("/total-rest/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await leaves.find({ email: email, status: "Confirmed" });
+      console.log("Songtt", result);
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
   // get a specific leave request
 
+  // get Employee all Attendance
 
-
-
-
+  app.get("/total-attendance/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await presentations.find({ email: email });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;

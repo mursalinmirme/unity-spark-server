@@ -99,6 +99,20 @@ const allUpdateRoutes = () => {
       console.log(error.message);
     }
   });
-};
 
+  app.put("/application-status/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const update = req.body;
+      const result = await jobapplications.updateOne(
+        { _id: id },
+        { $set: update },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+}; // end all update function Braket
 export default allUpdateRoutes;

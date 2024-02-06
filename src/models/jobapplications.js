@@ -63,6 +63,10 @@ const jobApplicationsSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  status: {
+    type: String,
+    default: "Pending",
+  },
   // user: {
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: "users",
