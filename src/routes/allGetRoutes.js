@@ -9,6 +9,7 @@ import presentations from "../models/presentations.js";
 import { json } from "express";
 import events from "../models/events.js";
 import leaves from "../models/leaves.js";
+import tasks from "../models/tasks.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -336,42 +337,82 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
-
+  app.get("/events/:id", async (req, res) => {
+    try {
+      const id = req.params.id
+      const result = await events.findOne({_id: id});
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
   // get all leave request
-  app.get("/leaves", async(req, res) => {
-     try {
-      const result = await leaves.find({status: "Pending"}).populate("user");
+  app.get("/leaves", async (req, res) => {
+    try {
+      const result = await leaves.find({ status: "Pending" }).populate("user");
       res.send(result);
-     } catch (error) {
-       console.log(error.message);
-     }
-  })
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
   // get all confiremed leave request
-  app.get("/leaves-confirmed", async(req, res) => {
-     try {
-      const result = await leaves.find({status: "Confirmed"}).populate("user");
+  app.get("/leaves-confirmed", async (req, res) => {
+    try {
+      const result = await leaves
+        .find({ status: "Confirmed" })
+        .populate("user");
       res.send(result);
-     } catch (error) {
-       console.log(error.message);
-     }
-  })
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
   // get all rejected leave request
-  app.get("/leaves-rejected", async(req, res) => {
-     try {
-      const result = await leaves.find({status: "Rejected"}).populate("user");
+  app.get("/leaves-rejected", async (req, res) => {
+    try {
+      const result = await leaves.find({ status: "Rejected" }).populate("user");
       res.send(result);
-     } catch (error) {
-       console.log(error.message);
-     }
-  })
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get a total Leaves Rest Days
+
+  app.get("/total-rest/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await leaves.find({ email: email, status: "Confirmed" });
+      console.log("Songtt", result);
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
   // get a specific leave request
 
+  // get all task
+  app.get('/tasks', async(req,res)=>{
+    try {
+      const result = await tasks.find()
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  })
 
+  // get Employee all Attendance
 
-
-
+  app.get("/total-attendance/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await presentations.find({ email: email });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
