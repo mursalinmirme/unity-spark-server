@@ -1,15 +1,13 @@
-import { get } from "mongoose";
 import { app } from "../app.js";
+import verifyToken from "../jwt/middleware/auth.js";
+import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
-import users from "../models/users.js";
 import jobapplications from "../models/jobapplications.js";
-import verifyToken from "../jwt/middleware/auth.js";
-import presentations from "../models/presentations.js";
-import { json } from "express";
-import events from "../models/events.js";
 import leaves from "../models/leaves.js";
+import presentations from "../models/presentations.js";
 import tasks from "../models/tasks.js";
+import users from "../models/users.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -336,8 +334,8 @@ const allGetRoutes = () => {
   });
   app.get("/events/:id", async (req, res) => {
     try {
-      const id = req.params.id
-      const result = await events.findOne({_id: id});
+      const id = req.params.id;
+      const result = await events.findOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);
@@ -390,14 +388,14 @@ const allGetRoutes = () => {
   // get a specific leave request
 
   // get all task
-  app.get('/tasks', async(req,res)=>{
+  app.get("/tasks", async (req, res) => {
     try {
-      const result = await tasks.find()
+      const result = await tasks.find();
       res.send(result);
     } catch (error) {
       console.log(error);
     }
-  })
+  });
 
   // get Employee all Attendance
 
