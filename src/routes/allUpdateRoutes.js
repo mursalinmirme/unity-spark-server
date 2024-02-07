@@ -101,20 +101,36 @@ const allUpdateRoutes = () => {
     }
   });
 
-  app.put("/leaves-confirm/:id", async(req, res) => {
-     try {
+  app.put("/leaves-confirm/:id", async (req, res) => {
+    try {
       const leaveId = req.params.id;
       const updateBody = req.body;
-      const result = await leaves.updateOne({_id: leaveId}, { $set: updateBody },{ upsert: true })
+      const result = await leaves.updateOne(
+        { _id: leaveId },
+        { $set: updateBody },
+        { upsert: true }
+      );
       console.log(result);
-      res.send(result)
-     } catch (error) {
+      res.send(result);
+    } catch (error) {
       console.log(error.message);
-     }
-  })
+    }
+  });
 
-
-
+  app.put("/application-status/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const update = req.body;
+      const result = await jobapplications.updateOne(
+        { _id: id },
+        { $set: update },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //end bracket of all update routes runction
 
 export default allUpdateRoutes;

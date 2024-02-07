@@ -1,4 +1,5 @@
 import { app } from "../app.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
 import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
@@ -28,6 +29,17 @@ const allDeleteRoutes = () => {
     try {
       const id = req.params.id;
       const result = await events.deleteOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // Saved Jobs delete
+  app.delete("/saveJobs/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await saveJobInfo.deleteOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);

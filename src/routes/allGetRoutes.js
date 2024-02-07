@@ -1,14 +1,14 @@
-import { get } from "mongoose";
 import { app } from "../app.js";
+import verifyToken from "../jwt/middleware/auth.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
+import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
-import users from "../models/users.js";
 import jobapplications from "../models/jobapplications.js";
-import verifyToken from "../jwt/middleware/auth.js";
-import presentations from "../models/presentations.js";
-import { json } from "express";
-import events from "../models/events.js";
 import leaves from "../models/leaves.js";
+import presentations from "../models/presentations.js";
+import tasks from "../models/tasks.js";
+import users from "../models/users.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -18,7 +18,6 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
-      console.log("The token user is", req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
@@ -75,7 +74,7 @@ const allGetRoutes = () => {
         .limit(3);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -92,7 +91,7 @@ const allGetRoutes = () => {
       const result = await jobAds.countDocuments();
       res.send({ total: result });
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -101,7 +100,6 @@ const allGetRoutes = () => {
     try {
       const skip = req.query.skip;
       const searchVal = req.query.searchVal;
-      console.log("job ads search value is", searchVal);
       if (searchVal !== "null") {
         const result = await await jobAds
           .find({ job_title: searchVal })
@@ -117,7 +115,7 @@ const allGetRoutes = () => {
         .limit(6);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -163,7 +161,7 @@ const allGetRoutes = () => {
       const result = await jobAds.find().countDocuments();
       res.send({ total: result });
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -223,7 +221,7 @@ const allGetRoutes = () => {
         .limit(6);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -234,7 +232,7 @@ const allGetRoutes = () => {
       const result = await jobAds.findOne({ _id: jobAdsId });
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -242,14 +240,13 @@ const allGetRoutes = () => {
   app.get("/similar_jobs", async (req, res) => {
     try {
       const similarJobs = req.query.jobtype;
-      console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
         .find({ job_category1: similarJobs })
         .skip(0)
         .limit(3);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error?.message);
     }
   });
 
@@ -274,7 +271,7 @@ const allGetRoutes = () => {
         .limit(8);
       res.send(result);
     } catch (error) {
-      res.status(500).send("Something went wrong.");
+      res.status(500).send(error.message);
     }
   });
 
@@ -299,14 +296,25 @@ const allGetRoutes = () => {
   });
   // getting job applications all data
   app.get("/job_applications_nums", async (req, res) => {
-    const result = await jobapplications.find().countDocuments();
+    const result = await jobapplications.find({status: 'Pending'}).countDocuments();
+    res.send({ total: result });
+  });
+  // getting job applicants total number
+  app.get("/job_applicants_nums", async (req, res) => {
+    const result = await jobapplications.find({status: 'Confirmed'}).countDocuments();
     res.send({ total: result });
   });
   // getting job applications all data
   app.get("/job_applications", async (req, res) => {
     const skipFrom = req.query.skip;
-    console.log("skip from", skipFrom);
-    const result = await jobapplications.find().skip(skipFrom).limit(6);
+    const result = await jobapplications.find({status: 'Pending'}).skip(skipFrom).limit(6);
+    // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
+    res.send(result);
+  });
+  // getting all manage applicants
+  app.get("/job_applicants", async (req, res) => {
+    const skipFrom = req.query.skip;
+    const result = await jobapplications.find({status: 'Confirmed'}).skip(skipFrom).limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -336,6 +344,18 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+<<<<<<< HEAD
+=======
+  app.get("/events/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await events.findOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+>>>>>>> 613476a9698db290eb4aee2869b34ddeaa3e07b3
 
   // get all leave request
   app.get("/leaves", async (req, res) => {
@@ -366,6 +386,79 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+<<<<<<< HEAD
+=======
+
+  // get a total Leaves Rest Days
+
+  app.get("/total-rest/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await leaves.find({ email: email, status: "Confirmed" });
+      console.log("Songtt", result);
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get a specific leave request
+
+  // get all task
+  app.get("/tasks", async (req, res) => {
+    try {
+      const result = await tasks.find();
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  // get Employee all Attendance
+
+  app.get("/total-attendance/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await presentations.find({ email: email });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get indivisual user all application
+  app.get("/my-applications", async(req, res) => {
+    try {
+      const email = req.query.email;
+      const result = await jobapplications.find({email: email}).sort({createdAt: -1});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+  // get all saved applications under a user
+  app.get("/getSaveInfo/:email", async(req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const result = await saveJobInfo.find({email: userEmail});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+
+  // get indivisual user all application
+  app.get("/my-applications", async(req, res) => {
+    try {
+      const email = req.query.email;
+      const result = await jobapplications.find({email: email}).sort({createdAt: -1});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+
+>>>>>>> 613476a9698db290eb4aee2869b34ddeaa3e07b3
 
   // get leave requests of individual user
 
