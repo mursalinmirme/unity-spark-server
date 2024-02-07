@@ -420,6 +420,17 @@ const allGetRoutes = () => {
     }
   });
 
+  // get specific task
+  app.get('/tasks/:id', async(req,res)=>{
+    try {
+      const id = req.params.id;
+      const result = await tasks.findOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  })
+
   // get Employee all Attendance
 
   app.get("/total-attendance/:email", async (req, res) => {
