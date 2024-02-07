@@ -21,6 +21,10 @@ const taskSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+    type: String,
+    default: "running"
+  }
   
 });
 
