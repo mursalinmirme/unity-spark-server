@@ -296,14 +296,25 @@ const allGetRoutes = () => {
   });
   // getting job applications all data
   app.get("/job_applications_nums", async (req, res) => {
-    const result = await jobapplications.find().countDocuments();
+    const result = await jobapplications.find({status: 'Pending'}).countDocuments();
+    res.send({ total: result });
+  });
+  // getting job applicants total number
+  app.get("/job_applicants_nums", async (req, res) => {
+    const result = await jobapplications.find({status: 'Confirmed'}).countDocuments();
     res.send({ total: result });
   });
   // getting job applications all data
   app.get("/job_applications", async (req, res) => {
     const skipFrom = req.query.skip;
-    console.log("skip from", skipFrom);
-    const result = await jobapplications.find().skip(skipFrom).limit(6);
+    const result = await jobapplications.find({status: 'Pending'}).skip(skipFrom).limit(6);
+    // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
+    res.send(result);
+  });
+  // getting all manage applicants
+  app.get("/job_applicants", async (req, res) => {
+    const skipFrom = req.query.skip;
+    const result = await jobapplications.find({status: 'Confirmed'}).skip(skipFrom).limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
