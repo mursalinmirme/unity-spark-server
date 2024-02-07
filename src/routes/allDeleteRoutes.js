@@ -3,6 +3,7 @@ import saveJobInfo from "../models/SaveJobInfo.js";
 import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
+import req_events from "../models/requestevents.js";
 
 const allDeleteRoutes = () => {
   // job application delete
@@ -45,6 +46,18 @@ const allDeleteRoutes = () => {
       console.log(error.message);
     }
   });
+  // requested event delete api
+  app.delete("/reqEvents/:id" , async (req , res) => {
+    try {
+      const id = req.params.id
+    const result = await req_events.deleteOne({_id : id})
+    res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+    
+  })
 };
 
 export default allDeleteRoutes;

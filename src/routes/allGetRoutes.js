@@ -7,6 +7,7 @@ import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 import leaves from "../models/leaves.js";
 import presentations from "../models/presentations.js";
+import req_events from "../models/requestevents.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
 
@@ -478,6 +479,17 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+  // getting single employee requested events
+  app.get("/reqEvents/:email" , async (req , res) => {
+    try {
+      const employeeEmail = req.params.email
+      const result = await req_events.find({email : employeeEmail})
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+   
+  })
 }; //ending all get routes brackets
 
 export default allGetRoutes;
