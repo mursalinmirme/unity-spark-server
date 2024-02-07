@@ -47,15 +47,17 @@ const allDeleteRoutes = () => {
     }
   });
   // requested event delete api
-  try {
-    app.delete("/reqEvents/:id" , async (req , res) => {
+  app.delete("/reqEvents/:id" , async (req , res) => {
+    try {
       const id = req.params.id
-      const result = await req_events.deleteOne({_id : id})
-      res.send(result)
-    })
-  } catch (error) {
-    res.status(500).send(error.message)
-  }
+    const result = await req_events.deleteOne({_id : id})
+    res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+    
+  })
 };
 
 export default allDeleteRoutes;
