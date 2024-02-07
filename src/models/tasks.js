@@ -17,6 +17,11 @@ const taskSchema = mongoose.Schema({
     type: Array,
     require: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  
 });
 
 const tasks = mongoose.model("tasks", taskSchema);
