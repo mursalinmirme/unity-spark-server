@@ -17,6 +17,18 @@ const requesteventsSchema = mongoose.Schema({
         type: String,
         require: true
     },
+    reqeventHost: {
+        type: String,
+        require: true
+    },
+    reqeventStartTime:{
+        type: String,
+        require:true
+    },
+    reqeventEmployeeName:{
+        type: String,
+        require: true
+    }
 
 })
 
