@@ -1,6 +1,7 @@
 import { app } from "../app.js";
 import verifyToken from "../jwt/middleware/auth.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
+import blogs from "../models/blogs.js";
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
@@ -501,6 +502,40 @@ const allGetRoutes = () => {
     }
    
   })
+  // get all blogs under the blogs models----->>>>>>>
+  // get all blogs under the blogs models----->>>>>>>
+  app.get("/blogs", async(req, res) => {
+    try {
+      const result = await blogs.find().sort({createdAt: -1});
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
+  // get a individual blogs for blog details page
+  app.get("/blogs/:id", async(req, res) => {
+    try {
+      const blogsId = req.params.id;
+      const result = await blogs.findOne({_id: blogsId});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
+  // get all blogs under a employee
+  app.get("/employee-blogs/:email", async(req, res) => {
+    try {
+      const bloggerEmail = req.params.email;
+      const result = await blogs.findOne({bloggerEmail: bloggerEmail});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;
