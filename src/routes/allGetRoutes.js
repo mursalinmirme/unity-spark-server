@@ -296,25 +296,35 @@ const allGetRoutes = () => {
   });
   // getting job applications all data
   app.get("/job_applications_nums", async (req, res) => {
-    const result = await jobapplications.find({status: 'Pending'}).countDocuments();
+    const result = await jobapplications
+      .find({ status: "Pending" })
+      .countDocuments();
     res.send({ total: result });
   });
   // getting job applicants total number
   app.get("/job_applicants_nums", async (req, res) => {
-    const result = await jobapplications.find({status: 'Confirmed'}).countDocuments();
+    const result = await jobapplications
+      .find({ status: "Confirmed" })
+      .countDocuments();
     res.send({ total: result });
   });
   // getting job applications all data
   app.get("/job_applications", async (req, res) => {
     const skipFrom = req.query.skip;
-    const result = await jobapplications.find({status: 'Pending'}).skip(skipFrom).limit(6);
+    const result = await jobapplications
+      .find({ status: "Pending" })
+      .skip(skipFrom)
+      .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
   // getting all manage applicants
   app.get("/job_applicants", async (req, res) => {
     const skipFrom = req.query.skip;
-    const result = await jobapplications.find({status: 'Confirmed'}).skip(skipFrom).limit(6);
+    const result = await jobapplications
+      .find({ status: "Confirmed" })
+      .skip(skipFrom)
+      .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -422,39 +432,52 @@ const allGetRoutes = () => {
   });
 
   // get indivisual user all application
-  app.get("/my-applications", async(req, res) => {
+  app.get("/my-applications", async (req, res) => {
     try {
       const email = req.query.email;
-      const result = await jobapplications.find({email: email}).sort({createdAt: -1});
-      res.send(result)
+      const result = await jobapplications
+        .find({ email: email })
+        .sort({ createdAt: -1 });
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
-  })
+  });
   // get all saved applications under a user
-  app.get("/getSaveInfo/:email", async(req, res) => {
+  app.get("/getSaveInfo/:email", async (req, res) => {
     try {
       const userEmail = req.params.email;
-      const result = await saveJobInfo.find({email: userEmail});
-      res.send(result)
+      const result = await saveJobInfo.find({ email: userEmail });
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
-  })
+  });
 
   // get indivisual user all application
-  app.get("/my-applications", async(req, res) => {
+  app.get("/my-applications", async (req, res) => {
     try {
       const email = req.query.email;
-      const result = await jobapplications.find({email: email}).sort({createdAt: -1});
-      res.send(result)
+      const result = await jobapplications
+        .find({ email: email })
+        .sort({ createdAt: -1 });
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
-  })
+  });
 
+  // get leave requests of individual user
 
-
+  app.get("/leaves/:email", async (req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const result = await leaves.find({ email: userEmail });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
