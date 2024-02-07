@@ -1,5 +1,6 @@
 import { app } from "../app.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
+import blogs from "../models/blogs.js";
 import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
@@ -56,8 +57,23 @@ const allDeleteRoutes = () => {
       res.status(500).send(error.message);
       
     }
-    
   })
-};
+
+  // delete a specific blog from blogs models----->>>>>>>
+  // requested blog delete api
+  app.delete("/blogs/:id" , async (req , res) => {
+    try {
+      const id = req.params.id
+      const result = await blogs.deleteOne({_id : id})
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
+
+
+
+}; //end all delete routes function end brackets
 
 export default allDeleteRoutes;
