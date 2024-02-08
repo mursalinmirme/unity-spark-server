@@ -521,7 +521,7 @@ const allGetRoutes = () => {
   app.get("/blogs/:id", async (req, res) => {
     try {
       const blogsId = req.params.id;
-      const result = await blogs.findOne({ _id: blogsId });
+      const result = await blogs.findOne({ _id: blogsId }).populate('bloggerInfo');
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
