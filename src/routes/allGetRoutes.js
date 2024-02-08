@@ -68,7 +68,7 @@ const allGetRoutes = () => {
     }
   });
 
-  // get get featured jobs for home section
+  // get featured jobs for home section
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
