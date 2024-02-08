@@ -68,7 +68,7 @@ const allGetRoutes = () => {
     }
   });
 
-  // get get featured jobs for home section
+  // get featured jobs for home section dkjfkd
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
@@ -460,19 +460,61 @@ const allGetRoutes = () => {
     }
   });
 
-   // getting single blog data by id
-   app.get("/blogs/:id" , async (req ,res)=>{
-    try {
-      const id = req.params.id
-    const result = await blogs.findOne({_id: id})
-    res.send(result)
-    } catch (error) {
-      console.log(error.message)
-    }
-  })
 
-  // get specific a details
-  app.get("/blog-details/:id", async (req, res) => {
+  // get a individual blogs for blog details page
+  app.get("/blogs/:id", async (req, res) => {
+    try {
+      const blogsId = req.params.id;
+      const result = await blogs.findOne({ _id: blogsId }).populate('bloggerInfo');
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // task management get employee running tasks
+  app.get("/my-running-task/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.findOne({
+        "employees.email": employeeEmail,
+        status: "running",
+      });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // task management get employee running tasks
+  app.get("/my-recent-complete-task/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.find({
+        "employees.email": employeeEmail,
+        status: "complete",
+      });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // task management get employee running tasks
+  app.get("/my-total-task-completed/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.find({
+        "employees.email": employeeEmail,
+        status: "complete",
+      }).countDocuments();
+      console.log('documentCOunt resutlis', result);
+      res.send({count: result});
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+
+  // get pending blogs
+  app.get("/pendingBlogs", async (req, res) => {
     try {
       const blogId = req.params.id;
       const result = await blogs
@@ -484,6 +526,19 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
+  // get specific a details
+  app.get("/blog-details/:id", async (req, res) => {
+        try {
+          const blogId = req.params.id;
+          const result = await blogs
+            .findOne({ _id: blogId })
+            .populate("bloggerInfo");
+    
+          res.send(result);
+        } catch (error) {
+          res.status(500).send("Something went wrong.");
+        }
+      });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
