@@ -133,6 +133,23 @@ const allUpdateRoutes = () => {
       console.log(error.message);
     }
   });
+
+  // task update
+  app.put("/tasks/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const updateTask = req.body;
+      console.log(id, updateTask);
+      const result = await tasks.updateOne(
+        { _id: id },
+        { $set: updateTask },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  });
   // task management tast checklist progress update api
   app.put("/my-running-task-progress/:id", async(req, res) => {
     try {
