@@ -1,11 +1,13 @@
 import { app } from "../app.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
+import blogs from "../models/blogs.js";
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 import leaves from "../models/leaves.js";
 import presentations from "../models/presentations.js";
+import req_events from "../models/requestevents.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
 
@@ -128,6 +130,39 @@ const allPostRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+
+  // post route for requested events 
+  app.post("/reqEvents" , async (req , res) => {
+    try {
+      const reqEventData = req.body
+      const newReqEventData = req_events(reqEventData)
+      const result = await newReqEventData.save()
+      res.send(result)
+      
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+
+// Post a blog for blogs feature------>>>>
+app.post("/blogs", async(req, res) => {
+  try {
+    const blogInfo = req.body;
+    const newBlog = new blogs(blogInfo);
+    const result = await newBlog.save();
+    res.send(result)
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
+
+
+
+
+
+
+
+
 }; //end all post function brackets
 
 export default allPostRoutes;
