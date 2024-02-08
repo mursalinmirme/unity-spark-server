@@ -494,13 +494,18 @@ const allGetRoutes = () => {
   // getting single employee requested events
   app.get("/reqEvents/:email", async (req, res) => {
     try {
-      const employeeEmail = req.params.email;
-      const result = await req_events.find({ email: employeeEmail });
-      res.send(result);
+      const employeeEmail = req.params.email
+      console.log(employeeEmail)
+      const result = await req_events.find({reqeventEmail: employeeEmail})
+      res.send(result)
     } catch (error) {
       res.status(500).send(error.message);
     }
-  });
+   
+  })
+   
+  
+  
   // get all blogs under the blogs models----->>>>>>>
   // get all blogs under the blogs models----->>>>>>>
   app.get("/blogs", async (req, res) => {

@@ -28,6 +28,10 @@ const requesteventsSchema = mongoose.Schema({
     reqeventEmployeeName:{
         type: String,
         require: true
+    },
+    reqeventDate:{
+        type: String,
+        require: true
     }
 
 })
