@@ -422,7 +422,7 @@ const allGetRoutes = () => {
   });
 
   // get specific task
-  app.get('/tasks/:id', async(req,res)=>{
+  app.get("/tasks/:id", async (req, res) => {
     try {
       const id = req.params.id;
       const result = await tasks.findOne({ _id: id });
@@ -430,7 +430,7 @@ const allGetRoutes = () => {
     } catch (error) {
       console.log(error);
     }
-  })
+  });
 
   // get Employee all Attendance
 
@@ -492,61 +492,78 @@ const allGetRoutes = () => {
     }
   });
   // getting single employee requested events
-  app.get("/reqEvents/:email" , async (req , res) => {
+  app.get("/reqEvents/:email", async (req, res) => {
     try {
       const employeeEmail = req.params.email
-      const result = await req_events.find({email : employeeEmail})
+      console.log(employeeEmail)
+      const result = await req_events.find({reqeventEmail: employeeEmail})
       res.send(result)
     } catch (error) {
       res.status(500).send(error.message);
     }
    
   })
+   
+  
+  
   // get all blogs under the blogs models----->>>>>>>
   // get all blogs under the blogs models----->>>>>>>
-  app.get("/blogs", async(req, res) => {
+  app.get("/blogs", async (req, res) => {
     try {
-      const result = await blogs.find().sort({createdAt: -1});
+      const result = await blogs.find().sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
   // get a individual blogs for blog details page
-  app.get("/blogs/:id", async(req, res) => {
+  app.get("/blogs/:id", async (req, res) => {
     try {
       const blogsId = req.params.id;
-      const result = await blogs.findOne({_id: blogsId});
-      res.send(result)
+      const result = await blogs.findOne({ _id: blogsId });
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
   // task management get employee running tasks
-  app.get("/my-running-task/:email", async (req, res) =>{
+  app.get("/my-running-task/:email", async (req, res) => {
     try {
       const employeeEmail = req.params.email;
-      const result = await tasks.findOne({'employees.email': employeeEmail, status: 'running'});
-      res.send(result)
+      const result = await tasks.findOne({
+        "employees.email": employeeEmail,
+        status: "running",
+      });
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
-
+  });
 
   // get all blogs under a employee
-  app.get("/employee-blogs/:email", async(req, res) => {
+  app.get("/employee-blogs/:email", async (req, res) => {
     try {
       const bloggerEmail = req.params.email;
-      const result = await blogs.findOne({bloggerEmail: bloggerEmail});
-      res.send(result)
+      const result = await blogs.findOne({ bloggerEmail: bloggerEmail });
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
-
+  // get pending blogs
+  app.get("/pendingBlogs", async (req, res) => {
+    try {
+      const result = await blogs
+        .find({ status: "Pending" })
+        .sort({ createdAt: -1 })
+        .populate("bloggerInfo");
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
