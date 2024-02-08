@@ -523,6 +523,17 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   })
+  // task management get employee running tasks
+  app.get("/my-running-task/:email", async (req, res) =>{
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.findOne({'employees.email': employeeEmail, status: 'running'});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
 
   // get all blogs under a employee
   app.get("/employee-blogs/:email", async(req, res) => {
