@@ -17,11 +17,14 @@ const taskSchema = mongoose.Schema({
     type: Array,
     require: true,
   },
+  status: {
+    type: String,
+    default: "running",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  
 });
 
 const tasks = mongoose.model("tasks", taskSchema);
