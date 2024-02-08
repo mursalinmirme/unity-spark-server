@@ -545,7 +545,7 @@ const allGetRoutes = () => {
   app.get("/employee-blogs/:email", async (req, res) => {
     try {
       const bloggerEmail = req.params.email;
-      const result = await blogs.findOne({ bloggerEmail: bloggerEmail });
+      const result = await blogs.find({ bloggerEmail: bloggerEmail });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
