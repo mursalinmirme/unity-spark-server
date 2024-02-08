@@ -3,6 +3,7 @@ import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 import leaves from "../models/leaves.js";
+import tasks from "../models/tasks.js";
 import users from "../models/users.js";
 
 const allUpdateRoutes = () => {
@@ -129,6 +130,23 @@ const allUpdateRoutes = () => {
       res.send(result);
     } catch (error) {
       console.log(error.message);
+    }
+  });
+
+  // task update
+  app.put("/tasks/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const updateTask = req.body;
+      console.log(id, updateTask);
+      const result = await tasks.updateOne(
+        { _id: id },
+        { $set: updateTask },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error);
     }
   });
 }; //end bracket of all update routes runction
