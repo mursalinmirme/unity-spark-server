@@ -540,6 +540,33 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  // task management get employee running tasks
+  app.get("/my-recent-complete-task/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.find({
+        "employees.email": employeeEmail,
+        status: "complete",
+      });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // task management get employee running tasks
+  app.get("/my-total-task-completed/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.find({
+        "employees.email": employeeEmail,
+        status: "complete",
+      }).countDocuments();
+      console.log('documentCOunt resutlis', result);
+      res.send({count: result});
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
   // get all blogs under a employee
   app.get("/employee-blogs/:email", async (req, res) => {
