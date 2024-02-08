@@ -483,13 +483,16 @@ const allGetRoutes = () => {
   app.get("/reqEvents/:email" , async (req , res) => {
     try {
       const employeeEmail = req.params.email
-      const result = await req_events.find({email : employeeEmail})
+      console.log(employeeEmail)
+      const result = await req_events.find({reqeventEmail: employeeEmail})
       res.send(result)
     } catch (error) {
       res.status(500).send(error.message);
     }
    
   })
+   
+  
 }; //ending all get routes brackets
 
 export default allGetRoutes;
