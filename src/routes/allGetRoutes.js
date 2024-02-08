@@ -12,6 +12,7 @@ import leaves from "../models/leaves.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
 import tasks from "../models/tasks.js";
 import blogs from "../models/blogs.js";
+import req_events from "../models/requestevents.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -349,6 +350,20 @@ const allGetRoutes = () => {
     }
   });
 
+  // getting event under email
+
+  app.get("/reqEvents/:email" , async (req , res) =>{
+    try {
+      const reqeventEmail = req.params.email
+    const result = await req_events.find({reqeventEmail: reqeventEmail})
+    console.log("ho testing",result);
+    res.send(result)
+  
+    } catch (error) {
+      console.log(error.message)
+    }
+  })
+
   // get all leave request
   app.get("/leaves", async (req, res) => {
     try {
@@ -438,8 +453,16 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
-
-  // get all Blog
+  // getting all of the blogs
+  app.get("/blogs" , async (req , res) => {
+    try {
+      const result = await blogs.find()
+    res.send(result)
+    } catch (error) {
+      console.log(error.message)
+    }
+  })
+  // getting sorting bloggs
   app.get("/all-blogs", async (req, res) => {
     try {
       const email = req.params.email;
