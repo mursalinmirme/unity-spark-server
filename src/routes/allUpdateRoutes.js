@@ -1,4 +1,5 @@
 import { app } from "../app.js";
+import blogs from "../models/blogs.js";
 import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
@@ -149,6 +150,45 @@ const allUpdateRoutes = () => {
       console.log(error);
     }
   });
+  // task management tast checklist progress update api
+  app.put("/my-running-task-progress/:id", async(req, res) => {
+    try {
+      const runningTaskId = req.body.currentTaskId;
+      const taskerId = req.params.id;
+      const checkIfExist = await tasks.findOne({_id: runningTaskId, 'employees._id': taskerId},{ 'employees.$': 1 });
+      const taskStatus = checkIfExist.employees[0].status;
+      if(taskStatus === "complete"){
+        const result = await tasks.updateOne({_id: runningTaskId, 'employees._id': taskerId}, {$set: {"employees.$.status": 'running'}});
+        res.send(result);
+        return
+      }
+      const result = await tasks.updateOne({_id: runningTaskId, 'employees._id': taskerId}, {$set: {"employees.$.status": 'complete'}});
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
+  // update a specific blog from blogs models----->>>>>>>
+  // requested blog delete api
+  app.put("/blogs/:id", async(req, res) => {
+    try {
+      const updateId = req.params.id;
+      const updateInfo = req.body;
+      const result = await blogs.updateOne(
+        { _id: updateId },
+        { $set: updateInfo },
+        { upsert: true }
+           )
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+
+
+
+
 }; //end bracket of all update routes runction
 
 export default allUpdateRoutes;
