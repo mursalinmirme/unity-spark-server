@@ -449,6 +449,27 @@ const allGetRoutes = () => {
       console.log(error);
     }
   });
+  // getting user added blogs data
+  app.get("/employee-blogs/:email" , async (req ,res)=>{
+    try {
+      const bloggerEmail = req.params.email
+    const result = await blogs.find({bloggerEmail: bloggerEmail})
+    res.send(result)
+    } catch (error) {
+      console.log(error.message)
+    }
+  });
+
+   // getting single blog data by id
+   app.get("/blogs/:id" , async (req ,res)=>{
+    try {
+      const id = req.params.id
+    const result = await blogs.findOne({_id: id})
+    res.send(result)
+    } catch (error) {
+      console.log(error.message)
+    }
+  })
 
   // get specific a details
   app.get("/blog-details/:id", async (req, res) => {
