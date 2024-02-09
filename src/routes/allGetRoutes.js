@@ -456,7 +456,7 @@ const allGetRoutes = () => {
   // getting all of the blogs
   app.get("/blogs" , async (req , res) => {
     try {
-      const result = await blogs.find()
+      const result = await blogs.find({status: "Accepted"})
     res.send(result)
     } catch (error) {
       console.log(error.message)
@@ -494,6 +494,7 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+
   // task management get employee running tasks
   app.get("/my-running-task/:email", async (req, res) => {
     try {
@@ -539,11 +540,9 @@ const allGetRoutes = () => {
   // get pending blogs
   app.get("/pendingBlogs", async (req, res) => {
     try {
-      const blogId = req.params.id;
       const result = await blogs
-        .findOne({ _id: blogId })
+        .find({status: "Pending"})
         .populate("bloggerInfo");
-
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
@@ -562,6 +561,21 @@ const allGetRoutes = () => {
           res.status(500).send("Something went wrong.");
         }
       });
+
+// get specific a details
+app.get("/my-applications", async (req, res) => {
+  try {
+    const userEmail = req.query.email;
+    const result = await
+      jobapplications.find({ email: userEmail});
+    res.send(result);
+  } catch (error) {
+    res.status(500).send("Something went wrong.");
+  }
+});
+
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;
