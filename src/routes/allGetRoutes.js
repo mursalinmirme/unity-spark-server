@@ -9,7 +9,10 @@ import presentations from "../models/presentations.js";
 import { json } from "express";
 import events from "../models/events.js";
 import leaves from "../models/leaves.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
 import tasks from "../models/tasks.js";
+import blogs from "../models/blogs.js";
+import req_events from "../models/requestevents.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -66,7 +69,7 @@ const allGetRoutes = () => {
     }
   });
 
-  // get get featured jobs for home section
+  // get featured jobs for home section dkjfkd
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
@@ -339,13 +342,27 @@ const allGetRoutes = () => {
   });
   app.get("/events/:id", async (req, res) => {
     try {
-      const id = req.params.id
-      const result = await events.findOne({_id: id});
+      const id = req.params.id;
+      const result = await events.findOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);
     }
   });
+
+  // getting event under email
+
+  app.get("/reqEvents/:email" , async (req , res) =>{
+    try {
+      const reqeventEmail = req.params.email
+    const result = await req_events.find({reqeventEmail: reqeventEmail})
+    console.log("ho testing",result);
+    res.send(result)
+  
+    } catch (error) {
+      console.log(error.message)
+    }
+  })
 
   // get all leave request
   app.get("/leaves", async (req, res) => {
@@ -393,14 +410,25 @@ const allGetRoutes = () => {
   // get a specific leave request
 
   // get all task
-  app.get('/tasks', async(req,res)=>{
+  app.get("/tasks", async (req, res) => {
     try {
-      const result = await tasks.find()
+      const result = await tasks.find();
       res.send(result);
     } catch (error) {
       console.log(error);
     }
-  })
+  });
+
+  // get specific task
+  app.get("/tasks/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await tasks.findOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
   // get Employee all Attendance
 
@@ -413,6 +441,141 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+
+  // get specific data Save Data Get
+
+  app.get("/getSaveInfo/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await saveJobInfo.find({ email: email });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+  // getting all of the blogs
+  app.get("/blogs" , async (req , res) => {
+    try {
+      const result = await blogs.find({status: "Accepted"})
+    res.send(result)
+    } catch (error) {
+      console.log(error.message)
+    }
+  })
+  // getting sorting bloggs
+  app.get("/all-blogs", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await blogs.find().skip(0).limit(3);
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  // getting user added blogs data
+  app.get("/employee-blogs/:email" , async (req ,res)=>{
+    try {
+      const bloggerEmail = req.params.email
+    const result = await blogs.find({bloggerEmail: bloggerEmail})
+    res.send(result)
+    } catch (error) {
+      console.log(error.message)
+    }
+  });
+
+
+  // get a individual blogs for blog details page
+  app.get("/blogs/:id", async (req, res) => {
+    try {
+      const blogsId = req.params.id;
+      const result = await blogs.findOne({ _id: blogsId }).populate('bloggerInfo');
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // task management get employee running tasks
+  app.get("/my-running-task/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.findOne({
+        "employees.email": employeeEmail,
+        status: "running",
+      });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // task management get employee running tasks
+  app.get("/my-recent-complete-task/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.find({
+        "employees.email": employeeEmail,
+        status: "complete",
+      });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // task management get employee running tasks
+  app.get("/my-total-task-completed/:email", async (req, res) => {
+    try {
+      const employeeEmail = req.params.email;
+      const result = await tasks.find({
+        "employees.email": employeeEmail,
+        status: "complete",
+      }).countDocuments();
+      console.log('documentCOunt resutlis', result);
+      res.send({count: result});
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+
+  // get pending blogs
+  app.get("/pendingBlogs", async (req, res) => {
+    try {
+      const result = await blogs
+        .find({status: "Pending"})
+        .populate("bloggerInfo");
+      res.send(result);
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
+  // get specific a details
+  app.get("/blog-details/:id", async (req, res) => {
+        try {
+          const blogId = req.params.id;
+          const result = await blogs
+            .findOne({ _id: blogId })
+            .populate("bloggerInfo");
+    
+          res.send(result);
+        } catch (error) {
+          res.status(500).send("Something went wrong.");
+        }
+      });
+
+// get specific a details
+app.get("/my-applications", async (req, res) => {
+  try {
+    const userEmail = req.query.email;
+    const result = await
+      jobapplications.find({ email: userEmail});
+    res.send(result);
+  } catch (error) {
+    res.status(500).send("Something went wrong.");
+  }
+});
+
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;
