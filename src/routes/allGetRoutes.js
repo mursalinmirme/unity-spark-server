@@ -14,6 +14,7 @@ import tasks from "../models/tasks.js";
 import blogs from "../models/blogs.js";
 import req_events from "../models/requestevents.js";
 import comments from "../models/comments.js";
+import courses from '../models/courses.js'
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -600,6 +601,19 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+
+  app.get('/courses', async(req, res) => {
+    try{
+      const result = await courses
+        .find({ status: "Accepted" })
+        .sort({createdAt: -1})
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
+
+
 }; //ending all get routes brackets
 
 export default allGetRoutes;
