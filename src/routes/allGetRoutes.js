@@ -13,6 +13,7 @@ import saveJobInfo from "../models/SaveJobInfo.js";
 import tasks from "../models/tasks.js";
 import blogs from "../models/blogs.js";
 import req_events from "../models/requestevents.js";
+import comments from "../models/comments.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -352,22 +353,31 @@ const allGetRoutes = () => {
 
   // getting event under email
 
-  app.get("/reqEvents/:email" , async (req , res) =>{
+  app.get("/reqEvents/:email", async (req, res) => {
     try {
-      const reqeventEmail = req.params.email
-    const result = await req_events.find({reqeventEmail: reqeventEmail})
-    console.log("ho testing",result);
-    res.send(result)
-  
+      const reqeventEmail = req.params.email;
+      const result = await req_events.find({ reqeventEmail: reqeventEmail });
+      console.log("ho testing", result);
+      res.send(result);
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  })
+  });
 
   // get all leave request
   app.get("/leaves", async (req, res) => {
     try {
       const result = await leaves.find({ status: "Pending" }).populate("user");
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+  // get leave requests of individual user
+  app.get("/leaves/:email", async (req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const result = await leaves.find({ email: userEmail });
       res.send(result);
     } catch (error) {
       console.log(error.message);
@@ -454,14 +464,16 @@ const allGetRoutes = () => {
     }
   });
   // getting all of the blogs
-  app.get("/blogs" , async (req , res) => {
+  app.get("/blogs", async (req, res) => {
     try {
-      const result = await blogs.find({status: "Accepted"})
-    res.send(result)
+      const result = await blogs
+        .find({ status: "Accepted" })
+        .sort({ createdAt: -1 });
+      res.send(result);
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  })
+  });
   // getting sorting bloggs
   app.get("/all-blogs", async (req, res) => {
     try {
@@ -473,22 +485,23 @@ const allGetRoutes = () => {
     }
   });
   // getting user added blogs data
-  app.get("/employee-blogs/:email" , async (req ,res)=>{
+  app.get("/employee-blogs/:email", async (req, res) => {
     try {
-      const bloggerEmail = req.params.email
-    const result = await blogs.find({bloggerEmail: bloggerEmail})
-    res.send(result)
+      const bloggerEmail = req.params.email;
+      const result = await blogs.find({ bloggerEmail: bloggerEmail });
+      res.send(result);
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
   });
-
 
   // get a individual blogs for blog details page
   app.get("/blogs/:id", async (req, res) => {
     try {
       const blogsId = req.params.id;
-      const result = await blogs.findOne({ _id: blogsId }).populate('bloggerInfo');
+      const result = await blogs
+        .findOne({ _id: blogsId })
+        .populate("bloggerInfo");
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -525,23 +538,24 @@ const allGetRoutes = () => {
   app.get("/my-total-task-completed/:email", async (req, res) => {
     try {
       const employeeEmail = req.params.email;
-      const result = await tasks.find({
-        "employees.email": employeeEmail,
-        status: "complete",
-      }).countDocuments();
-      console.log('documentCOunt resutlis', result);
-      res.send({count: result});
+      const result = await tasks
+        .find({
+          "employees.email": employeeEmail,
+          status: "complete",
+        })
+        .countDocuments();
+      console.log("documentCOunt resutlis", result);
+      res.send({ count: result });
     } catch (error) {
       res.status(500).send(error.message);
     }
   });
 
-
   // get pending blogs
   app.get("/pendingBlogs", async (req, res) => {
     try {
       const result = await blogs
-        .find({status: "Pending"})
+        .find({ status: "Pending" })
         .populate("bloggerInfo");
       res.send(result);
     } catch (error) {
@@ -550,32 +564,42 @@ const allGetRoutes = () => {
   });
   // get specific a details
   app.get("/blog-details/:id", async (req, res) => {
-        try {
-          const blogId = req.params.id;
-          const result = await blogs
-            .findOne({ _id: blogId })
-            .populate("bloggerInfo");
-    
-          res.send(result);
-        } catch (error) {
-          res.status(500).send("Something went wrong.");
-        }
-      });
+    try {
+      const blogId = req.params.id;
+      const result = await blogs
+        .findOne({ _id: blogId })
+        .populate("bloggerInfo");
 
-// get specific a details
-app.get("/my-applications", async (req, res) => {
-  try {
-    const userEmail = req.query.email;
-    const result = await
-      jobapplications.find({ email: userEmail});
-    res.send(result);
-  } catch (error) {
-    res.status(500).send("Something went wrong.");
-  }
-});
+      res.send(result);
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
 
+  // get specific a details
+  app.get("/my-applications", async (req, res) => {
+    try {
+      const userEmail = req.query.email;
+      const result = await jobapplications.find({ email: userEmail });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
 
-
+  // get a specific blog id comments
+  app.get("/comments/:id", async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const result = await comments
+        .find({ blogId: blogId })
+        .populate("commenterInfo")
+        .sort({ createdAt: -1 });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;

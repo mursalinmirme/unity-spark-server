@@ -1,6 +1,7 @@
 import { app } from "../app.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
 import blogs from "../models/blogs.js";
+import comments from "../models/comments.js";
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
@@ -156,7 +157,17 @@ app.post("/blogs", async(req, res) => {
   }
 })
 
-
+// comments post api
+app.post("/comments", async (req, res) => {
+  try {
+    const commentData = req.body;
+    const newComment = new comments(commentData);
+    const result = await newComment.save();
+    res.send(result)
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
 
 
 
