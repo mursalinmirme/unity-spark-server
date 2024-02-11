@@ -13,6 +13,7 @@ import saveJobInfo from "../models/SaveJobInfo.js";
 import tasks from "../models/tasks.js";
 import blogs from "../models/blogs.js";
 import req_events from "../models/requestevents.js";
+import comments from "../models/comments.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -373,6 +374,16 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+  // get leave requests of individual user
+  app.get("/leaves/:email", async (req, res) => {
+    try {
+      const userEmail = req.params.email;
+      const result = await leaves.find({ email: userEmail });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
   // get all confiremed leave request
   app.get("/leaves-confirmed", async (req, res) => {
     try {
@@ -574,6 +585,16 @@ app.get("/my-applications", async (req, res) => {
   }
 });
 
+// get a specific blog id comments
+app.get("/comments/:id", async(req, res) => {
+  try {
+    const blogId = req.params.id;
+    const result = await comments.find().populate("commenterInfo");
+    res.send(result);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+})
 
 
 }; //ending all get routes brackets
