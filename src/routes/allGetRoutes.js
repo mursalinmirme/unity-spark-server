@@ -297,6 +297,19 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  // get current loged in user id
+  app.get("/user-id", async (req, res) => {
+    try {
+      const userEmail = req.query.email;
+      const getUserId = await users.findOne(
+        { email: userEmail },
+        { _id: 1 }
+      );
+      res.send(getUserId);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
   // getting job applications data based on id
   app.get("/job_applications/:id", async (req, res) => {
     const id = req.params.id;
