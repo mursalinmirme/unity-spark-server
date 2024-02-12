@@ -171,11 +171,15 @@ app.post("/comments", async (req, res) => {
 })
 
 // courses post api
-app.post('/courses', async(req, res) => {
+app.post("/courses", async (req, res) => {
   try{  
     const courseData = req.body;
-    const result = await courses(courseData).save()
-    res.send()
+    console.log(courseData)
+    const newCourseData = new courses(courseData)
+    const result = await newCourseData.save()
+    console.log("checking", result)
+    res.send(result)
+  
   } catch (error) {
     res.status(500).send(error.message)
   }
