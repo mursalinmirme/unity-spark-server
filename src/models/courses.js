@@ -9,6 +9,10 @@ const coursesSchema = mongoose.Schema({
     type: Array,
     require: true
   },
+  courses: {
+    type: String,
+    require: true
+  },
   image: {
     type: mongoose.Schema.Types.ObjectId,
     require: true,
