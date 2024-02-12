@@ -11,6 +11,7 @@ import presentations from "../models/presentations.js";
 import req_events from "../models/requestevents.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
+import courses from '../models/courses.js'
 
 // All Post Requests
 const allPostRoutes = () => {
@@ -169,8 +170,16 @@ app.post("/comments", async (req, res) => {
   }
 })
 
-
-
+// courses post api
+app.post('/courses', async(req, res) => {
+  try{  
+    const courseData = req.body;
+    const result = await courses(courseData).save()
+    res.send()
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
 
 
 
