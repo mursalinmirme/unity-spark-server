@@ -6,6 +6,7 @@ import allGetRoutes from "./routes/allGetRoutes.js";
 import allDeleteRoutes from "./routes/allDeleteRoutes.js";
 import cookieParser from "cookie-parser";
 import CreateToken from "./jwt/token.js";
+import sentMail from "./shares/sentMail.js";
 
 const app = express();
 app.use(
@@ -36,6 +37,9 @@ allGetRoutes();
 
 // call all Post requests
 allPostRoutes();
+
+// sent mail post request
+sentMail();
 
 // call all update routes
 allUpdateRoutes();
