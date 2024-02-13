@@ -13,6 +13,7 @@ import presentations from "../models/presentations.js";
 import req_events from "../models/requestevents.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
+import interviews from "../models/interviews.js";
 // All Post Requests
 const allPostRoutes = () => {
   // user sign up route
@@ -212,6 +213,25 @@ try {
   res.status(500).send(error.message)
 }
 })
+
+
+app.post("/interviews", async(req, res) => {
+  try {
+    const interview = req.body;
+    console.log(interview);
+    const newInterview = new interviews(interview);
+    const result = await newInterview.save();
+    res.send(result)
+  } catch (error) {
+  res.status(500).send(error.message)
+  }
+})
+
+
+
+
+
+
 
 
 
