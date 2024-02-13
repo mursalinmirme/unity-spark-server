@@ -15,6 +15,7 @@ import blogs from "../models/blogs.js";
 import req_events from "../models/requestevents.js";
 import comments from "../models/comments.js";
 import courses from "../models/courses.js";
+import interviews from "../models/interviews.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -654,6 +655,29 @@ const allGetRoutes = () => {
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
+    }
+  });
+
+  //  git all interview information
+  app.get("/get-interview", async (req, res) => {
+    try {
+      const result = await interviews.find().sort({ createdAt: -1 });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // git user interview
+
+  app.get("/get-user-interview/:email", async (req, res) => {
+    try {
+      const userEmail = req.params.email;
+      console.log(userEmail);
+      const result = await interviews.findOne({ candidateEmail: userEmail });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
     }
   });
 }; //ending all get routes brackets
