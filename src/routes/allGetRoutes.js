@@ -650,13 +650,14 @@ const allGetRoutes = () => {
   app.get("/courses", async (req, res) => {
     try {
       const result = await courses
-        .find({ status: "Accepted" })
+        .find()
         .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
   });
+
 
   //  git all interview information
   app.get("/get-interview", async (req, res) => {
@@ -680,6 +681,20 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   });
+
+  // MY COURSE getting api
+
+  app.get("/courses/:email", async (req , res)=>{
+    try {
+      const userEmail = req.params.email;
+      const result = await courses.find({userEmail: userEmail});
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  })
 }; //ending all get routes brackets
+
+
 
 export default allGetRoutes;
