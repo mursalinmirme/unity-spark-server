@@ -6,35 +6,46 @@ const coursesSchema = mongoose.Schema({
     require: true,
   },
   tags: {
-    type: Array,
-    require: true
+    type: String,
+    require: true,
+
+  
   },
   courses: {
     type: String,
     require: true
   },
   image: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     require: true,
-    validate: {
-        validator: async function (value) {
-          // Validate image type
-          const type = imageType(Buffer.from(value, "base64"));
-          if (!type || !["png", "jpg", "jpeg", "gif"].includes(type.ext)) {
-            throw new Error(
-              "Invalid image type. Supported types: png, jpg, jpeg, gif"
-            );
-          }
+    
+  //   validate: {
+  //       validator: async function (value) {
+  //         // Validate image type
+  //         const type = imageType(Buffer.from(value, "base64"));
+  //         if (!type || !["png", "jpg", "jpeg", "gif"].includes(type.ext)) {
+  //           throw new Error(
+  //             "Invalid image type. Supported types: png, jpg, jpeg, gif"
+  //           );
+  //         }
   
-          return true; // Validation passed
-        },
-        message: "Image data is invalid or missing",
-    },
+  //         return true; // Validation passed
+  //       },
+  //       message: "Image data is invalid or missing",
+  //   },
+  // },
   },
-  details: {
+  description: {
     type: String,
     require: true
+ 
   },
+  category:{
+    type: Array,
+    require: true
+    
+  }
+
 });
 
 const courses = mongoose.model("courses", coursesSchema);

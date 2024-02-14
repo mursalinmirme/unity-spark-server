@@ -2,6 +2,7 @@ import { app } from "../app.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
 import blogs from "../models/blogs.js";
 import comments from "../models/comments.js";
+import courses from '../models/courses.js';
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
@@ -11,8 +12,7 @@ import presentations from "../models/presentations.js";
 import req_events from "../models/requestevents.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
-import courses from '../models/courses.js'
-
+import interviews from "../models/interviews.js";
 // All Post Requests
 const allPostRoutes = () => {
   // user sign up route
@@ -171,15 +171,39 @@ app.post("/comments", async (req, res) => {
 })
 
 // courses post api
-app.post('/courses', async(req, res) => {
+app.post("/courses", async (req, res) => {
   try{  
     const courseData = req.body;
-    const result = await courses(courseData).save()
-    res.send()
+    console.log(courseData)
+    const newCourseData = new courses(courseData)
+    const result = await newCourseData.save()
+    console.log("checking", result)
+    res.send(result)
+  
   } catch (error) {
     res.status(500).send(error.message)
   }
 })
+
+
+app.post("/interviews", async(req, res) => {
+  try {
+    const interview = req.body;
+    console.log(interview);
+    const newInterview = new interviews(interview);
+    const result = await newInterview.save();
+    res.send(result)
+  } catch (error) {
+  res.status(500).send(error.message)
+  }
+})
+
+
+
+
+
+
+
 
 
 
