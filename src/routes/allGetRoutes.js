@@ -16,6 +16,7 @@ import req_events from "../models/requestevents.js";
 import comments from "../models/comments.js";
 import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
+import myCourse from "../models/mycourse.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -657,6 +658,7 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  
 
 
   //  git all interview information
@@ -684,10 +686,11 @@ const allGetRoutes = () => {
 
   // MY COURSE getting api
 
-  app.get("/courses/:email", async (req , res)=>{
+  app.get("/my_course/:email", async (req , res)=>{
+    console.log("checking working or not")
     try {
       const userEmail = req.params.email;
-      const result = await courses.find({userEmail: userEmail});
+      const result = await myCourse.find({userEmail: userEmail}).populate("uniqueID");
       res.send(result);
     } catch (error) {
       console.log(error.message);

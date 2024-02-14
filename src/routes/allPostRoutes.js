@@ -13,6 +13,7 @@ import req_events from "../models/requestevents.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
 import interviews from "../models/interviews.js";
+import myCourse from "../models/mycourse.js";
 // All Post Requests
 const allPostRoutes = () => {
   // user sign up route
@@ -198,7 +199,16 @@ app.post("/interviews", async(req, res) => {
   }
 })
 
-
+app.post("/my_course" , async (req , res ) => {
+  try {
+    const MyCourse = req.body
+    const newMyCourse = new myCourse(MyCourse)
+    const result = await newMyCourse.save()
+    res.send(result)
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
 
 
 
