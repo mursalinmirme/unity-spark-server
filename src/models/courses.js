@@ -37,9 +37,21 @@ const coursesSchema = mongoose.Schema({
  
   },
   category:{
-    type: Array,
+    type: String,
     require: true
     
+  },
+  instructor_name:{
+    type: String,
+    require: true
+  },
+  intro:{
+    type: String,
+    require: true
+  },
+  instructor_bio:{
+    type: String,
+    require: true
   }
 
 });
