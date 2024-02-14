@@ -5,13 +5,11 @@ const coursesSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  tags: {
+  category: {
     type: String,
-    require: true,
-
-  
+    require: true
   },
-  image: {
+  banner_image: {
     type: String,
     require: true,
     
@@ -33,27 +31,40 @@ const coursesSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    require: true
- 
+    require: true 
   },
-  category:{
+  instructor_name: {
     type: String,
-    require: true
-    
+    require: true 
   },
-  instructor_name:{
+  instructor_image: {
     type: String,
-    require: true
+    require: true 
   },
-  intro:{
+  instructor_bio: {
     type: String,
-    require: true
+    require: true 
   },
-  instructor_bio:{
+  intro: {
     type: String,
-    require: true
-  }
-
+    require: true 
+  },
+  certificate_image: {
+    type: String,
+    require: true 
+  },
+  features: {
+    type: Array,
+    require: true 
+  },
+  benefits: {
+    type: Array,
+    require: true 
+  },
+  modules: {
+    type: Array,
+    require: true 
+  },
 });
 
 const courses = mongoose.model("courses", coursesSchema);

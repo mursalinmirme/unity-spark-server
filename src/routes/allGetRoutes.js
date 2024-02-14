@@ -681,5 +681,4 @@ const allGetRoutes = () => {
     }
   });
 }; //ending all get routes brackets
-
 export default allGetRoutes;
