@@ -674,7 +674,7 @@ const allGetRoutes = () => {
   app.get("/get-user-interview/:email", async (req, res) => {
     try {
       const userEmail = req.params.email;
-      console.log(userEmail);
+
       const result = await interviews.findOne({ candidateEmail: userEmail });
       res.send(result);
     } catch (error) {
