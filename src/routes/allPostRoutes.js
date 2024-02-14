@@ -207,6 +207,7 @@ app.post("/my_course" , async (req , res ) => {
     res.send(result)
   } catch (error) {
     res.status(500).send(error.message)
+    console.log(error)
   }
 })
 
