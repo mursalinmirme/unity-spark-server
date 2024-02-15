@@ -14,7 +14,9 @@ import tasks from "../models/tasks.js";
 import blogs from "../models/blogs.js";
 import req_events from "../models/requestevents.js";
 import comments from "../models/comments.js";
-import courses from '../models/courses.js'
+import courses from "../models/courses.js";
+import interviews from "../models/interviews.js";
+import myCourse from "../models/mycourse.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -49,6 +51,17 @@ const allGetRoutes = () => {
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
+    }
+  });
+
+  // get All Admin
+
+  app.get("/all-admins", async (req, res) => {
+    try {
+      const allAdmin = await users.find({ role: "admin" });
+      res.send(allAdmin);
+    } catch (error) {
+      console.log(error);
     }
   });
 
@@ -301,10 +314,7 @@ const allGetRoutes = () => {
   app.get("/user-id", async (req, res) => {
     try {
       const userEmail = req.query.email;
-      const getUserId = await users.findOne(
-        { email: userEmail },
-        { _id: 1 }
-      );
+      const getUserId = await users.findOne({ email: userEmail }, { _id: 1 });
       res.send(getUserId);
     } catch (error) {
       res.status(500).send(error.message);
@@ -318,14 +328,37 @@ const allGetRoutes = () => {
   });
   // getting job applications all data
   app.get("/job_applications_nums", async (req, res) => {
-    const result = await jobapplications.find().countDocuments();
+    const result = await jobapplications
+      .find({ status: "Pending" })
+      .countDocuments();
     res.send({ total: result });
   });
   // getting job applications all data
   app.get("/job_applications", async (req, res) => {
     const skipFrom = req.query.skip;
     // console.log("skip from", skipFrom);
-    const result = await jobapplications.find().skip(skipFrom).limit(6);
+    const result = await jobapplications
+      .find({ status: "Pending" })
+      .skip(skipFrom)
+      .limit(6);
+    // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
+    res.send(result);
+  });
+  // getting job applications all data
+  app.get("/job_applicants_nums", async (req, res) => {
+    const result = await jobapplications
+      .find({ status: "Confirmed" })
+      .countDocuments();
+    res.send({ total: result });
+  });
+  // getting job applications all data
+  app.get("/job_applicants", async (req, res) => {
+    const skipFrom = req.query.skip;
+    // console.log("skip from", skipFrom);
+    const result = await jobapplications
+      .find({ status: "Confirmed" })
+      .skip(skipFrom)
+      .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -369,13 +402,12 @@ const allGetRoutes = () => {
 
   app.get("/reqEvents/:email", async (req, res) => {
     try {
-      const reqeventEmail = req.params.email
-    const result = await req_events.find({reqeventEmail: reqeventEmail})
-    // console.log("ho testing",result);
-    res.send(result)
-  
+      const reqeventEmail = req.params.email;
+      const result = await req_events.find({ reqeventEmail: reqeventEmail });
+      // console.log("ho testing",result);
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
   });
 
@@ -486,7 +518,7 @@ const allGetRoutes = () => {
         .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
   });
   // getting sorting bloggs
@@ -506,7 +538,7 @@ const allGetRoutes = () => {
       const result = await blogs.find({ bloggerEmail: bloggerEmail });
       res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
   });
 
@@ -616,18 +648,80 @@ const allGetRoutes = () => {
     }
   });
 
-  app.get('/courses', async(req, res) => {
-    try{
+  app.get("/courses", async (req, res) => {
+    try {
       const result = await courses
-        .find({ status: "Accepted" })
-        .sort({createdAt: -1})
+        .find()
+        .sort({ createdAt: -1 });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  
+
+
+  //  git all interview information
+  app.get("/get-admin-interview/:email", async (req, res) => {
+    try {
+      const interViewerEmail = req.params.email;
+      const result = await interviews.find({interViewerEmail: interViewerEmail}).sort({ createdAt: -1 });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // git on interveiw calling page interview
+
+  app.get("/get-user-interview/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      const result = await interviews.findOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+  
+  // get user
+  app.get("/user-interview/:email", async (req, res) => {
+    try {
+      const candidateEmail = req.params.email;
+
+      const result = await interviews.findOne({ candidateEmail: candidateEmail });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get interview details for admin
+  app.get("/interviewDetails/:id", async(req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await interviews.findOne({_id: id});
       res.send(result)
     } catch (error) {
       res.status(500).send(error.message)
     }
   })
 
+  // MY COURSE getting api
 
+  app.get("/my_course/:email", async (req , res)=>{
+    console.log("checking working or not")
+    try {
+      const userEmail = req.params.email;
+      const result = await myCourse.find({userEmail: userEmail}).populate("uniqueID");
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  })
 }; //ending all get routes brackets
+
+
 
 export default allGetRoutes;
