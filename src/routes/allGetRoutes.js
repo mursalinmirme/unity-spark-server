@@ -662,27 +662,51 @@ const allGetRoutes = () => {
 
 
   //  git all interview information
-  app.get("/get-interview", async (req, res) => {
+  app.get("/get-admin-interview/:email", async (req, res) => {
     try {
-      const result = await interviews.find().sort({ createdAt: -1 });
+      const interViewerEmail = req.params.email;
+      const result = await interviews.find({interViewerEmail: interViewerEmail}).sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       console.log(error.message);
     }
   });
 
-  // git user interview
+  // git on interveiw calling page interview
 
-  app.get("/get-user-interview/:email", async (req, res) => {
+  app.get("/get-user-interview/:id", async (req, res) => {
     try {
-      const userEmail = req.params.email;
+      const id = req.params.id;
 
-      const result = await interviews.findOne({ candidateEmail: userEmail });
+      const result = await interviews.findOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);
     }
   });
+  
+  // get user
+  app.get("/user-interview/:email", async (req, res) => {
+    try {
+      const candidateEmail = req.params.email;
+
+      const result = await interviews.findOne({ candidateEmail: candidateEmail });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get interview details for admin
+  app.get("/interviewDetails/:id", async(req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await interviews.findOne({_id: id});
+      res.send(result)
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
 
   // MY COURSE getting api
 
