@@ -1,5 +1,6 @@
 import { app } from "../app.js";
 import blogs from "../models/blogs.js";
+import courses from "../models/courses.js";
 import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
@@ -212,6 +213,20 @@ const allUpdateRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  // course update api
+  app.put("/courses" , async (req , res) => {
+    try {
+      const id = req.params.id
+    const updatedValue = req.data
+    const result = await courses.updateOne(
+      {_id : id},
+      {$set: updatedValue},
+      {upsert: true})
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
 }; //end bracket of all update routes runction
 
 export default allUpdateRoutes;
