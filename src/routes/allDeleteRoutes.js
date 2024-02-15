@@ -85,7 +85,7 @@ const allDeleteRoutes = () => {
     }
   })
   // course delete api
-  app.delete("/courses" , async (req , res) =>{
+  app.delete("/courses/:id" , async (req , res) =>{
     try {
       const id = req.params.id
       const result = await courses.deleteOne({_id : id})

@@ -214,7 +214,7 @@ const allUpdateRoutes = () => {
     }
   });
   // course update api
-  app.put("/courses" , async (req , res) => {
+  app.put("/courses/:id" , async (req , res) => {
     try {
       const id = req.params.id
     const updatedValue = req.data
