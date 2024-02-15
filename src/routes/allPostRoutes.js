@@ -211,13 +211,6 @@ app.post("/my_course" , async (req , res ) => {
   }
 })
 
-
-
-
-
-
-
-
 }; //end all post function brackets
 
 export default allPostRoutes;
