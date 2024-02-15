@@ -6,6 +6,8 @@ import allGetRoutes from "./routes/allGetRoutes.js";
 import allDeleteRoutes from "./routes/allDeleteRoutes.js";
 import cookieParser from "cookie-parser";
 import CreateToken from "./jwt/token.js";
+import sentMail from "./shares/sentMail.js";
+import payment from "./payment/payment.js";
 
 const app = express();
 app.use(
@@ -16,7 +18,7 @@ app.use(
       "http://localhost:5175",
       "http://localhost:5176",
       "https://unity-spark-22122.web.app",
-      "https://api.imgbb.com/1/upload?key=5633fa8b7fb7bf3c2d44694187c33411"
+      "https://api.imgbb.com/1/upload?key=5633fa8b7fb7bf3c2d44694187c33411",
     ],
     credentials: true,
   })
@@ -37,10 +39,16 @@ allGetRoutes();
 // call all Post requests
 allPostRoutes();
 
+// sent mail post request
+sentMail();
+
 // call all update routes
 allUpdateRoutes();
 
 // call all delete routes
 allDeleteRoutes();
+
+// payment
+payment();
 
 export { app };
