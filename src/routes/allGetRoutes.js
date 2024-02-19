@@ -66,9 +66,10 @@ const allGetRoutes = () => {
   });
 
   //  get all employee
-  app.get("/employees", verifyToken, async (req, res) => {
+  app.get("/employees", verifyToken,  async (req, res) => {
     try {
-      const userEmail = req.user.email;
+      console.log("checking in employee",req.user)
+      const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
         { role: 1, _id: 0 }
