@@ -258,13 +258,25 @@ const allGetRoutes = () => {
     }
   });
 
+    // get job details info for apply page
+    app.get("/my-applyjobs/:id", async (req, res) => {
+      try {
+        const jobAdsId = req.params.id;
+        const result = await jobAds.findOne({ _id: jobAdsId });
+        res.send(result);
+      } catch (error) {
+        res.status(500).send("Something went wrong.");
+      }
+    });
+
   // get similar jobs based on job details page job type
   app.get("/similar_jobs", async (req, res) => {
     try {
-      const similarJobs = req.query.jobtype;
+      const jobTitle = req.query.job_title;
+      const jobId = req.query.jobId;
       // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
-        .find({ job_category1: similarJobs })
+        .find({ job_title: jobTitle, _id: {$ne: jobId} })
         .skip(0)
         .limit(3);
       res.send(result);
