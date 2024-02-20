@@ -733,15 +733,30 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   })
-  // getting enrolled course email length
-  // app.get("/enrolled_course_length/:email" , async(req , res) => {
-  //   try {
-      
-  //   } catch (error) {
-      
-  //   }
-  // })
-  // mizan bhai er jonno push
+  // getting enrolled course email count
+  app.get("/enrolled_course_length/:email" , async(req , res) => {
+    try {
+      const email = req.params.email
+      const result = await myCourse.aggregate([
+        {
+          $match:{
+            userEmail: email
+          }
+        },
+        {
+          $group:{
+            _id: "$userEmail",
+            count:{$sum: 1}
+          }
+        },
+       
+      ])
+       res.json(result[0])
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+  
  
 
   // get payment details
