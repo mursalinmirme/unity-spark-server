@@ -17,6 +17,7 @@ import comments from "../models/comments.js";
 import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
+import chat from '../models/chats.js'
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -78,6 +79,21 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
+      const result = await users.find({ role: "employee" });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.get("/all-employees", verifyToken,  async (req, res) => {
+    try {
+      console.log("checking in employee",req.user)
+      const userEmail = req?.user?.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
       const result = await users.find({ role: "employee" });
       res.send(result);
     } catch (error) {
@@ -721,6 +737,20 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   })
+
+  app.get("/chat", async (req, res) => {
+    try {
+      const senderEmail = req.query.sender_email
+      const recieverEmail = req.query.reciever_email
+      const result = await chat
+        .find({senderEmail: senderEmail, recieverEmail: recieverEmail})
+        .sort({ createdAt: -1 });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
 }; //ending all get routes brackets
 
 
