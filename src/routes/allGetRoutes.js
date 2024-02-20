@@ -761,19 +761,18 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   })
-
+  // get all user between two users
   app.get("/chat", async (req, res) => {
     try {
       const senderEmail = req.query.sender_email
       const recieverEmail = req.query.reciever_email
       console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
-      const result = await chat
-        .find({
-          $or: [
-            { sender: senderEmail, receiver: recieverEmail },
-            { sender: recieverEmail, receiver: senderEmail }
-          ]
-        })
+      const result = await chat.find({
+        $or: [
+          { sender: senderEmail, reciever: recieverEmail },
+          { sender: recieverEmail, reciever: senderEmail }
+        ]
+      });
         res.send(result);
       }
       catch (error) {
@@ -804,8 +803,6 @@ const allGetRoutes = () => {
     }
   })
   
- 
-
   // get payment details
   app.get("/payment-details", async (req, res) => {
     try {
@@ -815,6 +812,20 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+
+  // does the applicant already applied the specific job check
+  app.get("/does-user-applied", async (req, res) => {
+    try {
+      const applied_jobs_id = req.query.applied_jobs_id;
+      const email = req.query.email;
+      console.log("does I got both items query", applied_jobs_id, email);
+      const result = await jobapplications.findOne({applied_job_id: applied_jobs_id, email: email}).countDocuments();
+      console.log(result);
+      res.send({applied: result})
+    } catch (error) {
+      res.status(500).send(error.message)
+    }
+  })
 }; //ending all get routes brackets
 
 export default allGetRoutes;
