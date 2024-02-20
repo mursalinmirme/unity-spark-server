@@ -17,6 +17,7 @@ import comments from "../models/comments.js";
 import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
+import chat from '../models/chats.js'
 import paymentInfo from "../models/payment.js";
 
 const allGetRoutes = () => {
@@ -79,6 +80,21 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
+      const result = await users.find({ role: "employee" });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.get("/all-employees", verifyToken,  async (req, res) => {
+    try {
+      console.log("checking in employee",req.user)
+      const userEmail = req?.user?.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
       const result = await users.find({ role: "employee" });
       res.send(result);
     } catch (error) {
@@ -744,6 +760,25 @@ const allGetRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
+  })
+
+  app.get("/chat", async (req, res) => {
+    try {
+      const senderEmail = req.query.sender_email
+      const recieverEmail = req.query.reciever_email
+      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
+      const result = await chat
+        .find({
+          $or: [
+            { sender: senderEmail, receiver: recieverEmail },
+            { sender: recieverEmail, receiver: senderEmail }
+          ]
+        })
+        res.send(result);
+      }
+      catch (error) {
+        res.status(500).send(error.message);
+      }
   })
   // getting enrolled course email count
   app.get("/enrolled_course_length/:email" , async(req , res) => {
