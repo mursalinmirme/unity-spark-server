@@ -73,6 +73,11 @@ const usersSchema = mongoose.Schema({
     type: String,
     default: "guest",
   },
+  salary: {
+    type: String,
+    default: "",
+  },
+
   resume_link: {
     type: String,
   },

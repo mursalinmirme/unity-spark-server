@@ -16,6 +16,8 @@ import req_events from "../models/requestevents.js";
 import comments from "../models/comments.js";
 import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
+import myCourse from "../models/mycourse.js";
+import paymentInfo from "../models/payment.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -65,9 +67,10 @@ const allGetRoutes = () => {
   });
 
   //  get all employee
-  app.get("/employees", verifyToken, async (req, res) => {
+  app.get("/employees", verifyToken,  async (req, res) => {
     try {
-      const userEmail = req.user.email;
+      console.log("checking in employee",req.user)
+      const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
         { role: 1, _id: 0 }
@@ -295,6 +298,16 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
+
+  // get all feedback for testimonials
+  app.get('/all-feedback', async (req,res)=>{
+    try {
+      const result = await feedback.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
 
   // get user role when he/she will login our website
   app.get("/user-role", async (req, res) => {
@@ -649,9 +662,7 @@ const allGetRoutes = () => {
 
   app.get("/courses", async (req, res) => {
     try {
-      const result = await courses
-        .find({ status: "Accepted" })
-        .sort({ createdAt: -1 });
+      const result = await courses.find().sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -659,26 +670,104 @@ const allGetRoutes = () => {
   });
 
   //  git all interview information
-  app.get("/get-interview", async (req, res) => {
+  app.get("/get-admin-interview/:email", async (req, res) => {
     try {
-      const result = await interviews.find().sort({ createdAt: -1 });
+      const interViewerEmail = req.params.email;
+      const result = await interviews
+        .find({ interViewerEmail: interViewerEmail })
+        .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       console.log(error.message);
     }
   });
 
-  // git user interview
+  // git on interveiw calling page interview
 
-  app.get("/get-user-interview/:email", async (req, res) => {
+  app.get("/get-user-interview/:id", async (req, res) => {
     try {
-      const userEmail = req.params.email;
-      console.log(userEmail);
-      const result = await interviews.findOne({ candidateEmail: userEmail });
+      const id = req.params.id;
+      const result = await interviews.findOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);
+    }
+  });
+
+  // get user
+  app.get("/user-interview/:email", async (req, res) => {
+    try {
+      const candidateEmail = req.params.email;
+
+      const result = await interviews.findOne({
+        candidateEmail: candidateEmail,
+      });
+      res.send(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  // get interview details for admin
+  app.get("/interviewDetails/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await interviews.findOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // MY COURSE getting api
+
+  app.get("/my_course/:email", async (req, res) => {
+    console.log("checking working or not");
+    try {
+      const userEmail = req.params.email;
+      const result = await myCourse
+        .find({ userEmail: userEmail })
+        .populate("uniqueID");
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+  // getting enrolled course email count
+  app.get("/enrolled_course_length/:email" , async(req , res) => {
+    try {
+      const email = req.params.email
+      const result = await myCourse.aggregate([
+        {
+          $match:{
+            userEmail: email
+          }
+        },
+        {
+          $group:{
+            _id: "$userEmail",
+            count:{$sum: 1}
+          }
+        },
+       
+      ])
+       res.json(result[0])
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+  
+ 
+
+  // get payment details
+  app.get("/payment-details", async (req, res) => {
+    try {
+      const result = await paymentInfo.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
     }
   });
 }; //ending all get routes brackets
+
 export default allGetRoutes;

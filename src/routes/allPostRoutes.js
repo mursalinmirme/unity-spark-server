@@ -2,7 +2,7 @@ import { app } from "../app.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
 import blogs from "../models/blogs.js";
 import comments from "../models/comments.js";
-import courses from '../models/courses.js';
+import courses from "../models/courses.js";
 import events from "../models/events.js";
 import feedback from "../models/feedback.js";
 import jobAds from "../models/jobAds.js";
@@ -13,6 +13,8 @@ import req_events from "../models/requestevents.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
 import interviews from "../models/interviews.js";
+import myCourse from "../models/mycourse.js";
+import paymentInfo from "../models/payment.js";
 // All Post Requests
 const allPostRoutes = () => {
   // user sign up route
@@ -121,7 +123,10 @@ const allPostRoutes = () => {
     try {
       const savedEmail = req.query.email;
       const jobData = req.body;
-      const existSaveData = await saveJobInfo.findOne({ email: savedEmail, applicationId: jobData?.applicationId });
+      const existSaveData = await saveJobInfo.findOne({
+        email: savedEmail,
+        applicationId: jobData?.applicationId,
+      });
       if (existSaveData) {
         return res.send("All Ready Data Saved");
       }
@@ -133,80 +138,91 @@ const allPostRoutes = () => {
     }
   });
 
-  // post route for requested events 
-  app.post("/reqEvents" , async (req , res) => {
+  // post route for requested events
+  app.post("/reqEvents", async (req, res) => {
     try {
-      const reqEventData = req.body
-      const newReqEventData = req_events(reqEventData)
-      const result = await newReqEventData.save()
-      res.send(result)
-      
+      const reqEventData = req.body;
+      const newReqEventData = req_events(reqEventData);
+      const result = await newReqEventData.save();
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
-  })
+  });
 
-// Post a blog for blogs feature------>>>>
-app.post("/blogs", async(req, res) => {
-  try {
-    const blogInfo = req.body;
-    const newBlog = new blogs(blogInfo);
-    const result = await newBlog.save();
-    res.send(result)
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-})
+  // Post a blog for blogs feature------>>>>
+  app.post("/blogs", async (req, res) => {
+    try {
+      const blogInfo = req.body;
+      const newBlog = new blogs(blogInfo);
+      const result = await newBlog.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
-// comments post api
-app.post("/comments", async (req, res) => {
-  try {
-    const commentData = req.body;
-    const newComment = new comments(commentData);
-    const result = await newComment.save();
-    res.send(result)
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-})
+  // comments post api
+  app.post("/comments", async (req, res) => {
+    try {
+      const commentData = req.body;
+      const newComment = new comments(commentData);
+      const result = await newComment.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
-// courses post api
-app.post("/courses", async (req, res) => {
-  try{  
-    const courseData = req.body;
-    console.log(courseData)
-    const newCourseData = new courses(courseData)
-    const result = await newCourseData.save()
-    console.log("checking", result)
-    res.send(result)
-  
-  } catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+  // courses post api
+  app.post("/courses", async (req, res) => {
+    try {
+      const courseData = req.body;
+      console.log(courseData);
+      const newCourseData = new courses(courseData);
+      const result = await newCourseData.save();
+      console.log("checking", result);
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
+  app.post("/interviews", async (req, res) => {
+    try {
+      const interview = req.body;
+      console.log(interview);
+      const newInterview = new interviews(interview);
+      const result = await newInterview.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
-app.post("/interviews", async(req, res) => {
-  try {
-    const interview = req.body;
-    console.log(interview);
-    const newInterview = new interviews(interview);
-    const result = await newInterview.save();
-    res.send(result)
-  } catch (error) {
-  res.status(500).send(error.message)
-  }
-})
+  app.post("/my_course", async (req, res) => {
+    try {
+      const MyCourse = req.body;
+      const newMyCourse = new myCourse(MyCourse);
+      const result = await newMyCourse.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+      console.log(error);
+    }
+  });
 
-
-
-
-
-
-
-
-
-
+  // payment info saved
+  app.post("/payment", async (req, res) => {
+    try {
+      const newPayInfo = req.body;
+      const payInfo = new paymentInfo(newPayInfo);
+      const result = await payInfo.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 }; //end all post function brackets
 
 export default allPostRoutes;

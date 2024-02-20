@@ -1,5 +1,6 @@
 import { app } from "../app.js";
 import blogs from "../models/blogs.js";
+import courses from "../models/courses.js";
 import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
@@ -15,6 +16,24 @@ const allUpdateRoutes = () => {
       const updateInfo = req.body;
       const result = await users.updateOne(
         { email: updateEmail },
+        { $set: updateInfo },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      res.status(400).send("Something went wrong.");
+    }
+  });
+
+  // user confirm employee
+
+  app.patch("/confirm-employee/:id", async (req, res) => {
+    try {
+      const updateId = req.params.id;
+      const updateInfo = req.body;
+      console.log("check body ", updateInfo);
+      const result = await users.updateOne(
+        { _id: updateId },
         { $set: updateInfo },
         { upsert: true }
       );
@@ -151,27 +170,36 @@ const allUpdateRoutes = () => {
     }
   });
   // task management tast checklist progress update api
-  app.put("/my-running-task-progress/:id", async(req, res) => {
+  app.put("/my-running-task-progress/:id", async (req, res) => {
     try {
       const runningTaskId = req.body.currentTaskId;
       const taskerId = req.params.id;
-      const checkIfExist = await tasks.findOne({_id: runningTaskId, 'employees._id': taskerId},{ 'employees.$': 1 });
+      const checkIfExist = await tasks.findOne(
+        { _id: runningTaskId, "employees._id": taskerId },
+        { "employees.$": 1 }
+      );
       const taskStatus = checkIfExist.employees[0].status;
-      if(taskStatus === "complete"){
-        const result = await tasks.updateOne({_id: runningTaskId, 'employees._id': taskerId}, {$set: {"employees.$.status": 'running'}});
+      if (taskStatus === "complete") {
+        const result = await tasks.updateOne(
+          { _id: runningTaskId, "employees._id": taskerId },
+          { $set: { "employees.$.status": "running" } }
+        );
         res.send(result);
-        return
+        return;
       }
-      const result = await tasks.updateOne({_id: runningTaskId, 'employees._id': taskerId}, {$set: {"employees.$.status": 'complete'}});
+      const result = await tasks.updateOne(
+        { _id: runningTaskId, "employees._id": taskerId },
+        { $set: { "employees.$.status": "complete" } }
+      );
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
   // update a specific blog from blogs models----->>>>>>>
   // requested blog delete api
-  app.put("/blogs/:id", async(req, res) => {
+  app.put("/blogs/:id", async (req, res) => {
     try {
       const updateId = req.params.id;
       const updateInfo = req.body;
@@ -179,16 +207,26 @@ const allUpdateRoutes = () => {
         { _id: updateId },
         { $set: updateInfo },
         { upsert: true }
-           )
-      res.send(result)
+      );
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
+    }
+  });
+  // course update api
+  app.put("/courses/:id" , async (req , res) => {
+    try {
+      const id = req.params.id
+    const updatedValue = req.data
+    const result = await courses.updateOne(
+      {_id : id},
+      {$set: updatedValue},
+      {upsert: true})
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
     }
   })
-
-
-
-
 }; //end bracket of all update routes runction
 
 export default allUpdateRoutes;
