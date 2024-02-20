@@ -18,6 +18,7 @@ import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import chat from '../models/chats.js'
+import paymentInfo from "../models/payment.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -274,13 +275,25 @@ const allGetRoutes = () => {
     }
   });
 
+    // get job details info for apply page
+    app.get("/my-applyjobs/:id", async (req, res) => {
+      try {
+        const jobAdsId = req.params.id;
+        const result = await jobAds.findOne({ _id: jobAdsId });
+        res.send(result);
+      } catch (error) {
+        res.status(500).send("Something went wrong.");
+      }
+    });
+
   // get similar jobs based on job details page job type
   app.get("/similar_jobs", async (req, res) => {
     try {
-      const similarJobs = req.query.jobtype;
+      const jobTitle = req.query.job_title;
+      const jobId = req.query.jobId;
       // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
-        .find({ job_category1: similarJobs })
+        .find({ job_title: jobTitle, _id: {$ne: jobId} })
         .skip(0)
         .limit(3);
       res.send(result);
@@ -313,6 +326,16 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
+
+  // get all feedback for testimonials
+  app.get('/all-feedback', async (req,res)=>{
+    try {
+      const result = await feedback.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
 
   // get user role when he/she will login our website
   app.get("/user-role", async (req, res) => {
@@ -667,22 +690,20 @@ const allGetRoutes = () => {
 
   app.get("/courses", async (req, res) => {
     try {
-      const result = await courses
-        .find()
-        .sort({ createdAt: -1 });
+      const result = await courses.find().sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
   });
-  
-
 
   //  git all interview information
   app.get("/get-admin-interview/:email", async (req, res) => {
     try {
       const interViewerEmail = req.params.email;
-      const result = await interviews.find({interViewerEmail: interViewerEmail}).sort({ createdAt: -1 });
+      const result = await interviews
+        .find({ interViewerEmail: interViewerEmail })
+        .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       console.log(error.message);
@@ -694,20 +715,21 @@ const allGetRoutes = () => {
   app.get("/get-user-interview/:id", async (req, res) => {
     try {
       const id = req.params.id;
-
       const result = await interviews.findOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);
     }
   });
-  
+
   // get user
   app.get("/user-interview/:email", async (req, res) => {
     try {
       const candidateEmail = req.params.email;
 
-      const result = await interviews.findOne({ candidateEmail: candidateEmail });
+      const result = await interviews.findOne({
+        candidateEmail: candidateEmail,
+      });
       res.send(result);
     } catch (error) {
       console.log(error.message);
@@ -715,26 +737,28 @@ const allGetRoutes = () => {
   });
 
   // get interview details for admin
-  app.get("/interviewDetails/:id", async(req, res) => {
+  app.get("/interviewDetails/:id", async (req, res) => {
     try {
       const id = req.params.id;
-      const result = await interviews.findOne({_id: id});
-      res.send(result)
+      const result = await interviews.findOne({ _id: id });
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
-  })
+  });
 
   // MY COURSE getting api
 
-  app.get("/my_course/:email", async (req , res)=>{
-    console.log("checking working or not")
+  app.get("/my_course/:email", async (req, res) => {
+    console.log("checking working or not");
     try {
       const userEmail = req.params.email;
-      const result = await myCourse.find({userEmail: userEmail}).populate("uniqueID");
+      const result = await myCourse
+        .find({ userEmail: userEmail })
+        .populate("uniqueID");
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
     }
   })
 
@@ -751,13 +775,46 @@ const allGetRoutes = () => {
           ]
         })
         res.send(result);
+      }
+      catch (error) {
+        res.status(500).send(error.message);
+      }
+  })
+  // getting enrolled course email count
+  app.get("/enrolled_course_length/:email" , async(req , res) => {
+    try {
+      const email = req.params.email
+      const result = await myCourse.aggregate([
+        {
+          $match:{
+            userEmail: email
+          }
+        },
+        {
+          $group:{
+            _id: "$userEmail",
+            count:{$sum: 1}
+          }
+        },
+       
+      ])
+       res.json(result[0])
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+  
+ 
+
+  // get payment details
+  app.get("/payment-details", async (req, res) => {
+    try {
+      const result = await paymentInfo.find();
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
   });
-
 }; //ending all get routes brackets
-
-
 
 export default allGetRoutes;
