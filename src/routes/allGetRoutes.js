@@ -742,10 +742,15 @@ const allGetRoutes = () => {
     try {
       const senderEmail = req.query.sender_email
       const recieverEmail = req.query.reciever_email
+      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
       const result = await chat
-        .find({senderEmail: senderEmail, recieverEmail: recieverEmail})
-        .sort({ createdAt: -1 });
-      res.send(result);
+        .find({
+          $or: [
+            { sender: senderEmail, receiver: recieverEmail },
+            { sender: recieverEmail, receiver: senderEmail }
+          ]
+        })
+        res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
