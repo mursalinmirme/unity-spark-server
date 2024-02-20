@@ -721,6 +721,15 @@ const allGetRoutes = () => {
       console.log(error.message);
     }
   })
+  // getting enrolled course email length
+  // app.get("/enrolled_course_length/:email" , async(req , res) => {
+  //   try {
+      
+  //   } catch (error) {
+      
+  //   }
+  // })
+  // mizan bhai er jonno push
 }; //ending all get routes brackets
 
 
