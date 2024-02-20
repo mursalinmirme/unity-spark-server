@@ -732,7 +732,17 @@ const allGetRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  });
+  })
+  // getting enrolled course email length
+  // app.get("/enrolled_course_length/:email" , async(req , res) => {
+  //   try {
+      
+  //   } catch (error) {
+      
+  //   }
+  // })
+  // mizan bhai er jonno push
+ 
 
   // get payment details
   app.get("/payment-details", async (req, res) => {
