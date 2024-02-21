@@ -810,20 +810,22 @@ const allGetRoutes = () => {
   // get all user between two users
   app.get("/chat", async (req, res) => {
     try {
-      const senderEmail = req.query.sender_email;
-      const recieverEmail = req.query.reciever_email;
-      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
-      const result = await chat.find({
+      const senderEmail = req.query.sender_email
+      const recieverEmail = req.query.reciever_email
+      const result = await chat
+      .find({
         $or: [
           { sender: senderEmail, reciever: recieverEmail },
-          { sender: recieverEmail, reciever: senderEmail },
-        ],
-      });
-      res.send(result);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
+          { sender: recieverEmail, reciever: senderEmail }
+        ]
+      })
+      .sort({ createdAt: -1 });;
+        res.send(result);
+      }
+      catch (error) {
+        res.status(500).send(error.message);
+      }
+  })
 
   // getting enrolled course email count
   app.get("/enrolled_course_length/:email", async (req, res) => {
