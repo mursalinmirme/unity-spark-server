@@ -17,6 +17,7 @@ import comments from "../models/comments.js";
 import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
+import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
 
 const allGetRoutes = () => {
@@ -79,6 +80,21 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
+      const result = await users.find({ role: "employee" });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.get("/all-employees", verifyToken, async (req, res) => {
+    try {
+      console.log("checking in employee", req.user);
+      const userEmail = req?.user?.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
       const result = await users.find({ role: "employee" });
       res.send(result);
     } catch (error) {
@@ -259,13 +275,25 @@ const allGetRoutes = () => {
     }
   });
 
+  // get job details info for apply page
+  app.get("/my-applyjobs/:id", async (req, res) => {
+    try {
+      const jobAdsId = req.params.id;
+      const result = await jobAds.findOne({ _id: jobAdsId });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
+
   // get similar jobs based on job details page job type
   app.get("/similar_jobs", async (req, res) => {
     try {
-      const similarJobs = req.query.jobtype;
+      const jobTitle = req.query.job_title;
+      const jobId = req.query.jobId;
       // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
-        .find({ job_category1: similarJobs })
+        .find({ job_title: jobTitle, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
       res.send(result);
@@ -732,6 +760,23 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  // get all user between two users
+  app.get("/chat", async (req, res) => {
+    try {
+      const senderEmail = req.query.sender_email;
+      const recieverEmail = req.query.reciever_email;
+      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
+      const result = await chat.find({
+        $or: [
+          { sender: senderEmail, reciever: recieverEmail },
+          { sender: recieverEmail, reciever: senderEmail },
+        ],
+      });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
   // getting enrolled course email count
   app.get("/enrolled_course_length/:email", async (req, res) => {
     try {
@@ -760,6 +805,22 @@ const allGetRoutes = () => {
     try {
       const result = await paymentInfo.find();
       res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // does the applicant already applied the specific job check
+  app.get("/does-user-applied", async (req, res) => {
+    try {
+      const applied_jobs_id = req.query.applied_jobs_id;
+      const email = req.query.email;
+      console.log("does I got both items query", applied_jobs_id, email);
+      const result = await jobapplications
+        .findOne({ applied_job_id: applied_jobs_id, email: email })
+        .countDocuments();
+      console.log(result);
+      res.send({ applied: result });
     } catch (error) {
       res.status(500).send(error.message);
     }

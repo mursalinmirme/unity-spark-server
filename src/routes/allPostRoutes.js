@@ -15,6 +15,8 @@ import users from "../models/users.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import paymentInfo from "../models/payment.js";
+import chat from "../models/chats.js";
+
 // All Post Requests
 const allPostRoutes = () => {
   // user sign up route
@@ -223,6 +225,17 @@ const allPostRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+
+  app.post('/chat', async (req, res) => {
+    try {
+      const newChats = req.body;
+      const chats = new chat(newChats);
+      const result = await chats.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
 }; //end all post function brackets
 
 export default allPostRoutes;
