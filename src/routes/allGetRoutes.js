@@ -17,7 +17,7 @@ import comments from "../models/comments.js";
 import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
-import chat from '../models/chats.js'
+import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
 
 const allGetRoutes = () => {
@@ -68,9 +68,9 @@ const allGetRoutes = () => {
   });
 
   //  get all employee
-  app.get("/employees", verifyToken,  async (req, res) => {
+  app.get("/employees", verifyToken, async (req, res) => {
     try {
-      console.log("checking in employee",req.user)
+      console.log("checking in employee", req.user);
       const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
@@ -87,9 +87,9 @@ const allGetRoutes = () => {
     }
   });
 
-  app.get("/all-employees", verifyToken,  async (req, res) => {
+  app.get("/all-employees", verifyToken, async (req, res) => {
     try {
-      console.log("checking in employee",req.user)
+      console.log("checking in employee", req.user);
       const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
@@ -275,16 +275,16 @@ const allGetRoutes = () => {
     }
   });
 
-    // get job details info for apply page
-    app.get("/my-applyjobs/:id", async (req, res) => {
-      try {
-        const jobAdsId = req.params.id;
-        const result = await jobAds.findOne({ _id: jobAdsId });
-        res.send(result);
-      } catch (error) {
-        res.status(500).send("Something went wrong.");
-      }
-    });
+  // get job details info for apply page
+  app.get("/my-applyjobs/:id", async (req, res) => {
+    try {
+      const jobAdsId = req.params.id;
+      const result = await jobAds.findOne({ _id: jobAdsId });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
 
   // get similar jobs based on job details page job type
   app.get("/similar_jobs", async (req, res) => {
@@ -293,7 +293,7 @@ const allGetRoutes = () => {
       const jobId = req.query.jobId;
       // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
-        .find({ job_title: jobTitle, _id: {$ne: jobId} })
+        .find({ job_title: jobTitle, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
       res.send(result);
@@ -328,14 +328,14 @@ const allGetRoutes = () => {
   });
 
   // get all feedback for testimonials
-  app.get('/all-feedback', async (req,res)=>{
+  app.get("/all-feedback", async (req, res) => {
     try {
       const result = await feedback.find();
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
   // get user role when he/she will login our website
   app.get("/user-role", async (req, res) => {
@@ -561,14 +561,13 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  // getting sorting bloggs
-  app.get("/all-blogs", async (req, res) => {
+  // getting three blogs only
+  app.get("/top-blogs", async (req, res) => {
     try {
-      const email = req.params.email;
       const result = await blogs.find().skip(0).limit(3);
       res.send(result);
     } catch (error) {
-      cres.status(500).send(error);
+      res.status(500).send(error);
     }
   });
   // getting user added blogs data
@@ -760,49 +759,47 @@ const allGetRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
   // get all user between two users
   app.get("/chat", async (req, res) => {
     try {
-      const senderEmail = req.query.sender_email
-      const recieverEmail = req.query.reciever_email
+      const senderEmail = req.query.sender_email;
+      const recieverEmail = req.query.reciever_email;
       console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
       const result = await chat.find({
         $or: [
           { sender: senderEmail, reciever: recieverEmail },
-          { sender: recieverEmail, reciever: senderEmail }
-        ]
+          { sender: recieverEmail, reciever: senderEmail },
+        ],
       });
-        res.send(result);
-      }
-      catch (error) {
-        res.status(500).send(error.message);
-      }
-  })
-  // getting enrolled course email count
-  app.get("/enrolled_course_length/:email" , async(req , res) => {
-    try {
-      const email = req.params.email
-      const result = await myCourse.aggregate([
-        {
-          $match:{
-            userEmail: email
-          }
-        },
-        {
-          $group:{
-            _id: "$userEmail",
-            count:{$sum: 1}
-          }
-        },
-       
-      ])
-       res.json(result[0])
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
-  
+  });
+  // getting enrolled course email count
+  app.get("/enrolled_course_length/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await myCourse.aggregate([
+        {
+          $match: {
+            userEmail: email,
+          },
+        },
+        {
+          $group: {
+            _id: "$userEmail",
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+      res.json(result[0]);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // get payment details
   app.get("/payment-details", async (req, res) => {
     try {
@@ -819,13 +816,15 @@ const allGetRoutes = () => {
       const applied_jobs_id = req.query.applied_jobs_id;
       const email = req.query.email;
       console.log("does I got both items query", applied_jobs_id, email);
-      const result = await jobapplications.findOne({applied_job_id: applied_jobs_id, email: email}).countDocuments();
+      const result = await jobapplications
+        .findOne({ applied_job_id: applied_jobs_id, email: email })
+        .countDocuments();
       console.log(result);
-      res.send({applied: result})
+      res.send({ applied: result });
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
-  })
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
