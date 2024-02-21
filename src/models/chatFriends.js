@@ -6,10 +6,14 @@ const chatFriendsSchema = mongoose.Schema({
         require: true
     },
     image: {
-        type: Date,
-        default: Date.now,
+        type: String,
+        require: true
     },
-    email: {
+    my_email: {
+        type: String,
+        require: true
+    },
+    friend_email: {
         type: String,
         require: true
     }

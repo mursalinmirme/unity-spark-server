@@ -19,6 +19,7 @@ import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import chat from '../models/chats.js'
 import paymentInfo from "../models/payment.js";
+import chatFriends from "../models/chatFriends.js";
 
 const allGetRoutes = () => {
   // get specific user data by _id
@@ -766,7 +767,6 @@ const allGetRoutes = () => {
     try {
       const senderEmail = req.query.sender_email
       const recieverEmail = req.query.reciever_email
-      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
       const result = await chat.find({
         $or: [
           { sender: senderEmail, reciever: recieverEmail },
@@ -825,6 +825,17 @@ const allGetRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message)
     }
+  })
+  app.get("/chat-friends", async (req, res) => {
+    try {
+      const email = req.query.email
+      console.log("friend email:", email);
+      const result = await chatFriends.find({my_email: email});
+        res.send(result);
+      }
+      catch (error) {
+        res.status(500).send(error.message);
+      }
   })
 }; //ending all get routes brackets
 

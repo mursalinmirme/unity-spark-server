@@ -241,6 +241,7 @@ const allPostRoutes = () => {
   app.post('/chat-friends', async (req, res) => {
     try {
       const newFriends = req.body;
+      console.log('My new friends', newFriends);
       const newChatFriends = new chatFriends(newFriends);
       const result = await newChatFriends.save();
       res.send(result);
