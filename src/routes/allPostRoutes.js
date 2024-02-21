@@ -16,6 +16,7 @@ import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import paymentInfo from "../models/payment.js";
 import chat from "../models/chats.js";
+import savedBlogs from "../models/savedBlogs.js";
 
 // All Post Requests
 const allPostRoutes = () => {
@@ -176,6 +177,28 @@ const allPostRoutes = () => {
     }
   });
 
+  // Saved Blogs for individual user
+  app.post("/savedBlogs", async (req, res) => {
+    try {
+      const userEmail = req.body.email;
+      const blogId = req.body.blogInfo;
+      const isExist = await savedBlogs.findOne({
+        email: userEmail,
+        blogInfo: blogId,
+      });
+
+      if (isExist) {
+        return res.send("Blog is already saved by the user.");
+      }
+      const newBlog = new savedBlogs(req.body);
+
+      const result = await newBlog.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // courses post api
   app.post("/courses", async (req, res) => {
     try {
@@ -226,7 +249,7 @@ const allPostRoutes = () => {
     }
   });
 
-  app.post('/chat', async (req, res) => {
+  app.post("/chat", async (req, res) => {
     try {
       const newChats = req.body;
       const chats = new chat(newChats);
@@ -235,7 +258,7 @@ const allPostRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 }; //end all post function brackets
 
 export default allPostRoutes;
