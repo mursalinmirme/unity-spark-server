@@ -562,9 +562,14 @@ const allGetRoutes = () => {
     }
   });
   // getting three blogs only
-  app.get("/top-blogs", async (req, res) => {
+  app.get("/top-blogs/:id", async (req, res) => {
     try {
-      const result = await blogs.find().skip(0).limit(3);
+      const currentId = req.params.id;
+      console.log("current", currentId);
+      const result = await blogs
+        .find({ _id: { $ne: currentId } })
+        .skip(0)
+        .limit(2);
       res.send(result);
     } catch (error) {
       res.status(500).send(error);
