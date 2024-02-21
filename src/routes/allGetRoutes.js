@@ -67,9 +67,9 @@ const allGetRoutes = () => {
   });
 
   //  get all employee
-  app.get("/employees", verifyToken,  async (req, res) => {
+  app.get("/employees", verifyToken, async (req, res) => {
     try {
-      console.log("checking in employee",req.user)
+      console.log("checking in employee", req.user);
       const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
@@ -300,14 +300,14 @@ const allGetRoutes = () => {
   });
 
   // get all feedback for testimonials
-  app.get('/all-feedback', async (req,res)=>{
+  app.get("/all-feedback", async (req, res) => {
     try {
       const result = await feedback.find();
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
   // get user role when he/she will login our website
   app.get("/user-role", async (req, res) => {
@@ -533,14 +533,13 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  // getting sorting bloggs
-  app.get("/all-blogs", async (req, res) => {
+  // getting three blogs only
+  app.get("/top-blogs", async (req, res) => {
     try {
-      const email = req.params.email;
       const result = await blogs.find().skip(0).limit(3);
       res.send(result);
     } catch (error) {
-      cres.status(500).send(error);
+      res.status(500).send(error);
     }
   });
   // getting user added blogs data
@@ -732,32 +731,29 @@ const allGetRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
   // getting enrolled course email count
-  app.get("/enrolled_course_length/:email" , async(req , res) => {
+  app.get("/enrolled_course_length/:email", async (req, res) => {
     try {
-      const email = req.params.email
+      const email = req.params.email;
       const result = await myCourse.aggregate([
         {
-          $match:{
-            userEmail: email
-          }
+          $match: {
+            userEmail: email,
+          },
         },
         {
-          $group:{
+          $group: {
             _id: "$userEmail",
-            count:{$sum: 1}
-          }
+            count: { $sum: 1 },
+          },
         },
-       
-      ])
-       res.json(result[0])
+      ]);
+      res.json(result[0]);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
-  
- 
+  });
 
   // get payment details
   app.get("/payment-details", async (req, res) => {
