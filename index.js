@@ -7,10 +7,6 @@ dotenv.config({
     path: './.env'
 })
 
-
-
-
-
 // database connection function call
 dbConnect()
 .then(() => {

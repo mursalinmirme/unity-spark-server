@@ -1,12 +1,10 @@
 import Jwt from "jsonwebtoken";
 const verifyToken = async (req, res, next) => {
-    console.log("checking",req?.headers?.authorized)
     
     if(!req?.headers?.authorized){
       return   res.status(401).send({message : "Unauthorized Access"})
     }
     const token = req?.headers?.authorized.split(' ')[1]
-    console.log(token);
     Jwt.verify(token , process.env.SECRET_TOKEN , (err , decoder) => {
       if(err){
         return   res.status(401).send({message : "Unauthorized Access"})
