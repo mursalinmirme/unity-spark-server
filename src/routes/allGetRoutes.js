@@ -422,7 +422,8 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Pending" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6).sort
+      ({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -440,7 +441,8 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Confirmed" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6)
+      .sort({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
