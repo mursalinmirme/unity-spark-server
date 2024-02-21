@@ -188,7 +188,7 @@ const allPostRoutes = () => {
       });
 
       if (isExist) {
-        return res.send("Blog is already saved by the user.");
+        return res.send("Blog is already saved.");
       }
       const newBlog = new savedBlogs(req.body);
 
