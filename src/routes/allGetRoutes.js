@@ -21,18 +21,18 @@ import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
 
 const allGetRoutes = () => {
-   // get all users
-   app.get("/users/count", async (req, res)=>{
+  // get all users
+  app.get("/users/count", async (req, res) => {
     const result = await users.aggregate([
       {
-       $group:{
-        _id: null,
-        count: {$sum:1}
-       }
-      }
-    ])
-    res.json(result[0])
-  })
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
   // get specific user data by _id
   app.get("/users/:email", verifyToken, async (req, res) => {
     try {
@@ -48,7 +48,6 @@ const allGetRoutes = () => {
       res.status(500).send("Something went wrong.");
     }
   });
-  
 
   //  get all users
   app.get("/users", verifyToken, async (req, res) => {
@@ -80,23 +79,23 @@ const allGetRoutes = () => {
     }
   });
 
-  // get all employee count 
-  app.get("/employee/count", async (req, res)=> {
+  // get all employee count
+  app.get("/employee/count", async (req, res) => {
     const result = await users.aggregate([
       {
-        $match:{
-          role: "employee"
-        }
+        $match: {
+          role: "employee",
+        },
       },
       {
-        $group:{
+        $group: {
           _id: "$role",
-          count: {$sum: 1}
-        }
-      }
-    ])
-    res.json(result[0])
-  })
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
 
   //  get all employee
   app.get("/employees", verifyToken, async (req, res) => {
@@ -117,7 +116,6 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  
 
   app.get("/all-employees", verifyToken, async (req, res) => {
     try {
@@ -136,16 +134,17 @@ const allGetRoutes = () => {
 
   // get featured jobs for home section dkjfkd
   // get all jobads
-  app.get("/availableJobs/count", async (req , res) =>{
+  app.get("/availableJobs/count", async (req, res) => {
     const result = await jobAds.aggregate([
       {
-        $group:{
+        $group: {
           _id: null,
-          count: {$sum : 1}
-        }
-      }])
-    res.json(result[0])
-  })
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
@@ -824,11 +823,8 @@ const allGetRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
- 
-  
- 
-  
+  });
+
   // getting enrolled course email count
   app.get("/enrolled_course_length/:email", async (req, res) => {
     try {
@@ -846,7 +842,12 @@ const allGetRoutes = () => {
           },
         },
       ]);
-      res.json(result[0]);
+
+      if (result.length === 0) {
+        res.json({ _id: email, count: 0 });
+      } else {
+        res.json(result[0]);
+      }
     } catch (error) {
       res.status(500).send(error.message);
     }
