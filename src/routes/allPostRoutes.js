@@ -16,6 +16,7 @@ import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import paymentInfo from "../models/payment.js";
 import chat from "../models/chats.js";
+import chatFriends from "../models/chatFriends.js";
 
 // All Post Requests
 const allPostRoutes = () => {
@@ -231,6 +232,17 @@ const allPostRoutes = () => {
       const newChats = req.body;
       const chats = new chat(newChats);
       const result = await chats.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
+  app.post('/chat-friends', async (req, res) => {
+    try {
+      const newFriends = req.body;
+      const newChatFriends = new chatFriends(newFriends);
+      const result = await newChatFriends.save();
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
