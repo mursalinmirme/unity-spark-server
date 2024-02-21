@@ -145,6 +145,18 @@ const allGetRoutes = () => {
     ]);
     res.json(result[0]);
   });
+  // get all events number
+  app.get("/total_events/count", async (req, res) => {
+    const result = await events.aggregate([
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
