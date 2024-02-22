@@ -20,6 +20,7 @@ import myCourse from "../models/mycourse.js";
 import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
 import likedBlogs from "../models/likedBlogs.js";
+import savedBlogs from "../models/savedBlogs.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -680,6 +681,19 @@ const allGetRoutes = () => {
 
       console.log(totalLikes);
       res.send({ totalLikes: totalLikes });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // saved Blogs by individual user
+  app.get("/bookmarked-blogs/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+
+      const result = await savedBlogs.find({ email }).populate("blogInfo");
+
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
