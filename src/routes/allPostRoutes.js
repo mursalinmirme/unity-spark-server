@@ -206,14 +206,18 @@ const allPostRoutes = () => {
     const { email, blogId } = req.body;
     try {
       const isLiked = await likedBlogs.findOne({ email, blogId });
+      // console.log(isLiked, "like disi");
 
       if (isLiked) {
-        await likedBlogs.findByIdAndDelete(isLiked._id);
-        return res.status(200).send("Disliked");
+        const test = await likedBlogs.findByIdAndDelete(isLiked._id);
+
+        console.log(test, "dddd");
+        return res.status(200).json({ isLiked: false });
       } else {
         const newLike = new likedBlogs({ email, blogId });
         await newLike.save();
-        return res.status(201).send("Liked");
+        console.log(newLike, "newwww");
+        return res.status(201).json({ isLiked: true });
       }
     } catch (error) {
       res.status(500).send(error.message);
