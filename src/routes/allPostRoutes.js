@@ -177,7 +177,9 @@ const allPostRoutes = () => {
       }
       const result = await new savedBlogs(req.body).save();
       res.send(result);
-    } catch (error) {}
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
   });
 
   // comments post api
