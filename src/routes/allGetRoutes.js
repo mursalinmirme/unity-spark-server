@@ -19,6 +19,7 @@ import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
+import likedBlogs from "../models/likedBlogs.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -434,8 +435,8 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Pending" })
       .skip(skipFrom)
-      .limit(6).sort
-      ({createdAt: -1});
+      .limit(6)
+      .sort({ createdAt: -1 });
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -454,7 +455,7 @@ const allGetRoutes = () => {
       .find({ status: "Confirmed" })
       .skip(skipFrom)
       .limit(6)
-      .sort({createdAt: -1});
+      .sort({ createdAt: -1 });
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -655,6 +656,20 @@ const allGetRoutes = () => {
     }
   });
 
+  // get liked blog by individual user
+
+  app.get("/check-like", async (req, res) => {
+    const { email, blogId } = req.query;
+    console.log(email, blogId);
+    try {
+      const isLiked = await likedBlogs.findOne({ email, blogId });
+      console.log(!!isLiked, "hello");
+      res.send({ isLiked: !!isLiked });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // task management get employee running tasks
   app.get("/my-running-task/:email", async (req, res) => {
     try {
@@ -824,22 +839,21 @@ const allGetRoutes = () => {
   // get all user between two users
   app.get("/chat", async (req, res) => {
     try {
-      const senderEmail = req.query.sender_email
-      const recieverEmail = req.query.reciever_email
+      const senderEmail = req.query.sender_email;
+      const recieverEmail = req.query.reciever_email;
       const result = await chat
-      .find({
-        $or: [
-          { sender: senderEmail, reciever: recieverEmail },
-          { sender: recieverEmail, reciever: senderEmail }
-        ]
-      })
-      .sort({ createdAt: -1 });;
-        res.send(result);
-      }
-      catch (error) {
-        res.status(500).send(error.message);
-      }
-  })
+        .find({
+          $or: [
+            { sender: senderEmail, reciever: recieverEmail },
+            { sender: recieverEmail, reciever: senderEmail },
+          ],
+        })
+        .sort({ createdAt: -1 });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
   // getting enrolled course email count
   app.get("/enrolled_course_length/:email", async (req, res) => {
