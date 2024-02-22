@@ -173,7 +173,7 @@ const allPostRoutes = () => {
       const isExist = await savedBlogs.findOne({ email, blogInfo });
 
       if (isExist) {
-        return res.send("Blog already Saved");
+        return res.send("exists");
       }
       const result = await new savedBlogs(req.body).save();
       res.send(result);

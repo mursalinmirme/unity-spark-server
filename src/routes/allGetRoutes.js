@@ -690,7 +690,9 @@ const allGetRoutes = () => {
   app.get("/bookmarked-blogs/:email", async (req, res) => {
     try {
       const email = req.params.email;
-      const result = await savedBlogs.find({ email });
+
+      const result = await savedBlogs.find({ email }).populate("blogInfo");
+
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
