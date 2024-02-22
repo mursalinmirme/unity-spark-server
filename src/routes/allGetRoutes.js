@@ -670,6 +670,21 @@ const allGetRoutes = () => {
     }
   });
 
+  // individual blog like count
+  app.get("/count-likes/:id", async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const totalLikes = await likedBlogs
+        .find({ blogId: blogId })
+        .countDocuments();
+
+      console.log(totalLikes);
+      res.send({ totalLikes: totalLikes });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // task management get employee running tasks
   app.get("/my-running-task/:email", async (req, res) => {
     try {
@@ -758,6 +773,22 @@ const allGetRoutes = () => {
         .populate("commenterInfo")
         .sort({ createdAt: -1 });
       res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // get specific blog comments number
+
+  app.get("/count-comments/:id", async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const totalComments = await comments
+        .find({ blogId: blogId })
+        .countDocuments();
+
+      console.log(totalComments);
+      res.send({ totalComments: totalComments });
     } catch (error) {
       res.status(500).send(error.message);
     }
