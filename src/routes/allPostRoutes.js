@@ -166,6 +166,20 @@ const allPostRoutes = () => {
     }
   });
 
+  app.post("/bookmarked-blogs", async (req, res) => {
+    try {
+      const blogInfo = req.body.blogInfo;
+      const email = req.body.email;
+      const isExist = await savedBlogs.findOne({ email, blogInfo });
+
+      if (isExist) {
+        return res.send("Blog already Saved");
+      }
+      const result = await new savedBlogs(req.body).save();
+      res.send(result);
+    } catch (error) {}
+  });
+
   // comments post api
   app.post("/comments", async (req, res) => {
     try {
