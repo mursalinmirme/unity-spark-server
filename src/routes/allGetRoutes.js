@@ -807,7 +807,7 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  // get all user between two users
+  // get all chats
   app.get("/chat", async (req, res) => {
     try {
       const senderEmail = req.query.sender_email
@@ -827,6 +827,7 @@ const allGetRoutes = () => {
       }
   })
 
+  // get all chat-friends
   app.get('/chat-friends/:email', async (req, res) => {
     try {
       const email = req.params.email
