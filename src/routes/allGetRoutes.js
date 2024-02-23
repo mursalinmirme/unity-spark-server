@@ -145,6 +145,19 @@ const allGetRoutes = () => {
     ]);
     res.json(result[0]);
   });
+
+  app.get("/total_events/count", async (req, res) => {
+    const result = await events.aggregate([
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
+
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
@@ -811,10 +824,10 @@ const allGetRoutes = () => {
   // get all chats
   app.get("/chat", async (req, res) => {
     try {
-      const senderEmail = req.query.sender_email
-      const recieverEmail = req.query.reciever_email
-      const result = await chat
-      .find({
+      const senderEmail = req.query.sender_email;
+      const recieverEmail = req.query.reciever_email;
+      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
+      const result = await chat.find({
         $or: [
           { sender: senderEmail, reciever: recieverEmail },
           { sender: recieverEmail, reciever: senderEmail }
