@@ -807,6 +807,7 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  
   // get all chats
   app.get("/chat", async (req, res) => {
     try {
@@ -819,7 +820,7 @@ const allGetRoutes = () => {
           { sender: recieverEmail, reciever: senderEmail }
         ]
       })
-      .sort({ createdAt: -1 });;
+      .sort({ createdAt: -1 });
         res.send(result);
       }
       catch (error) {
