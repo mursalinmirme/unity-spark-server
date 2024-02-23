@@ -820,6 +820,7 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  
   // get all chats
   app.get("/chat", async (req, res) => {
     try {
@@ -829,14 +830,16 @@ const allGetRoutes = () => {
       const result = await chat.find({
         $or: [
           { sender: senderEmail, reciever: recieverEmail },
-          { sender: recieverEmail, reciever: senderEmail },
-        ],
-      });
-      res.send(result);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
+          { sender: recieverEmail, reciever: senderEmail }
+        ]
+      })
+      .sort({ createdAt: -1 });
+        res.send(result);
+      }
+      catch (error) {
+        res.status(500).send(error.message);
+      }
+  })
 
   // get all chat-friends
   app.get('/chat-friends/:email', async (req, res) => {
