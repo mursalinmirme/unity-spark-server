@@ -19,8 +19,6 @@ import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
-import likedBlogs from "../models/likedBlogs.js";
-import savedBlogs from "../models/savedBlogs.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -138,18 +136,6 @@ const allGetRoutes = () => {
   // get all jobads
   app.get("/availableJobs/count", async (req, res) => {
     const result = await jobAds.aggregate([
-      {
-        $group: {
-          _id: null,
-          count: { $sum: 1 },
-        },
-      },
-    ]);
-    res.json(result[0]);
-  });
-  // get all events number
-  app.get("/total_events/count", async (req, res) => {
-    const result = await events.aggregate([
       {
         $group: {
           _id: null,
@@ -436,8 +422,7 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Pending" })
       .skip(skipFrom)
-      .limit(6)
-      .sort({ createdAt: -1 });
+      .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -455,8 +440,7 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Confirmed" })
       .skip(skipFrom)
-      .limit(6)
-      .sort({ createdAt: -1 });
+      .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -657,48 +641,6 @@ const allGetRoutes = () => {
     }
   });
 
-  // get liked blog by individual user
-
-  app.get("/check-like", async (req, res) => {
-    const { email, blogId } = req.query;
-    console.log(email, blogId);
-    try {
-      const isLiked = await likedBlogs.findOne({ email, blogId });
-      console.log(!!isLiked, "hello");
-      res.send({ isLiked: !!isLiked });
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
-  // individual blog like count
-  app.get("/count-likes/:id", async (req, res) => {
-    try {
-      const blogId = req.params.id;
-      const totalLikes = await likedBlogs
-        .find({ blogId: blogId })
-        .countDocuments();
-
-      console.log(totalLikes);
-      res.send({ totalLikes: totalLikes });
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
-  // saved Blogs by individual user
-  app.get("/bookmarked-blogs/:email", async (req, res) => {
-    try {
-      const email = req.params.email;
-
-      const result = await savedBlogs.find({ email }).populate("blogInfo");
-
-      res.send(result);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
   // task management get employee running tasks
   app.get("/my-running-task/:email", async (req, res) => {
     try {
@@ -792,22 +734,6 @@ const allGetRoutes = () => {
     }
   });
 
-  // get specific blog comments number
-
-  app.get("/count-comments/:id", async (req, res) => {
-    try {
-      const blogId = req.params.id;
-      const totalComments = await comments
-        .find({ blogId: blogId })
-        .countDocuments();
-
-      console.log(totalComments);
-      res.send({ totalComments: totalComments });
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
   app.get("/courses", async (req, res) => {
     try {
       const result = await courses.find().sort({ createdAt: -1 });
@@ -886,14 +812,13 @@ const allGetRoutes = () => {
     try {
       const senderEmail = req.query.sender_email;
       const recieverEmail = req.query.reciever_email;
-      const result = await chat
-        .find({
-          $or: [
-            { sender: senderEmail, reciever: recieverEmail },
-            { sender: recieverEmail, reciever: senderEmail },
-          ],
-        })
-        .sort({ createdAt: -1 });
+      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
+      const result = await chat.find({
+        $or: [
+          { sender: senderEmail, reciever: recieverEmail },
+          { sender: recieverEmail, reciever: senderEmail },
+        ],
+      });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
