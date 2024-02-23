@@ -820,7 +820,7 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  // get all user between two users
+  // get all chats
   app.get("/chat", async (req, res) => {
     try {
       const senderEmail = req.query.sender_email;
@@ -837,6 +837,33 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+
+  // get all chat-friends
+  app.get('/chat-friends/:email', async (req, res) => {
+    try {
+      const email = req.params.email
+      const result = await chat
+      .find({
+        $or: [
+          { sender: email },
+          { reciever: email }
+        ]
+      },
+      {
+        sender: 1, reciever: 1, _id: 0
+      })
+      .sort({ createdAt: -1 });;
+      const emails = new Set();
+      result.forEach((message) => {
+          emails.add(message.sender);
+          emails.add(message.reciever);
+      });
+      res.send(Array.from(emails));
+    }
+    catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
 
   // getting enrolled course email count
   app.get("/enrolled_course_length/:email", async (req, res) => {
