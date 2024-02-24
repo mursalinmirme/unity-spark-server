@@ -4,14 +4,14 @@ import allUpdateRoutes from "./routes/allUpdateRoutes.js";
 import allPostRoutes from "./routes/allPostRoutes.js";
 import allGetRoutes from "./routes/allGetRoutes.js";
 import allDeleteRoutes from "./routes/allDeleteRoutes.js";
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import CreateToken from "./jwt/token.js";
 import sentMail from "./shares/sentMail.js";
 import payment from "./payment/payment.js";
 
 const app = express();
-app.use(
-  cors({
+app.use(cors(
+  {
     origin: [
       "http://localhost:5173",
       "http://localhost:5174",
@@ -20,11 +20,11 @@ app.use(
       "https://unity-spark-22122.web.app",
       "https://api.imgbb.com/1/upload?key=5633fa8b7fb7bf3c2d44694187c33411",
     ],
-    credentials: true,
-  })
-);
+  
+  }
+));
 app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 // Iniatial route
 app.get("/", (req, res) => {

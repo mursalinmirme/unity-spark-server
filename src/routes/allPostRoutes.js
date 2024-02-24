@@ -15,6 +15,10 @@ import users from "../models/users.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import paymentInfo from "../models/payment.js";
+import chat from "../models/chats.js";
+import savedBlogs from "../models/savedBlogs.js";
+import likedBlogs from "../models/likedBlogs.js";
+
 // All Post Requests
 const allPostRoutes = () => {
   // user sign up route
@@ -162,6 +166,22 @@ const allPostRoutes = () => {
     }
   });
 
+  app.post("/bookmarked-blogs", async (req, res) => {
+    try {
+      const blogInfo = req.body.blogInfo;
+      const email = req.body.email;
+      const isExist = await savedBlogs.findOne({ email, blogInfo });
+
+      if (isExist) {
+        return res.send("exists");
+      }
+      const result = await new savedBlogs(req.body).save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // comments post api
   app.post("/comments", async (req, res) => {
     try {
@@ -169,6 +189,52 @@ const allPostRoutes = () => {
       const newComment = new comments(commentData);
       const result = await newComment.save();
       res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // Saved Blogs for individual user
+  app.post("/savedBlogs", async (req, res) => {
+    try {
+      const userEmail = req.body.email;
+      const blogId = req.body.blogInfo;
+      const isExist = await savedBlogs.findOne({
+        email: userEmail,
+        blogInfo: blogId,
+      });
+
+      if (isExist) {
+        return res.send("Blog is already saved.");
+      }
+      const newBlog = new savedBlogs(req.body);
+
+      const result = await newBlog.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // liked Blogs
+
+  app.post("/toggleLike", async (req, res) => {
+    const { email, blogId } = req.body;
+    try {
+      const isLiked = await likedBlogs.findOne({ email, blogId });
+      // console.log(isLiked, "like disi");
+
+      if (isLiked) {
+        const test = await likedBlogs.findByIdAndDelete(isLiked._id);
+
+        console.log(test, "dddd");
+        return res.status(200).json({ isLiked: false });
+      } else {
+        const newLike = new likedBlogs({ email, blogId });
+        await newLike.save();
+        console.log(newLike, "newwww");
+        return res.status(201).json({ isLiked: true });
+      }
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -218,6 +284,17 @@ const allPostRoutes = () => {
       const newPayInfo = req.body;
       const payInfo = new paymentInfo(newPayInfo);
       const result = await payInfo.save();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.post("/chat", async (req, res) => {
+    try {
+      const newChats = req.body;
+      const chats = new chat(newChats);
+      const result = await chats.save();
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);

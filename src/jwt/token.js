@@ -7,17 +7,11 @@ const CreateToken = async () => {
     const token = Jwt.sign(user, process.env.SECRET_TOKEN, {
       expiresIn: "10h",
     });
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .send({ success: true});
+    res.send({token});
   });
 
-  app.post("/logout", async (req, res) => {
-    res.clearCookie("token", { maxAge: 0 }).send({ success: false });
-  });
+  // app.post("/logout", async (req, res) => {
+  //   res.clearCookie("token", { maxAge: 0 }).send({ success: false });
+  // });
 };
 export default CreateToken;
