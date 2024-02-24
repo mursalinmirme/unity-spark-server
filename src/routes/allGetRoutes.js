@@ -17,8 +17,22 @@ import comments from "../models/comments.js";
 import courses from "../models/courses.js";
 import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
+import chat from "../models/chats.js";
+import paymentInfo from "../models/payment.js";
 
 const allGetRoutes = () => {
+  // get all users
+  app.get("/users/count", async (req, res) => {
+    const result = await users.aggregate([
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
   // get specific user data by _id
   app.get("/users/:email", verifyToken, async (req, res) => {
     try {
@@ -65,10 +79,29 @@ const allGetRoutes = () => {
     }
   });
 
+  // get all employee count
+  app.get("/employee/count", async (req, res) => {
+    const result = await users.aggregate([
+      {
+        $match: {
+          role: "employee",
+        },
+      },
+      {
+        $group: {
+          _id: "$role",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
+
   //  get all employee
   app.get("/employees", verifyToken, async (req, res) => {
     try {
-      const userEmail = req.user.email;
+      console.log("checking in employee", req.user);
+      const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
         { role: 1, _id: 0 }
@@ -84,7 +117,47 @@ const allGetRoutes = () => {
     }
   });
 
+  app.get("/all-employees", verifyToken, async (req, res) => {
+    try {
+      console.log("checking in employee", req.user);
+      const userEmail = req?.user?.email;
+      const getUserRole = await users.findOne(
+        { email: userEmail },
+        { role: 1, _id: 0 }
+      );
+      const result = await users.find({ role: "employee" });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // get featured jobs for home section dkjfkd
+  // get all jobads
+  app.get("/availableJobs/count", async (req, res) => {
+    const result = await jobAds.aggregate([
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
+
+  app.get("/total_events/count", async (req, res) => {
+    const result = await events.aggregate([
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.json(result[0]);
+  });
+
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
@@ -257,13 +330,25 @@ const allGetRoutes = () => {
     }
   });
 
+  // get job details info for apply page
+  app.get("/my-applyjobs/:id", async (req, res) => {
+    try {
+      const jobAdsId = req.params.id;
+      const result = await jobAds.findOne({ _id: jobAdsId });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send("Something went wrong.");
+    }
+  });
+
   // get similar jobs based on job details page job type
   app.get("/similar_jobs", async (req, res) => {
     try {
-      const similarJobs = req.query.jobtype;
+      const jobTitle = req.query.job_title;
+      const jobId = req.query.jobId;
       // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
-        .find({ job_category1: similarJobs })
+        .find({ job_title: jobTitle, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
       res.send(result);
@@ -294,6 +379,16 @@ const allGetRoutes = () => {
       res.send(result);
     } catch (error) {
       res.status(500).send("Something went wrong.");
+    }
+  });
+
+  // get all feedback for testimonials
+  app.get("/all-feedback", async (req, res) => {
+    try {
+      const result = await feedback.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
     }
   });
 
@@ -521,14 +616,18 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  // getting sorting bloggs
-  app.get("/all-blogs", async (req, res) => {
+  // getting three blogs only
+  app.get("/top-blogs/:id", async (req, res) => {
     try {
-      const email = req.params.email;
-      const result = await blogs.find().skip(0).limit(3);
+      const currentId = req.params.id;
+      console.log("current", currentId);
+      const result = await blogs
+        .find({ _id: { $ne: currentId } })
+        .skip(0)
+        .limit(2);
       res.send(result);
     } catch (error) {
-      cres.status(500).send(error);
+      res.status(500).send(error);
     }
   });
   // getting user added blogs data
@@ -650,22 +749,20 @@ const allGetRoutes = () => {
 
   app.get("/courses", async (req, res) => {
     try {
-      const result = await courses
-        .find()
-        .sort({ createdAt: -1 });
+      const result = await courses.find().sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
   });
-  
-
 
   //  git all interview information
   app.get("/get-admin-interview/:email", async (req, res) => {
     try {
       const interViewerEmail = req.params.email;
-      const result = await interviews.find({interViewerEmail: interViewerEmail}).sort({ createdAt: -1 });
+      const result = await interviews
+        .find({ interViewerEmail: interViewerEmail })
+        .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       console.log(error.message);
@@ -677,20 +774,21 @@ const allGetRoutes = () => {
   app.get("/get-user-interview/:id", async (req, res) => {
     try {
       const id = req.params.id;
-
       const result = await interviews.findOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error.message);
     }
   });
-  
+
   // get user
   app.get("/user-interview/:email", async (req, res) => {
     try {
       const candidateEmail = req.params.email;
 
-      const result = await interviews.findOne({ candidateEmail: candidateEmail });
+      const result = await interviews.findOne({
+        candidateEmail: candidateEmail,
+      });
       res.send(result);
     } catch (error) {
       console.log(error.message);
@@ -698,30 +796,131 @@ const allGetRoutes = () => {
   });
 
   // get interview details for admin
-  app.get("/interviewDetails/:id", async(req, res) => {
+  app.get("/interviewDetails/:id", async (req, res) => {
     try {
       const id = req.params.id;
-      const result = await interviews.findOne({_id: id});
-      res.send(result)
+      const result = await interviews.findOne({ _id: id });
+      res.send(result);
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error.message);
     }
-  })
+  });
 
   // MY COURSE getting api
 
-  app.get("/my_course/:email", async (req , res)=>{
-    console.log("checking working or not")
+  app.get("/my_course/:email", async (req, res) => {
+    console.log("checking working or not");
     try {
       const userEmail = req.params.email;
-      const result = await myCourse.find({userEmail: userEmail}).populate("uniqueID");
+      const result = await myCourse
+        .find({ userEmail: userEmail })
+        .populate("uniqueID");
       res.send(result);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error.message);
+    }
+  });
+  
+  // get all chats
+  app.get("/chat", async (req, res) => {
+    try {
+      const senderEmail = req.query.sender_email;
+      const recieverEmail = req.query.reciever_email;
+      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
+      const result = await chat.find({
+        $or: [
+          { sender: senderEmail, reciever: recieverEmail },
+          { sender: recieverEmail, reciever: senderEmail }
+        ]
+      })
+      .sort({ createdAt: -1 });
+        res.send(result);
+      }
+      catch (error) {
+        res.status(500).send(error.message);
+      }
+  })
+
+  // get all chat-friends
+  app.get('/chat-friends/:email', async (req, res) => {
+    try {
+      const email = req.params.email
+      const result = await chat
+      .find({
+        $or: [
+          { sender: email },
+          { reciever: email }
+        ]
+      },
+      {
+        sender: 1, reciever: 1, _id: 0
+      })
+      .sort({ createdAt: -1 });;
+      const emails = new Set();
+      result.forEach((message) => {
+          emails.add(message.sender);
+          emails.add(message.reciever);
+      });
+      res.send(Array.from(emails));
+    }
+    catch (error) {
+      res.status(500).send(error.message);
     }
   })
+
+  // getting enrolled course email count
+  app.get("/enrolled_course_length/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await myCourse.aggregate([
+        {
+          $match: {
+            userEmail: email,
+          },
+        },
+        {
+          $group: {
+            _id: "$userEmail",
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+
+      if (result.length === 0) {
+        res.json({ _id: email, count: 0 });
+      } else {
+        res.json(result[0]);
+      }
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // get payment details
+  app.get("/payment-details", async (req, res) => {
+    try {
+      const result = await paymentInfo.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // does the applicant already applied the specific job check
+  app.get("/does-user-applied", async (req, res) => {
+    try {
+      const applied_jobs_id = req.query.applied_jobs_id;
+      const email = req.query.email;
+      console.log("does I got both items query", applied_jobs_id, email);
+      const result = await jobapplications
+        .findOne({ applied_job_id: applied_jobs_id, email: email })
+        .countDocuments();
+      console.log(result);
+      res.send({ applied: result });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 }; //ending all get routes brackets
-
-
 
 export default allGetRoutes;

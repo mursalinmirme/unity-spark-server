@@ -67,6 +67,10 @@ const jobApplicationsSchema = mongoose.Schema({
     type: String,
     default: "Pending",
   },
+  resume_link: {
+    type: String,
+    require: true
+  },
   // user: {
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: "Users",
