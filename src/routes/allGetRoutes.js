@@ -19,8 +19,6 @@ import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
-import likedBlogs from "../models/likedBlogs.js";
-import savedBlogs from "../models/savedBlogs.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -147,7 +145,7 @@ const allGetRoutes = () => {
     ]);
     res.json(result[0]);
   });
-  // get all events number
+
   app.get("/total_events/count", async (req, res) => {
     const result = await events.aggregate([
       {
@@ -159,6 +157,7 @@ const allGetRoutes = () => {
     ]);
     res.json(result[0]);
   });
+
   app.get("/featured-jobs", async (req, res) => {
     try {
       const result = await await jobAds
@@ -436,8 +435,7 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Pending" })
       .skip(skipFrom)
-      .limit(6)
-      .sort({ createdAt: -1 });
+      .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -455,8 +453,7 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Confirmed" })
       .skip(skipFrom)
-      .limit(6)
-      .sort({ createdAt: -1 });
+      .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -790,22 +787,6 @@ const allGetRoutes = () => {
     }
   });
 
-  // get specific blog comments number
-
-  app.get("/count-comments/:id", async (req, res) => {
-    try {
-      const blogId = req.params.id;
-      const totalComments = await comments
-        .find({ blogId: blogId })
-        .countDocuments();
-
-      console.log(totalComments);
-      res.send({ totalComments: totalComments });
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
   app.get("/courses", async (req, res) => {
     try {
       const result = await courses.find().sort({ createdAt: -1 });
@@ -879,11 +860,13 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  // get all user between two users
+
+  // get all chats
   app.get("/chat", async (req, res) => {
     try {
       const senderEmail = req.query.sender_email;
       const recieverEmail = req.query.reciever_email;
+      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
       const result = await chat
         .find({
           $or: [
@@ -893,6 +876,33 @@ const allGetRoutes = () => {
         })
         .sort({ createdAt: -1 });
       res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // get all chat-friends
+  app.get("/chat-friends/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await chat
+        .find(
+          {
+            $or: [{ sender: email }, { reciever: email }],
+          },
+          {
+            sender: 1,
+            reciever: 1,
+            _id: 0,
+          }
+        )
+        .sort({ createdAt: -1 });
+      const emails = new Set();
+      result.forEach((message) => {
+        emails.add(message.sender);
+        emails.add(message.reciever);
+      });
+      res.send(Array.from(emails));
     } catch (error) {
       res.status(500).send(error.message);
     }
