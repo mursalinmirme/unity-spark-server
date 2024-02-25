@@ -654,6 +654,46 @@ const allGetRoutes = () => {
     }
   });
 
+  // get liked blog by individual user
+
+  app.get("/check-like", async (req, res) => {
+    const { email, blogId } = req.query;
+    console.log(email, blogId);
+    try {
+      const isLiked = await likedBlogs.findOne({ email, blogId });
+      console.log(!!isLiked, "hello");
+      res.send({ isLiked: !!isLiked });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // specific blog like count
+  app.get("/count-likes/:id", async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const totalLikes = await likedBlogs
+        .find({ blogId: blogId })
+        .countDocuments();
+      res.send({ totalLikes: totalLikes });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // saved Blogs by individual user
+  app.get("/bookmarked-blogs/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+
+      const result = await savedBlogs.find({ email }).populate("blogInfo");
+
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
   // task management get employee running tasks
   app.get("/my-running-task/:email", async (req, res) => {
     try {
@@ -820,53 +860,53 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-  
+
   // get all chats
   app.get("/chat", async (req, res) => {
     try {
       const senderEmail = req.query.sender_email;
       const recieverEmail = req.query.reciever_email;
       console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
-      const result = await chat.find({
-        $or: [
-          { sender: senderEmail, reciever: recieverEmail },
-          { sender: recieverEmail, reciever: senderEmail }
-        ]
-      })
-      .sort({ createdAt: -1 });
-        res.send(result);
-      }
-      catch (error) {
-        res.status(500).send(error.message);
-      }
-  })
-
-  // get all chat-friends
-  app.get('/chat-friends/:email', async (req, res) => {
-    try {
-      const email = req.params.email
       const result = await chat
-      .find({
-        $or: [
-          { sender: email },
-          { reciever: email }
-        ]
-      },
-      {
-        sender: 1, reciever: 1, _id: 0
-      })
-      .sort({ createdAt: -1 });;
-      const emails = new Set();
-      result.forEach((message) => {
-          emails.add(message.sender);
-          emails.add(message.reciever);
-      });
-      res.send(Array.from(emails));
-    }
-    catch (error) {
+        .find({
+          $or: [
+            { sender: senderEmail, reciever: recieverEmail },
+            { sender: recieverEmail, reciever: senderEmail },
+          ],
+        })
+        .sort({ createdAt: -1 });
+      res.send(result);
+    } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
+
+  // get all chat-friends
+  app.get("/chat-friends/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const result = await chat
+        .find(
+          {
+            $or: [{ sender: email }, { reciever: email }],
+          },
+          {
+            sender: 1,
+            reciever: 1,
+            _id: 0,
+          }
+        )
+        .sort({ createdAt: -1 });
+      const emails = new Set();
+      result.forEach((message) => {
+        emails.add(message.sender);
+        emails.add(message.reciever);
+      });
+      res.send(Array.from(emails));
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
   // getting enrolled course email count
   app.get("/enrolled_course_length/:email", async (req, res) => {
