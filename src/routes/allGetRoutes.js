@@ -20,6 +20,7 @@ import myCourse from "../models/mycourse.js";
 import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
 import savedBlogs from "../models/savedBlogs.js";
+import likedBlogs from "../models/likedBlogs.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -678,6 +679,21 @@ const allGetRoutes = () => {
         .countDocuments();
       res.send({ totalLikes: totalLikes });
     } catch (error) {
+      // console.log(error.message, "jkfwjk");
+      res.status(500).send(error.message);
+    }
+  });
+
+  // specific blog comment count
+  app.get("/count-comments/:id", async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const totalComments = await comments
+        .find({ blogId: blogId })
+        .countDocuments();
+      res.send({ totalComments: totalComments });
+    } catch (error) {
+      // console.log(error.message, "jkfwjk");
       res.status(500).send(error.message);
     }
   });
