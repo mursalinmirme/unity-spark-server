@@ -671,15 +671,13 @@ const allGetRoutes = () => {
     }
   });
 
-  // individual blog like count
+  // specific blog like count
   app.get("/count-likes/:id", async (req, res) => {
     try {
       const blogId = req.params.id;
       const totalLikes = await likedBlogs
         .find({ blogId: blogId })
         .countDocuments();
-
-      console.log(totalLikes);
       res.send({ totalLikes: totalLikes });
     } catch (error) {
       res.status(500).send(error.message);
