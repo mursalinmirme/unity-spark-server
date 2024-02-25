@@ -19,6 +19,7 @@ import interviews from "../models/interviews.js";
 import myCourse from "../models/mycourse.js";
 import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
+import savedBlogs from "../models/savedBlogs.js";
 
 const allGetRoutes = () => {
   // get all users
