@@ -1,4 +1,5 @@
 import { app } from "../app.js";
+import verifyToken from "../jwt/middleware/auth.js";
 import blogs from "../models/blogs.js";
 import courses from "../models/courses.js";
 import events from "../models/events.js";
@@ -214,10 +215,11 @@ const allUpdateRoutes = () => {
     }
   });
   // course update api
-  app.put("/courses/:id" , async (req , res) => {
+  app.put("/courses/:id" , verifyToken , async (req , res) => {
     try {
       const id = req.params.id
-    const updatedValue = req.data
+    const updatedValue = req.body
+    console.log(updatedValue)
     const result = await courses.updateOne(
       {_id : id},
       {$set: updatedValue},
