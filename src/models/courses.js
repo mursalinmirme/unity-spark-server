@@ -9,7 +9,7 @@ const coursesSchema = mongoose.Schema({
     type: String,
     require: true
   },
-  banner_image: {
+  image: {
     type: String,
     require: true,
     
@@ -37,7 +37,7 @@ const coursesSchema = mongoose.Schema({
     type: String,
     require: true 
   },
-  instructor_image: {
+  instructor_img: {
     type: String,
     require: true 
   },
@@ -49,11 +49,11 @@ const coursesSchema = mongoose.Schema({
     type: String,
     require: true 
   },
-  certificate_image: {
+  certificate: {
     type: String,
     require: true 
   },
-  features: {
+  course_feature: {
     type: Array,
     require: true 
   },
@@ -61,7 +61,7 @@ const coursesSchema = mongoose.Schema({
     type: Array,
     require: true 
   },
-  modules: {
+  course_content: {
     type: Array,
     require: true 
   },
