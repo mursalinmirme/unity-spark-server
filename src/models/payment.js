@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const paymentSchema = mongoose.Schema({
   admin_email: {
@@ -41,4 +41,4 @@ const paymentSchema = mongoose.Schema({
 });
 
 const paymentInfo = mongoose.model("paymentInfo", paymentSchema);
-export default paymentInfo;
+module.exports = paymentInfo;
