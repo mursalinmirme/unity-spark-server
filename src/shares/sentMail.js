@@ -3,7 +3,7 @@ const app = require("../app.js");
 
 const sentMail = (app) => {
     // node mailer image system
-app.post("/sent-invite-email", async(req, res) => {
+  app.post("/sent-invite-email", async(req, res) => {
     try {
       const emailDetails = req.body;
       const reveiverEmail = emailDetails.to;
@@ -29,5 +29,48 @@ app.post("/sent-invite-email", async(req, res) => {
       res.status(500).send(error.message)
     }
     })
-}
+
+
+  // send mail after subscription
+  app.post("/subscriber-email-sent", async(req, res) => {
+  try {
+    const emailInfo = req.body;
+    const reveiverEmail = emailInfo.email;
+    const name = emailInfo.name;
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      auth: {
+        user: "teamcodewizards@gmail.com",
+        pass: "shlp madz rqtg hhmq",
+      },
+    });
+    // console.log("The email details is", emailDetails);
+    const info = await transporter.sendMail({
+      from: 'teamcodewizards@gmail.com', // sender address
+      to: reveiverEmail, // list of receivers
+      subject: "Congratulations! You're Now Part of Unity Spark Community", // Subject line
+      text: `You have successfully suscribed our newletter community.`, // plain text body
+      html: `<p>Dear ${name},</p><p>Congratulations! You've successfully joined the Unity Spark community, where exciting updates, exclusive offers, and valuable insights await you.</p>
+      <p>What's Next?</p>
+      <p>• Stay tuned for the latest news and happenings at Unity Spark.</p>
+      <p>• Be the first to know about upcoming events and promotions.</p>
+      <p>• Access exclusive content reserved just for our subscribers.</p>
+      <p>We're thrilled to have you on board! If you ever have questions or want to share your thoughts, feel free to hit reply. We're here to make your Unity experience extraordinary.</p>
+      <p>Cheers to new beginnings!</p>
+      <p>Best regards,</p>
+      <p>The Unity Spark Team</p>`, // html body
+    });
+    res.send(info);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(error.message)
+  }
+})
+
+
+
+
+}//end sent mail fn
+
 module.exports = sentMail

@@ -1,4 +1,5 @@
 const app = require("../app.js");
+const verifyToken = require("../jwt/middleware/auth.js");
 const blogs = require("../models/blogs.js");
 const courses = require("../models/courses.js");
 const events = require("../models/events.js");
@@ -214,10 +215,11 @@ const allUpdateRoutes = (app) => {
     }
   });
   // course update api
-  app.put("/courses/:id" , async (req , res) => {
+  app.put("/courses/:id" , verifyToken , async (req , res) => {
     try {
       const id = req.params.id
-    const updatedValue = req.data
+    const updatedValue = req.body
+    console.log(updatedValue)
     const result = await courses.updateOne(
       {_id : id},
       {$set: updatedValue},

@@ -195,26 +195,26 @@ const allPostRoutes = (app) => {
   });
 
   // Saved Blogs for individual user
-  app.post("/savedBlogs", async (req, res) => {
-    try {
-      const userEmail = req.body.email;
-      const blogId = req.body.blogInfo;
-      const isExist = await savedBlogs.findOne({
-        email: userEmail,
-        blogInfo: blogId,
-      });
+  // app.post("/savedBlogs", async (req, res) => {
+  //   try {
+  //     const userEmail = req.body.email;
+  //     const blogId = req.body.blogInfo;
+  //     const isExist = await savedBlogs.findOne({
+  //       email: userEmail,
+  //       blogInfo: blogId,
+  //     });
 
-      if (isExist) {
-        return res.send("Blog is already saved.");
-      }
-      const newBlog = new savedBlogs(req.body);
+  //     if (isExist) {
+  //       return res.send("Blog is already saved.");
+  //     }
+  //     const newBlog = new savedBlogs(req.body);
 
-      const result = await newBlog.save();
-      res.send(result);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
+  //     const result = await newBlog.save();
+  //     res.send(result);
+  //   } catch (error) {
+  //     res.status(500).send(error.message);
+  //   }
+  // });
 
   // liked Blogs
 
@@ -300,6 +300,25 @@ const allPostRoutes = (app) => {
       res.status(500).send(error.message);
     }
   });
+  // news letter subscriber
+  app.post("/subscriber", async(req, res) => {
+    try {
+      const getSubscriberInfo = req.body;
+      const email = getSubscriberInfo?.email;
+      const isExist = await Newsletters.findOne({email: email});
+      if(isExist){
+        res.send("exist");
+        return
+      }
+      else{
+        const newSubscriber = new Newsletters(getSubscriberInfo);
+        const result = await newSubscriber.save();
+        res.send(result);
+      }
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
 }; //end all post function brackets
 
 module.exports = allPostRoutes;
