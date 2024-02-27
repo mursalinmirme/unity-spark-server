@@ -1,7 +1,7 @@
-import nodemailer from "nodemailer";
-import { app } from "../app.js";
+const nodemailer = require("nodemailer");
+const app = require("../app.js");
 
-const sentMail = () => {
+const sentMail = (app) => {
     // node mailer image system
 app.post("/sent-invite-email", async(req, res) => {
     try {
@@ -30,4 +30,4 @@ app.post("/sent-invite-email", async(req, res) => {
     }
     })
 }
-export default sentMail
+module.exports = sentMail

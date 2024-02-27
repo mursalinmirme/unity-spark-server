@@ -1,14 +1,14 @@
-import { app } from "../app.js";
-import blogs from "../models/blogs.js";
-import courses from "../models/courses.js";
-import events from "../models/events.js";
-import jobAds from "../models/jobAds.js";
-import jobapplications from "../models/jobapplications.js";
-import leaves from "../models/leaves.js";
-import tasks from "../models/tasks.js";
-import users from "../models/users.js";
+const app = require("../app.js");
+const blogs = require("../models/blogs.js");
+const courses = require("../models/courses.js");
+const events = require("../models/events.js");
+const jobAds = require("../models/jobAds.js");
+const jobapplications = require("../models/jobapplications.js");
+const leaves = require("../models/leaves.js");
+const tasks = require("../models/tasks.js");
+const users = require("../models/users.js");
 
-const allUpdateRoutes = () => {
+const allUpdateRoutes = (app) => {
   // update user profile info
   app.put("/users/:email", async (req, res) => {
     try {
@@ -229,4 +229,4 @@ const allUpdateRoutes = () => {
   })
 }; //end bracket of all update routes runction
 
-export default allUpdateRoutes;
+module.exports = allUpdateRoutes;

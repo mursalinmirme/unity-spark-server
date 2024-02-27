@@ -1,14 +1,14 @@
-import { app } from "../app.js";
-import saveJobInfo from "../models/SaveJobInfo.js";
-import blogs from "../models/blogs.js";
-import courses from "../models/courses.js";
-import events from "../models/events.js";
-import jobAds from "../models/jobAds.js";
-import jobapplications from "../models/jobapplications.js";
-import req_events from "../models/requestevents.js";
-import tasks from "../models/tasks.js";
+const app = require("../app.js");
+const saveJobInfo = require("../models/SaveJobInfo.js");
+const blogs = require("../models/blogs.js");
+const courses = require("../models/courses.js");
+const events = require("../models/events.js");
+const jobAds = require("../models/jobAds.js");
+const jobapplications = require("../models/jobapplications.js");
+const req_events = require("../models/requestevents.js");
+const tasks = require("../models/tasks.js");
 
-const allDeleteRoutes = () => {
+const allDeleteRoutes = (app) => {
   // job application delete
   app.delete("/job_applications/:id", async (req, res) => {
     try {
@@ -101,4 +101,4 @@ const allDeleteRoutes = () => {
 }; //end all delete routes function end brackets
 
 
-export default allDeleteRoutes;
+module.exports = allDeleteRoutes;
