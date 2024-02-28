@@ -1,26 +1,27 @@
-const app = require("../app.js");
-const saveJobInfo = require("../models/SaveJobInfo.js");
-const blogs = require("../models/blogs.js");
-const comments = require("../models/comments.js");
-const courses = require("../models/courses.js");
-const events = require("../models/events.js");
-const feedback = require("../models/feedback.js");
-const jobAds = require("../models/jobAds.js");
-const jobapplications = require("../models/jobapplications.js");
-const leaves = require("../models/leaves.js");
-const presentations = require("../models/presentations.js");
-const req_events = require("../models/requestevents.js");
-const tasks = require("../models/tasks.js");
-const users = require("../models/users.js");
-const interviews = require("../models/interviews.js");
-const myCourse = require("../models/mycourse.js");
-const paymentInfo = require("../models/payment.js");
-const chat = require("../models/chats.js");
-const savedBlogs = require("../models/savedBlogs.js");
-const likedBlogs = require("../models/likedBlogs.js");
+import { app } from "../app.js";
+import saveJobInfo from "../models/SaveJobInfo.js";
+import blogs from "../models/blogs.js";
+import comments from "../models/comments.js";
+import courses from "../models/courses.js";
+import events from "../models/events.js";
+import feedback from "../models/feedback.js";
+import jobAds from "../models/jobAds.js";
+import jobapplications from "../models/jobapplications.js";
+import leaves from "../models/leaves.js";
+import presentations from "../models/presentations.js";
+import req_events from "../models/requestevents.js";
+import tasks from "../models/tasks.js";
+import users from "../models/users.js";
+import interviews from "../models/interviews.js";
+import myCourse from "../models/mycourse.js";
+import paymentInfo from "../models/payment.js";
+import chat from "../models/chats.js";
+import savedBlogs from "../models/savedBlogs.js";
+import likedBlogs from "../models/likedBlogs.js";
+import Newsletters from "../models/newsletter.js";
 
 // All Post Requests
-const allPostRoutes = (app) => {
+const allPostRoutes = () => {
   // user sign up route
   app.post("/users", async (req, res) => {
     try {
@@ -321,4 +322,4 @@ const allPostRoutes = (app) => {
   })
 }; //end all post function brackets
 
-module.exports = allPostRoutes;
+export default allPostRoutes;

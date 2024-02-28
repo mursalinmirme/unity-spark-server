@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // users schema making
 const presentationSchema = mongoose.Schema({
@@ -19,4 +19,4 @@ const presentationSchema = mongoose.Schema({
 // users model making
 const presentations = mongoose.model("presentations", presentationSchema);
 
-module.exports = presentations;
+export default presentations;
