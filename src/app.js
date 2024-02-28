@@ -20,6 +20,7 @@ app.use(cors(
       "http://localhost:4173",
       "https://unity-spark-22122.web.app",
       "https://api.imgbb.com/1/upload?key=5633fa8b7fb7bf3c2d44694187c33411",
+      "https://65df97ef9082e76529de7edd--startling-youtiao-39202b.netlify.app"
     ],
   
   }
