@@ -1,11 +1,11 @@
-import { app } from "../app.js";
-import stripe from "stripe";
+const app = require("../app.js");
+const stripe = require("stripe");
 
 const stripeInstance = stripe(
   "sk_test_51Ok189GX4GJwDhejRmXLuhsCXGPn6mODeE2gCQSbh1HkQp4PY5UGDvWD1uoLKQT8UZ33aPk7VN9nIsmvnYV23n9G00BqJ9Q7DE"
 );
 
-const payment = () => {
+const payment = (app) => {
   app.post("/create-payment-intent", async (req, res) => {
     const { salary } = req.body;
     const amount = parseInt(salary * 100);
@@ -21,4 +21,4 @@ const payment = () => {
   });
 };
 
-export default payment;
+module.exports = payment;
