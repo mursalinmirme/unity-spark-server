@@ -31,7 +31,7 @@ const io = new Server(httpServer, {
             "http://localhost:5173",
             "http://localhost:5174",
             "http://localhost:4173",
-            "https://65df97ef9082e76529de7edd--startling-youtiao-39202b.netlify.app"
+            "https://unity-spark.netlify.app"
         ]
     }
 });
