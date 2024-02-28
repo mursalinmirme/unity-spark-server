@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const newsletterSchema = mongoose.Schema({
     email: {
@@ -16,4 +16,4 @@ const newsletterSchema = mongoose.Schema({
     },
 })
 const Newsletters = mongoose.model("NewsLetters", newsletterSchema);
-export default Newsletters;
+module.exports = Newsletters

@@ -19,6 +19,7 @@ const myCourse = require("../models/mycourse.js");
 const chat = require("../models/chats.js");
 const paymentInfo = require("../models/payment.js");
 const app = require("../app.js");
+const Newsletters = require("../models/newsletter.js");
 
 const allGetRoutes = (app) => {
   // get all users
