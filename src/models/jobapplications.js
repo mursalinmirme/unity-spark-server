@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const jobApplicationsSchema = mongoose.Schema({
   name: {
     type: String,
@@ -88,4 +88,4 @@ const jobapplications = mongoose.model(
   jobApplicationsSchema
 );
 
-module.exports = jobapplications;
+export default jobapplications;

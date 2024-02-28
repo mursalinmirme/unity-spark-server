@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const requesteventsSchema = mongoose.Schema({
     reqeventName: {
@@ -38,4 +38,4 @@ const requesteventsSchema = mongoose.Schema({
 
 const req_events = mongoose.model("req_events" , requesteventsSchema)
 
-module.exports = req_events
+export default req_events

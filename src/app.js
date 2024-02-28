@@ -1,13 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-const allUpdateRoutes = require("./routes/allUpdateRoutes.js");
-const allPostRoutes = require("./routes/allPostRoutes.js");
-const allGetRoutes = require("./routes/allGetRoutes.js");
-const allDeleteRoutes = require("./routes/allDeleteRoutes.js");
-// const cookieParser = require("cookie-parser");
-const CreateToken = require("./jwt/token.js");
-const sentMail = require("./shares/sentMail.js");
-const payment = require("./payment/payment.js");
+import express from "express";
+import cors from "cors";
+import allUpdateRoutes from "./routes/allUpdateRoutes.js";
+import allPostRoutes from "./routes/allPostRoutes.js";
+import allGetRoutes from "./routes/allGetRoutes.js";
+import allDeleteRoutes from "./routes/allDeleteRoutes.js";
+// import cookieParser from "cookie-parser";
+import CreateToken from "./jwt/token.js";
+import sentMail from "./shares/sentMail.js";
+import payment from "./payment/payment.js";
 
 const app = express();
 app.use(cors(
@@ -31,24 +31,24 @@ app.get("/", (req, res) => {
   res.send("The Unity spark server is running.....");
 });
 // call jwt token create and remove function
-CreateToken(app);
+CreateToken();
 
 // call all get request
-allGetRoutes(app);
+allGetRoutes();
 
 // call all Post requests
-allPostRoutes(app);
+allPostRoutes();
 
 // sent mail post request
-sentMail(app);
+sentMail();
 
 // call all update routes
-allUpdateRoutes(app);
+allUpdateRoutes();
 
 // call all delete routes
-allDeleteRoutes(app);
+allDeleteRoutes();
 
 // payment
-payment(app);
+payment();
 
-module.exports = app;
+export { app };

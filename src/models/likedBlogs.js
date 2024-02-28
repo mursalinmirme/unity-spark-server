@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const likedBlogsSchema = mongoose.Schema({
   email: {
@@ -17,4 +17,4 @@ const likedBlogsSchema = mongoose.Schema({
 
 const likedBlogs = mongoose.model("likedBlogs", likedBlogsSchema);
 
-module.exports = likedBlogs;
+export default likedBlogs;
