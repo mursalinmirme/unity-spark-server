@@ -1,7 +1,7 @@
-import Jwt from "jsonwebtoken";
-import { app } from "../app.js";
+const Jwt = require("jsonwebtoken");
+const app = require("../app.js");
 
-const CreateToken = async () => {
+const CreateToken = async (app) => {
   app.post("/jwt", async (req, res) => {
     const user = req.body;
     const token = Jwt.sign(user, process.env.SECRET_TOKEN, {
@@ -14,4 +14,4 @@ const CreateToken = async () => {
   //   res.clearCookie("token", { maxAge: 0 }).send({ success: false });
   // });
 };
-export default CreateToken;
+module.exports = CreateToken;
