@@ -1,26 +1,25 @@
-import { get } from "mongoose";
 import { app } from "../app.js";
-import feedback from "../models/feedback.js";
-import jobAds from "../models/jobAds.js";
-import users from "../models/users.js";
-import jobapplications from "../models/jobapplications.js";
 import verifyToken from "../jwt/middleware/auth.js";
-import presentations from "../models/presentations.js";
-import { json } from "express";
-import events from "../models/events.js";
-import leaves from "../models/leaves.js";
 import saveJobInfo from "../models/SaveJobInfo.js";
-import tasks from "../models/tasks.js";
 import blogs from "../models/blogs.js";
-import req_events from "../models/requestevents.js";
+import chat from "../models/chats.js";
 import comments from "../models/comments.js";
 import courses from "../models/courses.js";
+import events from "../models/events.js";
+import feedback from "../models/feedback.js";
 import interviews from "../models/interviews.js";
-import myCourse from "../models/mycourse.js";
-import chat from "../models/chats.js";
-import paymentInfo from "../models/payment.js";
-import savedBlogs from "../models/savedBlogs.js";
+import jobAds from "../models/jobAds.js";
+import jobapplications from "../models/jobapplications.js";
+import leaves from "../models/leaves.js";
 import likedBlogs from "../models/likedBlogs.js";
+import myCourse from "../models/mycourse.js";
+import Newsletters from "../models/newsletter.js";
+import paymentInfo from "../models/payment.js";
+import presentations from "../models/presentations.js";
+import req_events from "../models/requestevents.js";
+import savedBlogs from "../models/savedBlogs.js";
+import tasks from "../models/tasks.js";
+import users from "../models/users.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -437,7 +436,8 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Pending" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6)
+      .sort({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -455,7 +455,8 @@ const allGetRoutes = () => {
     const result = await jobapplications
       .find({ status: "Confirmed" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6)
+      .sort({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -978,6 +979,27 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  // get all newsletter subscribers 
+  app.get("/subscribers", async(req, res) => {
+    try {
+      const result = await Newsletters.find().populate("userInfo");
+    res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+  })
+  // get all newsletter emails 
+  app.get("/all-subscriber-emails", async(req, res) => {
+    try {
+      const result = await Newsletters.find({}, {email: 1, _id: -1});
+    const emailArray = result.map(subsrciber => subsrciber.email)
+    res.send(emailArray);
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+  })
 }; //ending all get routes brackets
 
 export default allGetRoutes;

@@ -7,6 +7,7 @@ const newsletterSchema = mongoose.Schema({
     },
     userInfo: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "Users",
         require: true,
     },
     createdAt: {
