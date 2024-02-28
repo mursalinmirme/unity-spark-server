@@ -1,9 +1,9 @@
-import nodemailer from "nodemailer";
-import { app } from "../app.js";
+const nodemailer = require("nodemailer");
+const app = require("../app.js");
 
-const sentMail = () => {
-// send mail after select interview
-app.post("/sent-invite-email", async(req, res) => {
+const sentMail = (app) => {
+    // node mailer image system
+  app.post("/sent-invite-email", async(req, res) => {
     try {
       const emailDetails = req.body;
       const reveiverEmail = emailDetails.to;
@@ -31,8 +31,8 @@ app.post("/sent-invite-email", async(req, res) => {
     })
 
 
-// send mail after subscription
-app.post("/subscriber-email-sent", async(req, res) => {
+  // send mail after subscription
+  app.post("/subscriber-email-sent", async(req, res) => {
   try {
     const emailInfo = req.body;
     const reveiverEmail = emailInfo.email;
@@ -68,8 +68,38 @@ app.post("/subscriber-email-sent", async(req, res) => {
   }
 })
 
-
+// send mail for send announcements with subscribers
+app.post("/send-announcement", async(req, res) => {
+  try {
+    const emailInfo = req.body;
+    const receivers = emailInfo.to;
+    const title = emailInfo.title;
+    const emailBody = emailInfo.emailBody;
+    console.log("get announcent req is", emailBody, receivers, title);
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      auth: {
+        user: "teamcodewizards@gmail.com",
+        pass: "shlp madz rqtg hhmq",
+      },
+    });
+    // console.log("The email details is", emailDetails);
+    const info = await transporter.sendMail({
+      from: 'teamcodewizards@gmail.com', // sender address
+      to: receivers, // list of receivers
+      subject: title, // Subject line
+      text: title, // plain text body
+      html: emailBody, // html body
+    });
+    res.send(info);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(error.message)
+  }
+})
 
 
 }//end sent mail fn
-export default sentMail
+
+module.exports = sentMail

@@ -1,28 +1,27 @@
-import { get } from "mongoose";
-import { app } from "../app.js";
-import feedback from "../models/feedback.js";
-import jobAds from "../models/jobAds.js";
-import users from "../models/users.js";
-import jobapplications from "../models/jobapplications.js";
-import verifyToken from "../jwt/middleware/auth.js";
-import presentations from "../models/presentations.js";
-import { json } from "express";
-import events from "../models/events.js";
-import leaves from "../models/leaves.js";
-import saveJobInfo from "../models/SaveJobInfo.js";
-import tasks from "../models/tasks.js";
-import blogs from "../models/blogs.js";
-import req_events from "../models/requestevents.js";
-import comments from "../models/comments.js";
-import courses from "../models/courses.js";
-import interviews from "../models/interviews.js";
-import myCourse from "../models/mycourse.js";
-import chat from "../models/chats.js";
-import paymentInfo from "../models/payment.js";
-import savedBlogs from "../models/savedBlogs.js";
-import likedBlogs from "../models/likedBlogs.js";
+const get = require("mongoose");
+const json = require("express");
+const feedback = require("../models/feedback.js");
+const jobAds = require("../models/jobAds.js");
+const users = require("../models/users.js");
+const jobapplications = require("../models/jobapplications.js");
+const verifyToken = require("../jwt/middleware/auth.js");
+const presentations = require("../models/presentations.js");
+const events = require("../models/events.js");
+const leaves = require("../models/leaves.js");
+const saveJobInfo = require("../models/SaveJobInfo.js");
+const tasks = require("../models/tasks.js");
+const blogs = require("../models/blogs.js");
+const req_events = require("../models/requestevents.js");
+const comments = require("../models/comments.js");
+const courses = require("../models/courses.js");
+const interviews = require("../models/interviews.js");
+const myCourse = require("../models/mycourse.js");
+const chat = require("../models/chats.js");
+const paymentInfo = require("../models/payment.js");
+const app = require("../app.js");
+const Newsletters = require("../models/newsletter.js");
 
-const allGetRoutes = () => {
+const allGetRoutes = (app) => {
   // get all users
   app.get("/users/count", async (req, res) => {
     const result = await users.aggregate([
@@ -42,7 +41,6 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
-      // console.log("The token user is", req.user);
       const user_email = req.params.email;
       const result = await users.findOne({ email: user_email });
       res.send(result);
@@ -102,7 +100,6 @@ const allGetRoutes = () => {
   //  get all employee
   app.get("/employees", verifyToken, async (req, res) => {
     try {
-      console.log("checking in employee", req.user);
       const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
@@ -121,7 +118,6 @@ const allGetRoutes = () => {
 
   app.get("/all-employees", verifyToken, async (req, res) => {
     try {
-      console.log("checking in employee", req.user);
       const userEmail = req?.user?.email;
       const getUserRole = await users.findOne(
         { email: userEmail },
@@ -195,7 +191,6 @@ const allGetRoutes = () => {
     try {
       const skip = req.query.skip;
       const searchVal = req.query.searchVal;
-      // console.log("job ads search value is", searchVal);
       if (searchVal !== "null") {
         const result = await await jobAds
           .find({ job_title: searchVal })
@@ -348,7 +343,6 @@ const allGetRoutes = () => {
     try {
       const jobTitle = req.query.job_title;
       const jobId = req.query.jobId;
-      // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
         .find({ job_title: jobTitle, _id: { $ne: jobId } })
         .skip(0)
@@ -433,11 +427,11 @@ const allGetRoutes = () => {
   // getting job applications all data
   app.get("/job_applications", async (req, res) => {
     const skipFrom = req.query.skip;
-    // console.log("skip from", skipFrom);
     const result = await jobapplications
       .find({ status: "Pending" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6)
+      .sort({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -451,11 +445,11 @@ const allGetRoutes = () => {
   // getting job applications all data
   app.get("/job_applicants", async (req, res) => {
     const skipFrom = req.query.skip;
-    // console.log("skip from", skipFrom);
     const result = await jobapplications
       .find({ status: "Confirmed" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6)
+      .sort({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -501,7 +495,6 @@ const allGetRoutes = () => {
     try {
       const reqeventEmail = req.params.email;
       const result = await req_events.find({ reqeventEmail: reqeventEmail });
-      // console.log("ho testing",result);
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -554,7 +547,6 @@ const allGetRoutes = () => {
     try {
       const email = req.params.email;
       const result = await leaves.find({ email: email, status: "Confirmed" });
-      // console.log("Songtt", result);
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -622,7 +614,6 @@ const allGetRoutes = () => {
   app.get("/top-blogs/:id", async (req, res) => {
     try {
       const currentId = req.params.id;
-      console.log("current", currentId);
       const result = await blogs
         .find({ _id: { $ne: currentId } })
         .skip(0)
@@ -747,7 +738,6 @@ const allGetRoutes = () => {
           status: "complete",
         })
         .countDocuments();
-      console.log("documentCOunt resutlis", result);
       res.send({ count: result });
     } catch (error) {
       res.status(500).send(error.message);
@@ -866,7 +856,6 @@ const allGetRoutes = () => {
   // MY COURSE getting api
 
   app.get("/my_course/:email", async (req, res) => {
-    console.log("checking working or not");
     try {
       const userEmail = req.params.email;
       const result = await myCourse
@@ -883,20 +872,19 @@ const allGetRoutes = () => {
     try {
       const senderEmail = req.query.sender_email;
       const recieverEmail = req.query.reciever_email;
-      console.log("sender:" + senderEmail, "reciever:" + recieverEmail);
-      const result = await chat
-        .find({
-          $or: [
-            { sender: senderEmail, reciever: recieverEmail },
-            { sender: recieverEmail, reciever: senderEmail },
-          ],
-        })
-        .sort({ createdAt: -1 });
-      res.send(result);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
+      const result = await chat.find({
+        $or: [
+          { sender: senderEmail, reciever: recieverEmail },
+          { sender: recieverEmail, reciever: senderEmail }
+        ]
+      })
+      .sort({ createdAt: -1 });
+        res.send(result);
+      }
+      catch (error) {
+        res.status(500).send(error.message);
+      }
+  })
 
   // get all chat-friends
   app.get("/chat-friends/:email", async (req, res) => {
@@ -978,6 +966,27 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+  // get all newsletter subscribers 
+  app.get("/subscribers", async(req, res) => {
+    try {
+      const result = await Newsletters.find().populate("userInfo");
+    res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+  })
+  // get all newsletter emails 
+  app.get("/all-subscriber-emails", async(req, res) => {
+    try {
+      const result = await Newsletters.find({}, {email: 1, _id: -1});
+    const emailArray = result.map(subsrciber => subsrciber.email)
+    res.send(emailArray);
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+  })
 }; //ending all get routes brackets
 
-export default allGetRoutes;
+module.exports = allGetRoutes;
