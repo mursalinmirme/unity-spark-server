@@ -884,24 +884,6 @@ const allGetRoutes = (app) => {
   })
 
   // get all chat-friends
-  app.get('/chat-friends/:email', async (req, res) => {
-    try {
-      const email = req.params.email
-      const result = await chat
-        .find({
-          $or: [
-            { sender: senderEmail, reciever: recieverEmail },
-            { sender: recieverEmail, reciever: senderEmail },
-          ],
-        })
-        .sort({ createdAt: -1 });
-      res.send(result);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
-  // get all chat-friends
   app.get("/chat-friends/:email", async (req, res) => {
     try {
       const email = req.params.email;

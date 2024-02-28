@@ -48,17 +48,7 @@ io.on('connection', socket => {
         console.log('user joined in room ' + room);
     })
 
-    socket.on('new-message', newMessage => {
-        var chat = newMessage.chat
-
-        if(!chat.users){
-            return console.log('user not found');
-        }
-
-        chat.users.forEach(user => {
-            if(user._id == newMessage.sender._id) return
-
-            socket.in(user._id).emit('message-received', newMessage)
-        })
+    socket.on('new-message-sent', newMessage => {
+        socket.broadcast.emit('new-message-received', newMessage)
     })
 });
