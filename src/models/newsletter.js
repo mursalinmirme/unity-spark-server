@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const newsletterSchema = mongoose.Schema({
     email: {
@@ -7,7 +7,6 @@ const newsletterSchema = mongoose.Schema({
     },
     userInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
         require: true,
     },
     createdAt: {
@@ -16,4 +15,4 @@ const newsletterSchema = mongoose.Schema({
     },
 })
 const Newsletters = mongoose.model("NewsLetters", newsletterSchema);
-module.exports = Newsletters
+export default Newsletters;

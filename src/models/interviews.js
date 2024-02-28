@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const interviewsSchema = mongoose.Schema({
     candidateName: {
@@ -51,4 +51,4 @@ const interviewsSchema = mongoose.Schema({
       },
 })
 const interviews = mongoose.model("interviews", interviewsSchema);
-module.exports = interviews;
+export default interviews;
