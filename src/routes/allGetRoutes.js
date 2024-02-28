@@ -429,7 +429,8 @@ const allGetRoutes = (app) => {
     const result = await jobapplications
       .find({ status: "Pending" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6)
+      .sort({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -446,7 +447,8 @@ const allGetRoutes = (app) => {
     const result = await jobapplications
       .find({ status: "Confirmed" })
       .skip(skipFrom)
-      .limit(6);
+      .limit(6)
+      .sort({createdAt: -1});
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
     res.send(result);
   });
@@ -963,6 +965,27 @@ const allGetRoutes = (app) => {
       res.status(500).send(error.message);
     }
   });
+  // get all newsletter subscribers 
+  app.get("/subscribers", async(req, res) => {
+    try {
+      const result = await Newsletters.find().populate("userInfo");
+    res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+  })
+  // get all newsletter emails 
+  app.get("/all-subscriber-emails", async(req, res) => {
+    try {
+      const result = await Newsletters.find({}, {email: 1, _id: -1});
+    const emailArray = result.map(subsrciber => subsrciber.email)
+    res.send(emailArray);
+    } catch (error) {
+      res.status(500).send(error.message);
+      
+    }
+  })
 }; //ending all get routes brackets
 
 module.exports = allGetRoutes;
