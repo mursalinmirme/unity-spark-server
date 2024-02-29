@@ -17,4 +17,3 @@ dbConnect()
 .catch(() => {
     console.log("Database Connection Failed!");
 })
-

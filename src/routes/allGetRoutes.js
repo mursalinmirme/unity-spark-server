@@ -21,6 +21,7 @@ import chat from "../models/chats.js";
 import paymentInfo from "../models/payment.js";
 import savedBlogs from "../models/savedBlogs.js";
 import likedBlogs from "../models/likedBlogs.js";
+import Newsletters from "../models/newsletter.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -878,7 +879,7 @@ const allGetRoutes = () => {
     }
   });
 
-  // get all chats
+  // get all chats of employee or admin
   app.get("/chat", async (req, res) => {
     try {
       const senderEmail = req.query.sender_email;
@@ -978,6 +979,27 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+    // get all newsletter subscribers 
+    app.get("/subscribers", async(req, res) => {
+      try {
+        const result = await Newsletters.find().populate("userInfo");
+      res.send(result);
+      } catch (error) {
+        res.status(500).send(error.message);
+        
+      }
+    })
+    // get all newsletter emails 
+    app.get("/all-subscriber-emails", async(req, res) => {
+      try {
+        const result = await Newsletters.find({}, {email: 1, _id: -1});
+      const emailArray = result.map(subsrciber => subsrciber.email)
+      res.send(emailArray);
+      } catch (error) {
+        res.status(500).send(error.message);
+        
+      }
+    })
 }; //ending all get routes brackets
 
 export default allGetRoutes;
