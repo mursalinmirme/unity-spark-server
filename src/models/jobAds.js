@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const jobAdsSchema = mongoose.Schema({
   job_title: {
@@ -47,4 +47,4 @@ const jobAdsSchema = mongoose.Schema({
 
 const jobAds = mongoose.model("job_ads", jobAdsSchema);
 
-module.exports = jobAds;
+export default jobAds;

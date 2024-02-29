@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 // users schema making
 const saveJobSchema = mongoose.Schema({
   title: {
@@ -40,4 +40,4 @@ const saveJobSchema = mongoose.Schema({
 // users model making
 const saveJobInfo = mongoose.model("saveJobInfo", saveJobSchema);
 
-module.exports = saveJobInfo;
+export default saveJobInfo;
