@@ -878,7 +878,7 @@ const allGetRoutes = () => {
     }
   });
 
-  // get all chats
+  // get all chats of employee or admin
   app.get("/chat", async (req, res) => {
     try {
       const senderEmail = req.query.sender_email;
