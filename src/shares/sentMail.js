@@ -67,7 +67,36 @@ app.post("/subscriber-email-sent", async(req, res) => {
     res.status(500).send(error.message)
   }
 })
-
+// send mail for send announcements with subscribers
+app.post("/send-announcement", async(req, res) => {
+  try {
+    const emailInfo = req.body;
+    const receivers = emailInfo.to;
+    const title = emailInfo.title;
+    const emailBody = emailInfo.emailBody;
+    console.log("get announcent req is", emailBody, receivers, title);
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      auth: {
+        user: "teamcodewizards@gmail.com",
+        pass: "shlp madz rqtg hhmq",
+      },
+    });
+    // console.log("The email details is", emailDetails);
+    const info = await transporter.sendMail({
+      from: 'teamcodewizards@gmail.com', // sender address
+      to: receivers, // list of receivers
+      subject: title, // Subject line
+      text: title, // plain text body
+      html: emailBody, // html body
+    });
+    res.send(info);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(error.message)
+  }
+})
 
 
 
