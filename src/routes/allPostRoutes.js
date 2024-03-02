@@ -301,16 +301,15 @@ const allPostRoutes = (app) => {
     }
   });
   // news letter subscriber
-  app.post("/subscriber", async(req, res) => {
+  app.post("/subscriber", async (req, res) => {
     try {
       const getSubscriberInfo = req.body;
       const email = getSubscriberInfo?.email;
-      const isExist = await Newsletters.findOne({email: email});
-      if(isExist){
+      const isExist = await Newsletters.findOne({ email: email });
+      if (isExist) {
         res.send("exist");
-        return
-      }
-      else{
+        return;
+      } else {
         const newSubscriber = new Newsletters(getSubscriberInfo);
         const result = await newSubscriber.save();
         res.send(result);
@@ -318,7 +317,7 @@ const allPostRoutes = (app) => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 }; //end all post function brackets
 
 module.exports = allPostRoutes;
