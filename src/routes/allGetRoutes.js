@@ -22,6 +22,7 @@ import paymentInfo from "../models/payment.js";
 import savedBlogs from "../models/savedBlogs.js";
 import likedBlogs from "../models/likedBlogs.js";
 import Newsletters from "../models/newsletter.js";
+import founderInfo from "../models/founder_infos.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -998,6 +999,15 @@ const allGetRoutes = () => {
       } catch (error) {
         res.status(500).send(error.message);
         
+      }
+    })
+    // get all founder info 
+    app.get("/allFounder" , async (req , res) => {
+      try {
+        const result = await founderInfo.find()
+        res.send(result)
+      } catch (error) {
+        res.status(500).send(error.message);  
       }
     })
 }; //ending all get routes brackets
