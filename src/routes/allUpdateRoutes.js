@@ -215,20 +215,21 @@ const allUpdateRoutes = () => {
     }
   });
   // course update api
-  app.put("/courses/:id" , verifyToken , async (req , res) => {
+  app.put("/courses/:id", verifyToken, async (req, res) => {
     try {
-      const id = req.params.id
-    const updatedValue = req.body
-    console.log(updatedValue)
-    const result = await courses.updateOne(
-      {_id : id},
-      {$set: updatedValue},
-      {upsert: true})
+      const id = req.params.id;
+      const updatedValue = req.body;
+      console.log(updatedValue);
+      const result = await courses.updateOne(
+        { _id: id },
+        { $set: updatedValue },
+        { upsert: true }
+      );
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 }; //end bracket of all update routes runction
 
 export default allUpdateRoutes;
