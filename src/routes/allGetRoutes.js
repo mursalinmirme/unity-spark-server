@@ -351,12 +351,31 @@ const allGetRoutes = () => {
     try {
       const jobTitle = req.query.job_title;
       const jobId = req.query.jobId;
+      const jobType = req.query.jobType;
+      const workType = req.query.workType;
       // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
         .find({ job_title: jobTitle, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
-      res.send(result);
+        console.log(result.length);
+        if(result.length > 0){
+          res.send(result);
+          return
+        }
+        const resultTwo = await jobAds
+        .find({ job_category1: jobType, _id: { $ne: jobId } })
+        .skip(0)
+        .limit(3);
+        if(result.length > 0){
+          res.send(resultTwo);
+          return
+        }
+        const resultThree = await jobAds
+        .find({ job_category2: workType, _id: { $ne: jobId } })
+        .skip(0)
+        .limit(3);
+        res.send(resultThree);
     } catch (error) {
       res.status(500).send("Something went wrong.");
     }
