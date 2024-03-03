@@ -230,6 +230,8 @@ const allUpdateRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+ 
+
 }; //end bracket of all update routes runction
 
 export default allUpdateRoutes;
