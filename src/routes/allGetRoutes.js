@@ -23,6 +23,7 @@ import savedBlogs from "../models/savedBlogs.js";
 import likedBlogs from "../models/likedBlogs.js";
 import Newsletters from "../models/newsletter.js";
 import founderInfo from "../models/founder_infos.js";
+import services from "../models/services.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -1005,6 +1006,15 @@ const allGetRoutes = () => {
     app.get("/allFounder" , async (req , res) => {
       try {
         const result = await founderInfo.find()
+        res.send(result)
+      } catch (error) {
+        res.status(500).send(error.message);  
+      }
+    })
+    // get all services data
+    app.get("/services_data", async (req, res)=>{
+      try {
+        const result = await services.find()
         res.send(result)
       } catch (error) {
         res.status(500).send(error.message);  
