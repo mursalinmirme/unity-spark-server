@@ -113,7 +113,7 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
-      const result = await users.find({ role: "employee" });
+      const result = await users.find({ role: { $in: ["employee", "admin"] } });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -979,27 +979,25 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-    // get all newsletter subscribers 
-    app.get("/subscribers", async(req, res) => {
-      try {
-        const result = await Newsletters.find().populate("userInfo");
+  // get all newsletter subscribers
+  app.get("/subscribers", async (req, res) => {
+    try {
+      const result = await Newsletters.find().populate("userInfo");
       res.send(result);
-      } catch (error) {
-        res.status(500).send(error.message);
-        
-      }
-    })
-    // get all newsletter emails 
-    app.get("/all-subscriber-emails", async(req, res) => {
-      try {
-        const result = await Newsletters.find({}, {email: 1, _id: -1});
-      const emailArray = result.map(subsrciber => subsrciber.email)
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // get all newsletter emails
+  app.get("/all-subscriber-emails", async (req, res) => {
+    try {
+      const result = await Newsletters.find({}, { email: 1, _id: -1 });
+      const emailArray = result.map((subsrciber) => subsrciber.email);
       res.send(emailArray);
-      } catch (error) {
-        res.status(500).send(error.message);
-        
-      }
-    })
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
