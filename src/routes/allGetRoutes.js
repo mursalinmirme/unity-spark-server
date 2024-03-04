@@ -574,13 +574,16 @@ const allGetRoutes = () => {
   });
 
   // get a total Leaves Rest Days
-
-  app.get("/total-rest/:email", async (req, res) => {
+  app.get("/total-rest", async (req, res) => {
     try {
-      const email = req.params.email;
-      const result = await leaves.find({ email: email, status: "Confirmed" });
-      // console.log("Songtt", result);
-      res.send(result);
+      const email = req.query.email;
+      const pegDays = req.query.pegDays;
+      const startDate = new Date(new Date() - parseInt(pegDays) * 24 * 60 * 60 * 1000);
+      const isoFormattedStartDate = startDate.toISOString();
+        const result = await leaves
+          .find({ email: email, status: "Confirmed", createdAt: { $gte: isoFormattedStartDate } });
+          console.log(result);
+        res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -611,11 +614,16 @@ const allGetRoutes = () => {
 
   // get Employee all Attendance
 
-  app.get("/total-attendance/:email", async (req, res) => {
+  app.get("/total-attendance", async (req, res) => {
     try {
-      const email = req.params.email;
-      const result = await presentations.find({ email: email });
-      res.send(result);
+      const email = req.query.email;
+      const pegDays = req.query.pegDays;
+      const startDate = new Date(new Date() - pegDays * 24 * 60 * 60 * 1000);
+      const isoFormattedStartDate = startDate.toISOString();
+        const result = await presentations
+          .find({ email: email, presentedAt: { $gte: isoFormattedStartDate } });
+        res.send(result);
+        return
     } catch (error) {
       res.status(500).send(error.message);
     }
