@@ -24,6 +24,7 @@ import likedBlogs from "../models/likedBlogs.js";
 import Newsletters from "../models/newsletter.js";
 import founderInfo from "../models/founder_infos.js";
 import services from "../models/services.js";
+import utensils from "../models/utensils.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -981,45 +982,53 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
-    // get all newsletter subscribers 
-    app.get("/subscribers", async(req, res) => {
-      try {
-        const result = await Newsletters.find().populate("userInfo");
+  // get all newsletter subscribers
+  app.get("/subscribers", async (req, res) => {
+    try {
+      const result = await Newsletters.find().populate("userInfo");
       res.send(result);
-      } catch (error) {
-        res.status(500).send(error.message);
-        
-      }
-    })
-    // get all newsletter emails 
-    app.get("/all-subscriber-emails", async(req, res) => {
-      try {
-        const result = await Newsletters.find({}, {email: 1, _id: -1});
-      const emailArray = result.map(subsrciber => subsrciber.email)
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // get all newsletter emails
+  app.get("/all-subscriber-emails", async (req, res) => {
+    try {
+      const result = await Newsletters.find({}, { email: 1, _id: -1 });
+      const emailArray = result.map((subsrciber) => subsrciber.email);
       res.send(emailArray);
-      } catch (error) {
-        res.status(500).send(error.message);
-        
-      }
-    })
-    // get all founder info 
-    app.get("/allFounder" , async (req , res) => {
-      try {
-        const result = await founderInfo.find()
-        res.send(result)
-      } catch (error) {
-        res.status(500).send(error.message);  
-      }
-    })
-    // get all services data
-    app.get("/services_data", async (req, res)=>{
-      try {
-        const result = await services.find()
-        res.send(result)
-      } catch (error) {
-        res.status(500).send(error.message);  
-      }
-    })
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // get all founder info
+  app.get("/allFounder", async (req, res) => {
+    try {
+      const result = await founderInfo.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // get all services data
+  app.get("/services_data", async (req, res) => {
+    try {
+      const result = await services.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // get Other Payment route Data
+  app.get("/utensils", async (req, res) => {
+    try {
+      const result = await utensils.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
