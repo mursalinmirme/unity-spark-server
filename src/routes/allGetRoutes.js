@@ -22,6 +22,9 @@ import paymentInfo from "../models/payment.js";
 import savedBlogs from "../models/savedBlogs.js";
 import likedBlogs from "../models/likedBlogs.js";
 import Newsletters from "../models/newsletter.js";
+import founderInfo from "../models/founder_infos.js";
+import services from "../models/services.js";
+import utensils from "../models/utensils.js";
 
 const allGetRoutes = () => {
   // get all users
@@ -349,12 +352,31 @@ const allGetRoutes = () => {
     try {
       const jobTitle = req.query.job_title;
       const jobId = req.query.jobId;
+      const jobType = req.query.jobType;
+      const workType = req.query.workType;
       // console.log("similar jobs wanted by", similarJobs);
       const result = await jobAds
         .find({ job_title: jobTitle, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
-      res.send(result);
+      console.log(result.length);
+      if (result.length > 0) {
+        res.send(result);
+        return;
+      }
+      const resultTwo = await jobAds
+        .find({ job_category1: jobType, _id: { $ne: jobId } })
+        .skip(0)
+        .limit(3);
+      if (result.length > 0) {
+        res.send(resultTwo);
+        return;
+      }
+      const resultThree = await jobAds
+        .find({ job_category2: workType, _id: { $ne: jobId } })
+        .skip(0)
+        .limit(3);
+      res.send(resultThree);
     } catch (error) {
       res.status(500).send("Something went wrong.");
     }
@@ -437,6 +459,7 @@ const allGetRoutes = () => {
     // console.log("skip from", skipFrom);
     const result = await jobapplications
       .find({ status: "Pending" })
+      .sort({ createdAt: -1 })
       .skip(skipFrom)
       .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
@@ -455,6 +478,7 @@ const allGetRoutes = () => {
     // console.log("skip from", skipFrom);
     const result = await jobapplications
       .find({ status: "Confirmed" })
+      .sort({ createdAt: -1 })
       .skip(skipFrom)
       .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
@@ -994,6 +1018,34 @@ const allGetRoutes = () => {
       const result = await Newsletters.find({}, { email: 1, _id: -1 });
       const emailArray = result.map((subsrciber) => subsrciber.email);
       res.send(emailArray);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // get all founder info
+  app.get("/allFounder", async (req, res) => {
+    try {
+      const result = await founderInfo.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // get all services data
+  app.get("/services_data", async (req, res) => {
+    try {
+      const result = await services.find();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  // get Other Payment route Data
+  app.get("/utensils", async (req, res) => {
+    try {
+      const result = await utensils.find();
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
