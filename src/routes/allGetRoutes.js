@@ -536,7 +536,7 @@ const allGetRoutes = () => {
   // get all leave request
   app.get("/leaves", async (req, res) => {
     try {
-      const result = await leaves.find({ status: "Pending" }).populate("user");
+      const result = await leaves.find({ status: "Pending" }).populate("user").sort({createdAt: -1});
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -557,7 +557,7 @@ const allGetRoutes = () => {
     try {
       const result = await leaves
         .find({ status: "Confirmed" })
-        .populate("user");
+        .populate("user").sort({createdAt: -1});
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -566,7 +566,7 @@ const allGetRoutes = () => {
   // get all rejected leave request
   app.get("/leaves-rejected", async (req, res) => {
     try {
-      const result = await leaves.find({ status: "Rejected" }).populate("user");
+      const result = await leaves.find({ status: "Rejected" }).populate("user").sort({createdAt: -1});
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -1000,7 +1000,7 @@ const allGetRoutes = () => {
   // get payment details
   app.get("/payment-details", async (req, res) => {
     try {
-      const result = await paymentInfo.find();
+      const result = await paymentInfo.find().sort({createdAt: -1});
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
