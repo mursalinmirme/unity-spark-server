@@ -1058,6 +1058,30 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);
     }
   });
+
+  // 
+  app.get('/today-presented', async(req, res) => {
+    try {
+      const startDate = new Date(new Date() - 1 * 24 * 60 * 60 * 1000);
+      const isoFormattedStartDate = startDate.toISOString(); 
+      const result = await presentations
+        .find({ presentedAt: { $gte: isoFormattedStartDate } })
+        .countDocuments();
+      res.send({count: result});
+    } catch (error) {
+      res.status(500).send(error.message);      
+    }
+  })
+
+  app.get('/running-tasks', async(req, res) => {
+    try {
+      const result = await tasks.find({status: 'running'})
+      .countDocuments();
+      res.send({count: result})
+    } catch (error) {
+      res.status(500).send(error.message);         
+    }
+  })
 }; //ending all get routes brackets
 
 export default allGetRoutes;
