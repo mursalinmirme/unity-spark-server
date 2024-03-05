@@ -19,7 +19,7 @@ app.use(cors(
       "http://localhost:5176",
       "http://localhost:4173",
       "https://unity-spark-22122.web.app",
-      "https://api.imgbb.com/1/upload?key=5633fa8b7fb7bf3c2d44694187c33411"
+      process.env.IMAGE_BB_API
     ],
   
   }

@@ -11,8 +11,8 @@ app.post("/sent-invite-email", async(req, res) => {
         host: 'smtp.gmail.com',
         port: 587,
         auth: {
-          user: "teamcodewizards@gmail.com",
-          pass: "shlp madz rqtg hhmq",
+          user: process.env.NODE_MAILER_EMAIL,
+          pass: process.env.NODE_MAILER_PASSWORD,
         },
       });
       // console.log("The email details is", emailDetails);
@@ -41,8 +41,8 @@ app.post("/subscriber-email-sent", async(req, res) => {
       host: 'smtp.gmail.com',
       port: 587,
       auth: {
-        user: "teamcodewizards@gmail.com",
-        pass: "shlp madz rqtg hhmq",
+        user: process.env.NODE_MAILER_EMAIL,
+        pass: process.env.NODE_MAILER_PASSWORD,
       },
     });
     // console.log("The email details is", emailDetails);
@@ -79,13 +79,13 @@ app.post("/send-announcement", async(req, res) => {
       host: 'smtp.gmail.com',
       port: 587,
       auth: {
-        user: "teamcodewizards@gmail.com",
-        pass: "shlp madz rqtg hhmq",
+        user: process.env.NODE_MAILER_EMAIL,
+        pass: process.env.NODE_MAILER_PASSWORD,
       },
     });
     // console.log("The email details is", emailDetails);
     const info = await transporter.sendMail({
-      from: 'teamcodewizards@gmail.com', // sender address
+      from: process.env.NODE_MAILER_EMAIL, // sender address
       to: receivers, // list of receivers
       subject: title, // Subject line
       text: title, // plain text body
