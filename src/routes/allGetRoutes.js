@@ -359,24 +359,24 @@ const allGetRoutes = () => {
         .find({ job_title: jobTitle, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
-        console.log(result.length);
-        if(result.length > 0){
-          res.send(result);
-          return
-        }
-        const resultTwo = await jobAds
+      console.log(result.length);
+      if (result.length > 0) {
+        res.send(result);
+        return;
+      }
+      const resultTwo = await jobAds
         .find({ job_category1: jobType, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
-        if(result.length > 0){
-          res.send(resultTwo);
-          return
-        }
-        const resultThree = await jobAds
+      if (result.length > 0) {
+        res.send(resultTwo);
+        return;
+      }
+      const resultThree = await jobAds
         .find({ job_category2: workType, _id: { $ne: jobId } })
         .skip(0)
         .limit(3);
-        res.send(resultThree);
+      res.send(resultThree);
     } catch (error) {
       res.status(500).send("Something went wrong.");
     }
@@ -459,7 +459,7 @@ const allGetRoutes = () => {
     // console.log("skip from", skipFrom);
     const result = await jobapplications
       .find({ status: "Pending" })
-      .sort({createdAt: -1})
+      .sort({ createdAt: -1 })
       .skip(skipFrom)
       .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
@@ -478,7 +478,7 @@ const allGetRoutes = () => {
     // console.log("skip from", skipFrom);
     const result = await jobapplications
       .find({ status: "Confirmed" })
-      .sort({createdAt: -1})
+      .sort({ createdAt: -1 })
       .skip(skipFrom)
       .limit(6);
     // const result = await jobapplications.find().populate('user').skip(skipFrom).limit(6);
@@ -578,12 +578,17 @@ const allGetRoutes = () => {
     try {
       const email = req.query.email;
       const pegDays = req.query.pegDays;
-      const startDate = new Date(new Date() - parseInt(pegDays) * 24 * 60 * 60 * 1000);
+      const startDate = new Date(
+        new Date() - parseInt(pegDays) * 24 * 60 * 60 * 1000
+      );
       const isoFormattedStartDate = startDate.toISOString();
-        const result = await leaves
-          .find({ email: email, status: "Confirmed", createdAt: { $gte: isoFormattedStartDate } });
-          console.log(result);
-        res.send(result);
+      const result = await leaves.find({
+        email: email,
+        status: "Confirmed",
+        createdAt: { $gte: isoFormattedStartDate },
+      });
+      console.log(result);
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -619,10 +624,12 @@ const allGetRoutes = () => {
       const pegDays = req.query.pegDays;
       const startDate = new Date(new Date() - pegDays * 24 * 60 * 60 * 1000);
       const isoFormattedStartDate = startDate.toISOString();
-        const result = await presentations
-          .find({ email: email, presentedAt: { $gte: isoFormattedStartDate } });
-        res.send(result);
-        return
+      const result = await presentations.find({
+        email: email,
+        presentedAt: { $gte: isoFormattedStartDate },
+      });
+      res.send(result);
+      return;
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -631,10 +638,9 @@ const allGetRoutes = () => {
   app.get("/employee-total-attendance/:email", async (req, res) => {
     try {
       const email = req.params.email;
-        const result = await presentations
-          .find({ email: email });
-        res.send(result);
-        return
+      const result = await presentations.find({ email: email });
+      res.send(result);
+      return;
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -887,7 +893,7 @@ const allGetRoutes = () => {
     try {
       const candidateEmail = req.params.email;
 
-      const result = await interviews.findOne({
+      const result = await interviews.find({
         candidateEmail: candidateEmail,
       });
       res.send(result);
