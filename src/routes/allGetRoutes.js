@@ -613,7 +613,6 @@ const allGetRoutes = () => {
   });
 
   // get Employee all Attendance
-
   app.get("/total-attendance", async (req, res) => {
     try {
       const email = req.query.email;
@@ -622,6 +621,18 @@ const allGetRoutes = () => {
       const isoFormattedStartDate = startDate.toISOString();
         const result = await presentations
           .find({ email: email, presentedAt: { $gte: isoFormattedStartDate } });
+        res.send(result);
+        return
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  // get Employee  Attendances for employee home
+  app.get("/employee-total-attendance/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+        const result = await presentations
+          .find({ email: email });
         res.send(result);
         return
     } catch (error) {
