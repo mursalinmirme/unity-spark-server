@@ -116,7 +116,7 @@ const allGetRoutes = () => {
         res.status(403).send({ message: "Unauthorized..." });
         return;
       }
-      const result = await users.find({ role: "employee" });
+      const result = await users.find({ role: { $in: ["employee", "admin"] } });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
