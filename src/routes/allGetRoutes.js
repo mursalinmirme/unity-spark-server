@@ -1099,6 +1099,59 @@ const allGetRoutes = () => {
       res.status(500).send(error.message);         
     }
   })
+
+  app.get('/new-subscriber', async(req, res) => {
+    try {
+      const startDate = new Date(new Date() - 30 * 24 * 60 * 60 * 1000);
+      const isoFormattedStartDate = startDate.toISOString(); 
+      const result = await Newsletters.find({
+        createdAt: { $gte: isoFormattedStartDate },
+      })
+      .countDocuments();   
+      res.send({count: result})
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  })
+
+  app.get('/total-expenses', async (req, res) => {
+    try {
+      const exployeesPayment = await users.aggregate([
+        {
+          $match: {
+            role: {
+              $in: ['employee', 'admin']
+            },
+            salary: {
+              $ne: '' 
+            }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalCost: {
+              $sum: { $toDouble: '$salary' } 
+            }
+          }
+        }
+      ])
+      const otherPayment = await utensils.aggregate([
+        {
+          $group : {
+            _id: null,
+            totalCost: {
+              $sum: '$cost'
+            }
+          }
+        }
+      ])
+      res.send({employeeCost: exployeesPayment[0].totalCost, othersPaymentsCost: otherPayment[0].totalCost})
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error.message);      
+    }
+  })
 }; //ending all get routes brackets
 
 export default allGetRoutes;
