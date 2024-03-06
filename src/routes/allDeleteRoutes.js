@@ -6,6 +6,7 @@ import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 import req_events from "../models/requestevents.js";
+import savedBlogs from "../models/savedBlogs.js";
 import tasks from "../models/tasks.js";
 
 const allDeleteRoutes = () => {
@@ -95,7 +96,16 @@ const allDeleteRoutes = () => {
     }
   })
 
-
+   // delete bookmarked Blog 
+   app.delete("/bookmarked-blogs/:id" , async (req , res) => {
+  try {
+    const id = req.params.id
+    const result = await savedBlogs.deleteOne({_id : id})
+    res.send(result)
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+   })
 
 
 }; //end all delete routes function end brackets
