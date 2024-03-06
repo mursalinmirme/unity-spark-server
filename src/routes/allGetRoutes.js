@@ -1121,29 +1121,32 @@ const allGetRoutes = () => {
           $match: {
             role: {
               $in: ['employee', 'admin']
+            },
+            salary: {
+              $ne: '' 
             }
           }
         },
-        // {
-        //   $group: {
-        //       _id: null,
-        //       totalCost: {
-        //           $sum: '$salary'
-        //       }
-        //   }
-        // }
+        {
+          $group: {
+            _id: null,
+            totalCost: {
+              $sum: { $toDouble: '$salary' } 
+            }
+          }
+        }
       ])
-      // const otherPayment = await utensils.aggregate([
-      //   {
-      //     $group : {
-      //       _id: null,
-      //       totalCost: {
-      //         $sum: '$cost'
-      //       }
-      //     }
-      //   }
-      // ])
-      res.send({exployeesPayment})
+      const otherPayment = await utensils.aggregate([
+        {
+          $group : {
+            _id: null,
+            totalCost: {
+              $sum: '$cost'
+            }
+          }
+        }
+      ])
+      res.send({employeeCost: exployeesPayment[0].totalCost, othersPaymentsCost: otherPayment[0].totalCost})
     } catch (error) {
       console.log(error);
       res.status(500).send(error.message);      
