@@ -6,6 +6,7 @@ import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
 import leaves from "../models/leaves.js";
+import myCourse from "../models/mycourse.js";
 import tasks from "../models/tasks.js";
 import users from "../models/users.js";
 
@@ -230,8 +231,21 @@ const allUpdateRoutes = () => {
       res.status(500).send(error.message);
     }
   });
- 
 
+  // my courses status update API
+  app.put("/course_status_update/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await myCourse.updateOne(
+        { _id: id },
+        { $set: { CourseStatus: "Completed" } },
+        { upsert: true }
+      );
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 }; //end bracket of all update routes runction
 
 export default allUpdateRoutes;
