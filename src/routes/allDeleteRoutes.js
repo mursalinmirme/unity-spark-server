@@ -5,6 +5,7 @@ import courses from "../models/courses.js";
 import events from "../models/events.js";
 import jobAds from "../models/jobAds.js";
 import jobapplications from "../models/jobapplications.js";
+import myCourse from "../models/mycourse.js";
 import req_events from "../models/requestevents.js";
 import savedBlogs from "../models/savedBlogs.js";
 import tasks from "../models/tasks.js";
@@ -63,12 +64,12 @@ const allDeleteRoutes = () => {
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
   // task delete api
   app.delete("/tasks/:id", async (req, res) => {
     try {
       const id = req.params.id;
-      const result = await tasks.deleteOne({_id: id});
+      const result = await tasks.deleteOne({ _id: id });
       res.send(result);
     } catch (error) {
       console.log(error);
@@ -76,39 +77,47 @@ const allDeleteRoutes = () => {
   });
   // delete a specific blog from blogs models----->>>>>>>
   // requested blog delete api
-  app.delete("/blogs/:id" , async (req , res) => {
+  app.delete("/blogs/:id", async (req, res) => {
     try {
-      const id = req.params.id
-      const result = await blogs.deleteOne({_id : id})
-      res.send(result)
+      const id = req.params.id;
+      const result = await blogs.deleteOne({ _id: id });
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
   // course delete api
-  app.delete("/courses/:id" , async (req , res) =>{
+  app.delete("/courses/:id", async (req, res) => {
     try {
-      const id = req.params.id
-      const result = await courses.deleteOne({_id : id})
-      res.send(result)
+      const id = req.params.id;
+      const result = await courses.deleteOne({ _id: id });
+      res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
-   // delete bookmarked Blog 
-   app.delete("/bookmarked-blogs/:id" , async (req , res) => {
-  try {
-    const id = req.params.id
-    const result = await savedBlogs.deleteOne({_id : id})
-    res.send(result)
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-   })
+  // completed courses delete api
+  app.delete("/my_course/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await myCourse.deleteOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 
-
+  // delete bookmarked Blog
+  app.delete("/bookmarked-blogs/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const result = await savedBlogs.deleteOne({ _id: id });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
 }; //end all delete routes function end brackets
-
 
 export default allDeleteRoutes;
