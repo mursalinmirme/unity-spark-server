@@ -536,7 +536,10 @@ const allGetRoutes = () => {
   // get all leave request
   app.get("/leaves", async (req, res) => {
     try {
-      const result = await leaves.find({ status: "Pending" }).populate("user").sort({createdAt: -1});
+      const result = await leaves
+        .find({ status: "Pending" })
+        .populate("user")
+        .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -557,7 +560,8 @@ const allGetRoutes = () => {
     try {
       const result = await leaves
         .find({ status: "Confirmed" })
-        .populate("user").sort({createdAt: -1});
+        .populate("user")
+        .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -566,7 +570,10 @@ const allGetRoutes = () => {
   // get all rejected leave request
   app.get("/leaves-rejected", async (req, res) => {
     try {
-      const result = await leaves.find({ status: "Rejected" }).populate("user").sort({createdAt: -1});
+      const result = await leaves
+        .find({ status: "Rejected" })
+        .populate("user")
+        .sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -916,13 +923,21 @@ const allGetRoutes = () => {
   // MY COURSE getting api
 
   app.get("/my_course/:email", async (req, res) => {
-    console.log("checking working or not");
     try {
       const userEmail = req.params.email;
-      const result = await myCourse
-        .find({ userEmail: userEmail })
-        .populate("uniqueID");
-      res.send(result);
+      const status = req.query.status;
+      console.log(status);
+      if (status) {
+        const result = await myCourse
+          .find({ userEmail: userEmail, CourseStatus: status })
+          .populate("uniqueID");
+        res.send(result);
+      } else {
+        const result = await myCourse
+          .find({ userEmail: userEmail })
+          .populate("uniqueID");
+        res.send(result);
+      }
     } catch (error) {
       res.status(500).send(error.message);
     }
@@ -1006,7 +1021,7 @@ const allGetRoutes = () => {
   // get payment details
   app.get("/payment-details", async (req, res) => {
     try {
-      const result = await paymentInfo.find().sort({createdAt: -1});
+      const result = await paymentInfo.find().sort({ createdAt: -1 });
       res.send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -1076,82 +1091,83 @@ const allGetRoutes = () => {
     }
   });
 
-  // 
-  app.get('/today-presented', async(req, res) => {
+  //
+  app.get("/today-presented", async (req, res) => {
     try {
       const startDate = new Date(new Date() - 1 * 24 * 60 * 60 * 1000);
-      const isoFormattedStartDate = startDate.toISOString(); 
+      const isoFormattedStartDate = startDate.toISOString();
       const result = await presentations
         .find({ presentedAt: { $gte: isoFormattedStartDate } })
         .countDocuments();
-      res.send({count: result});
-    } catch (error) {
-      res.status(500).send(error.message);      
-    }
-  })
-
-  app.get('/running-tasks', async(req, res) => {
-    try {
-      const result = await tasks.find({status: 'running'})
-      .countDocuments();
-      res.send({count: result})
-    } catch (error) {
-      res.status(500).send(error.message);         
-    }
-  })
-
-  app.get('/new-subscriber', async(req, res) => {
-    try {
-      const startDate = new Date(new Date() - 30 * 24 * 60 * 60 * 1000);
-      const isoFormattedStartDate = startDate.toISOString(); 
-      const result = await Newsletters.find({
-        createdAt: { $gte: isoFormattedStartDate },
-      })
-      .countDocuments();   
-      res.send({count: result})
+      res.send({ count: result });
     } catch (error) {
       res.status(500).send(error.message);
     }
-  })
+  });
 
-  app.get('/total-expenses', async (req, res) => {
+  app.get("/running-tasks", async (req, res) => {
+    try {
+      const result = await tasks.find({ status: "running" }).countDocuments();
+      res.send({ count: result });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.get("/new-subscriber", async (req, res) => {
+    try {
+      const startDate = new Date(new Date() - 30 * 24 * 60 * 60 * 1000);
+      const isoFormattedStartDate = startDate.toISOString();
+      const result = await Newsletters.find({
+        createdAt: { $gte: isoFormattedStartDate },
+      }).countDocuments();
+      res.send({ count: result });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.get("/total-expenses", async (req, res) => {
     try {
       const exployeesPayment = await users.aggregate([
         {
           $match: {
             role: {
-              $in: ['employee', 'admin']
+              $in: ["employee", "admin"],
             },
             salary: {
-              $ne: '' 
-            }
-          }
+              $ne: "",
+            },
+          },
         },
         {
           $group: {
             _id: null,
             totalCost: {
-              $sum: { $toDouble: '$salary' } 
-            }
-          }
-        }
-      ])
+              $sum: { $toDouble: "$salary" },
+            },
+          },
+        },
+      ]);
       const otherPayment = await utensils.aggregate([
         {
-          $group : {
+          $group: {
             _id: null,
             totalCost: {
-              $sum: '$cost'
-            }
-          }
-        }
-      ])
-      res.send({employeeCost: exployeesPayment[0].totalCost, othersPaymentsCost: otherPayment[0].totalCost})
+              $sum: "$cost",
+            },
+          },
+        },
+      ]);
+      res.send({
+        employeeCost: exployeesPayment[0].totalCost,
+        othersPaymentsCost: otherPayment[0].totalCost,
+      });
     } catch (error) {
       console.log(error);
-      res.status(500).send(error.message);      
+      res.status(500).send(error.message);
     }
-  })
+  });
 }; //ending all get routes brackets
 
 export default allGetRoutes;
