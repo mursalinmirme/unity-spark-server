@@ -902,7 +902,7 @@ const allGetRoutes = () => {
 
       const result = await interviews.find({
         candidateEmail: candidateEmail,
-      });
+      }).sort({createdAt: -1});
       res.send(result);
     } catch (error) {
       console.log(error.message);
